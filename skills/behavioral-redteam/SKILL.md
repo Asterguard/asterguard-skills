@@ -18,8 +18,18 @@ through the AsterVault proxy, scored by `security-judge`.
 
 - **Strategies:** `crescendo` (gradual escalation over turns), `boundary` (push a specific authority/
   confidentiality boundary), `injection` (direct + indirect prompt injection via tool results/RAG).
+  Others to name: PAIR, TAP (tree-of-attacks), many-shot, persona-building, decomposition, obfuscation,
+  injection-placement search.
 - **Grounding:** each suite targets a real violating flow or over-privileged tool from the graph; the
   attack corpus + break-family taxonomy come from AsterVault `testgen.patterns`.
+- **Attacker / defender / verifier harness:** an attacker model (goal + strategy library + memory of
+  past tries) drives turns and/or injected content against the **exact target config** (its real system
+  prompt, tools, defenses) in a resettable sandbox with `canary-testing` planted; the **independent
+  verifier** (AsterVault egress + audit, canary detector, state diff) — never the attacker or target —
+  decides success. Run a concurrent **benign user task** to measure utility under attack.
+- **Adaptive, not static:** use the target's feedback to search for what works against *this* system;
+  reset the sandbox with **fresh canaries per attempt**. Report **ASR@budget** (ASR@1/@10/@100) and the
+  attacker model used — an attack-success-rate without a budget is meaningless.
 - The harness model plays the attacker across turns; the target agent is driven through the proxy.
 
 ## Method

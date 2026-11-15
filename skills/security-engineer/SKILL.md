@@ -37,10 +37,18 @@ there is no server call.
    - `agent-profiling` — agent AI-BOM + authority boundaries (for agentic targets)
 4. **Test** — `dast-generation` and `behavioral-redteam` emit tests from the graphs
    (same `TestDefinition` schema the platform ingests).
-5. **Run & judge** — drive tests (through the proxy or a local driver); `security-judge` scores
-   broke/held → findings.
-6. **Report** — `risk-report` folds findings + graph into the attack-surface facets and emits an
-   HTML Artifact.
+5. **Red-team episode** — for agent targets, run the attacker/defender/verifier harness
+   (`behavioral-redteam`) with `canary-testing`: plant fresh canaries, drive the attack with a
+   concurrent benign task (utility under attack), and let AsterVault's egress + audit be the
+   independent verifier. A canary hit is hard, code-checkable proof.
+6. **Run & judge** — drive tests (through the proxy or a local driver); `security-judge` scores
+   broke/held → findings, with canary hits as the hard evidence and safety metrics (ASR@budget,
+   utility-under-attack, severity-weighted violations, detection rate).
+7. **Remediate** — `remediation` turns the findings (esp. exfil / over-privilege) into enforceable,
+   least-privilege policy-as-code (SPIFFE, IAM, egress allowlists, OPA/Cedar, the AsterVault PDP, …),
+   grounded in the graph's allow-set; optionally enforced at the gateway.
+8. **Report** — `risk-report` folds findings + graph + remediations into the attack-surface facets and
+   emits an HTML Artifact.
 
 ## Practical Guidance
 
@@ -57,7 +65,8 @@ there is no server call.
 
 - local-scan, proxy-recon — collection
 - sca-graph, data-flow, information-flow, weakness-graph, agent-profiling — architecture
-- dast-generation, behavioral-redteam, security-judge — testing
+- dast-generation, behavioral-redteam, canary-testing, security-judge — testing
+- remediation — fix as least-privilege policy-as-code (SPIFFE/IAM/egress/OPA/Cedar/PDP/…)
 - risk-report — output
 - Substrate (from the context-engineering collection): multi-agent-patterns (parallel lane agents),
   advanced-evaluation (the judge), context-optimization (large-graph context), memory-systems

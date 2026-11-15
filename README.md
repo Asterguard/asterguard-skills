@@ -30,8 +30,10 @@ following each skill against one shared schema ([docs/graph-schema.md](docs/grap
 | `weakness-graph` | Build the weakness↔component graph (WRG) + weakness→control crosswalk |
 | `agent-profiling` | Agent AI-BOM + authority boundaries from code or recorded traffic |
 | `dast-generation` | Generate DAST tests from the graphs |
-| `behavioral-redteam` | Generate multi-turn red-team suites (crescendo / boundary / injection) |
-| `security-judge` | Score test runs broke/held → findings (LLM-as-judge) |
+| `behavioral-redteam` | Attacker/defender/verifier episode harness — crescendo / boundary / injection, ASR@budget |
+| `canary-testing` | Plant canary tokens and detect them on any egress — hard, code-checkable proof of exfiltration / injection / scope violation |
+| `security-judge` | Score test runs broke/held → findings (LLM-as-judge) + safety metrics |
+| `remediation` | Generate least-privilege egress/identity policy-as-code (SPIFFE, IAM, egress, OPA/Cedar, DLP, AsterVault PDP, …) from findings |
 | `risk-report` | Emit the console/BOM + attack-surface as an HTML Artifact |
 
 ## Install
