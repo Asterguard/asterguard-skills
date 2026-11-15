@@ -25,8 +25,10 @@ there is no server call.
 
 ## The pipeline
 
-1. **Scope the target.** Decide source type: `code` (repo), `infra` (image/IaC), or `traffic`
-   (live agent). This picks which collectors and graph skills run.
+1. **Recall + scope.** First `knowledge-recall` pulls the common knowledge + prior memory for this
+   app/area (approved patterns, past findings/fixes/decisions/waivers) so the work starts informed.
+   Then decide source type: `code` (repo), `infra` (image/IaC), or `traffic` (live agent) — this picks
+   which collectors and graph skills run.
 2. **Collect** — `local-scan` (SCA/IaC/secrets/AI-BOM on a repo or image) and/or `proxy-recon`
    (record a live agent). Bootstrap any missing collector first.
 3. **Build the architecture** — compose, writing into one graph:
@@ -49,6 +51,8 @@ there is no server call.
    grounded in the graph's allow-set; optionally enforced at the gateway.
 8. **Report** — `risk-report` folds findings + graph + remediations into the attack-surface facets and
    emits an HTML Artifact.
+9. **Capture** — `memory-capture` writes the decisions, findings, fixes and waivers (with the *why*)
+   back to the team memory, so the next task on this app starts informed. The loop closes.
 
 ## Practical Guidance
 
@@ -63,6 +67,7 @@ there is no server call.
 
 ## Integration
 
+- knowledge-recall, memory-capture — the common-knowledge + memory bookends (recall first, capture last)
 - local-scan, proxy-recon — collection
 - sca-graph, data-flow, information-flow, weakness-graph, agent-profiling — architecture
 - dast-generation, behavioral-redteam, canary-testing, security-judge — testing

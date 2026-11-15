@@ -22,6 +22,8 @@ following each skill against one shared schema ([docs/graph-schema.md](docs/grap
 | Skill | Capability |
 |---|---|
 | `security-engineer` | Orchestrator — runs the pipeline for a target (repo, container, or live agent) |
+| `knowledge-recall` | Pull the common knowledge + prior session memory for the app/area at task start |
+| `memory-capture` | Write decisions/findings/fixes/waivers (with the why) back to shared memory at task end |
 | `local-scan` | Run SCA/IaC/secrets/AI-BOM collectors locally; bootstrap any that are missing |
 | `proxy-recon` | Record a live agent through the local proxy (no code) → traffic corpus |
 | `sca-graph` | Build the SBOM dependency tree + CVE graph |
