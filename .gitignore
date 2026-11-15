@@ -3,3 +3,4 @@ dist/
 .asterguard/
 __pycache__/
 *.pyc
+.astervault-dev/
