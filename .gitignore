@@ -1,0 +1,5 @@
+.DS_Store
+dist/
+.asterguard/
+__pycache__/
+*.pyc

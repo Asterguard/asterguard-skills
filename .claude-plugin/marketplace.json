@@ -1,0 +1,47 @@
+{
+  "name": "asterguard-marketplace",
+  "owner": {
+    "name": "CoMatrix Labs"
+  },
+  "metadata": {
+    "description": "AsterGuard security-engineer skills and the companion packages they drive — local, agent-native application security for AI agents.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "asterguard-security",
+      "description": "Agent-native AppSec for a security engineer: perform a scan locally and build the SCA graph, data-flow, information-flow (IFC) and weakness graph as skill capabilities, then generate DAST + behavioral red-team tests, judge them, and emit a risk report — no AsterGuard server required.",
+      "version": "0.1.0",
+      "source": "./skills",
+      "category": "security",
+      "strict": false,
+      "author": { "name": "CoMatrix Labs" },
+      "homepage": "https://github.com/CoMatrixlabs/asterguard-skills",
+      "repository": "https://github.com/CoMatrixlabs/asterguard-skills",
+      "license": "LicenseRef-Proprietary",
+      "keywords": [
+        "appsec",
+        "ai-security",
+        "agent-security",
+        "sbom",
+        "sca",
+        "information-flow",
+        "data-flow",
+        "dast",
+        "red-team",
+        "llm-as-a-judge",
+        "security-graph"
+      ]
+    }
+  ],
+  "packages": {
+    "comment": "Companion binaries the skills shell out to as raw collectors. local-scan bootstraps whichever are missing; the skills do the analysis.",
+    "collectors": [
+      { "name": "grype",      "purpose": "SBOM + CVE (SCA)",        "install": "brew install grype  |  curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh" },
+      { "name": "syft",       "purpose": "SBOM generation",         "install": "brew install syft" },
+      { "name": "checkov",    "purpose": "IaC misconfiguration",    "install": "pipx install checkov" },
+      { "name": "trufflehog", "purpose": "secret detection",        "install": "brew install trufflehog" }
+    ],
+    "proxy": { "name": "asterguard-proxy", "purpose": "LLM-aware record/replay proxy", "source": "./skills/proxy-recon/scripts/proxy.py" }
+  }
+}

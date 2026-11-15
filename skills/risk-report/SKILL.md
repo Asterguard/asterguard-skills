@@ -1,0 +1,52 @@
+---
+name: risk-report
+description: Emit the assessment as an HTML Artifact — the security graph, attack-surface facets (reach, violated tools, exfil sinks, attack paths), findings by weakness and control, and the ARS. Use when a security engineer needs a shareable report at the end of a local assessment.
+---
+
+# Risk Report
+
+Fold the enriched graph + findings into a single, shareable HTML Artifact rendered in the client's
+harness. This is the deliverable; it reads the local artifacts and the AsterVault enrichment, and
+renders — no server round-trip to display.
+
+## When to Activate
+
+- At the end of the pipeline, once findings + the graph exist.
+- The engineer asks for a report, a BOM view, or an attack-surface summary.
+
+## Core Concepts
+
+- **Attack-surface facets** are derived from the graph (not stored): `reach` (regulated store ·
+  classes · via-identity · columns), `tools_violated`, `sinks`, `paths`. Get them from
+  `graph.enrich`, or compute from the local graph if offline.
+- **One number:** the ARS (0–10, CVE-calibrated) from `risk.score` is the headline; every "overall
+  risk" surface shows the same number.
+- **Grouping that reads:** CVEs collapse to one row per vulnerable package (N packages · M CVEs),
+  OS/base-image separated from app deps; findings group by weakness and by control family.
+
+## Method
+
+1. Load `./.asterguard/graph.json` + `findings.json`; call `graph.enrich` + `risk.score` (or compute
+   locally if the gateway is unreachable).
+2. Build sections: ARS headline · attack-surface (3 facet boxes + attack paths) · SCA (package
+   roll-up) · data-flow + information-flow · findings by weakness · control/compliance view.
+3. Render a themed, responsive HTML Artifact (light/dark, phone-safe). Numbers only from the data;
+   charts only from real rows.
+
+## Practical Guidance
+
+- **Collapse, don't drop:** a full container SBOM is hundreds of OS CVEs — show vulnerable packages
+  with drill-down, not a flat CVE wall (the graph holds the detail).
+- Reach reachable by an **anonymous/external** identity is the lede — surface it at the top.
+- Keep the report self-contained; it must render from the local artifacts even with no network.
+
+## Integration
+
+- all graph skills + security-judge — provide graph + findings
+- AsterVault `graph.enrich` / `risk.score` — facets + ARS
+- Output: an HTML Artifact (the console/BOM view), shareable from the harness
+
+## References
+
+- [Graph schema (SSOT)](../../docs/graph-schema.md)
+- [AsterVault MCP tools](../weakness-graph/references/astervault-tools.md)
