@@ -1,0 +1,31 @@
+{
+  "episode_id": "ep-support-agent-export",
+  "app": "support-agent",
+  "findings": [
+    {
+      "id": "f-egress",
+      "title": "Unrestricted egress on the export path",
+      "severity": "critical",
+      "boundary": "network",
+      "weakness_id": "egress_unrestricted",
+      "frameworks": ["nist_800_53:SC-7"],
+      "evidence": "The support agent's /admin/export tool reached an external host with no allowlist.",
+      "metadata": {
+        "hosts": ["support-api.internal"],
+        "deny_cidrs": ["169.254.169.254/32"]
+      }
+    },
+    {
+      "id": "f-pii",
+      "title": "PII returned from the export read",
+      "severity": "high",
+      "boundary": "data",
+      "weakness_id": "pii_exposed_in_read",
+      "frameworks": ["owasp_llm:LLM06"],
+      "evidence": "GET /admin/export returned name, email, ssn and card from admin_export_records to an anonymous caller.",
+      "metadata": {
+        "pii_columns": ["name", "email", "ssn", "card"]
+      }
+    }
+  ]
+}
