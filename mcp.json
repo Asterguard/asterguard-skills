@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "astervault": {
+      "type": "http",
+      "url": "${ASTERVAULT_MCP_URL:-https://astervault.local/mcp}"
+    }
+  }
+}

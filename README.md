@@ -47,7 +47,9 @@ following each skill against one shared schema ([docs/graph-schema.md](docs/grap
 /plugin install asterguard-security@asterguard-marketplace
 ```
 
-Then just ask: *"profile this agent and red-team it"*, or run the orchestrator skill.
+Installing ships **`.mcp.json`**, which auto-connects the skills to the AsterVault MCP gateway (point
+it with `ASTERVAULT_MCP_URL`; see [docs/MCP_WIRING.md](docs/MCP_WIRING.md)). Then just ask: *"profile
+this agent and red-team it"*, or run the orchestrator skill.
 
 ### Codex (skill bundle)
 
@@ -57,8 +59,8 @@ The skill bodies are platform-agnostic. Build the Codex bundle from the same sou
 scripts/build-codex.sh   # emits ./dist/codex/ (AGENTS.md + skills/) to drop into a Codex project
 ```
 
-See [docs/DELIVERY.md](docs/DELIVERY.md) for both targets and how the marketplace delivers the
-companion collector packages.
+See [docs/MCP_WIRING.md](docs/MCP_WIRING.md) for the gateway wiring across harnesses, and the
+`packages` block in `.claude-plugin/marketplace.json` for the companion collectors.
 
 ## The companion packages
 
