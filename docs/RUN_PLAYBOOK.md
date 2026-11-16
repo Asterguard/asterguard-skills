@@ -83,16 +83,19 @@ registry.resolve({ "finding": {
 
 Use the returned **canonical id** for the next calls — controls and risk key on it, not on free text.
 
-### 3 · Score the risk — `risk.score` _(grounds)_
+### 3 · Understand the risk — `risk.score` _(grounds)_
 
-ARS (CVE-calibrated 0–10) plus the feature vector behind it — for a finding, or an app payload with a
-`findings` list.
+Returns the **feature vector** (KEV / EPSS / reachability / data-class / owasp-weight / …) for a finding,
+or an app payload with a `findings` list. The harness **composes the risk from the features itself** — no
+ARS model or risk eval runs in the skills; the trained ARS models live in the full platform. This is the
+`risk-context` posture: hand the model's inputs to the agent, not a black-box number.
 
 ```jsonc
 risk.score({ "target": {
   "title":"Indirect prompt injection via tool output",
   "cwe":"CWE-77", "lane":"behavioral" } })
-// → "features": { "owasp_weight": 0.5, … }, "ars": … 0–10 band
+// → "features": { "owasp_weight":0.5, "kev":…, "epss":…, "reachability":…, "data_class":… }
+//   the harness reasons the score + band from these
 ```
 
 ### 4 · Map the controls — `controls.map` _(grounds)_

@@ -8,8 +8,8 @@ below). Every rule is evaluated over the **delta** (`head − base`), never the 
 ```yaml
 # ./.asterguard/gate-policy.yaml
 baseline: knowledge-store        # knowledge-store | merge-base | none
-ars_delta:
-  fail_at: 1.5                   # ARS increase (0–10) that fails the PR
+risk_delta:                      # risk is composed by the harness from risk.score's feature
+  fail_at: 1.5                   # vector (0–10) — no ARS model runs client-side
   warn_at: 0.5
 fail_on:                         # any one of these, introduced by the PR, fails it
   - new_proven_break             # a canary-verified break on a path the diff adds/reaches
@@ -18,7 +18,7 @@ fail_on:                         # any one of these, introduced by the PR, fails
 warn_on:
   - new_finding_severity: medium
   - new_finding_with_control     # a new finding whose control is already present
-  - ars_delta_warn_band
+  - risk_delta_warn_band
 exempt:
   paths: ["**/test/**", "**/*_test.*", "docs/**"]   # changes here don't trigger the gate
 require:                         # optional positive checks the PR must satisfy
@@ -27,7 +27,7 @@ require:                         # optional positive checks the PR must satisfy
 
 ## Verdict
 
-- **FAIL** — one or more `fail_on` conditions hold for the delta, or `ars_delta >= fail_at`. CI exits
+- **FAIL** — one or more `fail_on` conditions hold for the delta, or `risk_delta >= fail_at`. CI exits
   non-zero. Each blocker is reported with its weakness_id, where it was introduced (`file:line`), the
   canary evidence if any, and the recommended policy.
 - **WARN** — only `warn_on` conditions hold (merge allowed, flagged on the PR).

@@ -166,31 +166,50 @@ audit evidence — proof, not a policy doc that merely asserts it. Full design +
 
 ## Capabilities (skills)
 
-### Security review
+**Everything runs client-side.** The AsterGuard knowledge store only *grounds* (recall) and *remembers*
+(capture); the planning, the scans, the red-team, and the risk reasoning all happen in your harness.
+
+**Orchestrators**
 
 | Skill | Capability |
 |---|---|
-| `security-engineer` | Orchestrator (SecEng posture) — full advisory review of a target (repo, container, or live agent) |
-| `pr-gate` | Orchestrator (dev posture) — diff-scoped review of a pull request → pass/fail gate; blocks only on what the change introduces, then `test → enforce → ship` |
-| `knowledge-recall` | Pull the common knowledge + prior session memory for the app/area at task start |
-| `memory-capture` | Write decisions/findings/fixes/waivers (with the why) back to shared memory at task end |
-| `local-scan` | Run SCA/IaC/secrets/AI-BOM collectors locally; bootstrap any that are missing |
-| `proxy-recon` | Record a live agent through the AsterVault broker/proxy (no code) → traffic corpus + audit trail |
-| `sca-graph` | Build the SBOM dependency tree + CVE graph |
+| `security-engineer` | SecEng posture — full advisory review of a target (repo, container, or live agent) |
+| `pr-gate` | Dev posture — diff-scoped review of a pull request → pass/fail gate; blocks only on what the change introduces, then `test → enforce → ship` |
+| `check-planner` | Plan the standard checks (SAST/DAST/IaC/secrets/data-flow/PII/SCA/compliance) as one client-side plan; marks the behavioral follow-on targets |
+
+**Standard checks — tier 1** (deterministic / structural, run first)
+
+| Skill | Capability |
+|---|---|
+| `local-scan` | SAST (semgrep/opengrep) + IaC (kics/checkov) + secrets (trufflehog) + AI-BOM collectors, locally; bootstrap any that are missing |
+| `sca-graph` | Build the SBOM dependency tree + CVE graph (grype/syft) |
 | `data-flow` | Build the data-flow architecture (stores/fields → functions/tools → endpoints) |
-| `information-flow` | Build the IFC overlay — integrity/confidentiality flows, data classes, missing controls |
+| `information-flow` | IFC overlay — integrity/confidentiality flows, PII/PCI/PHI classes, missing controls |
 | `weakness-graph` | Build the weakness↔component graph (WRG) + weakness→control crosswalk |
 | `agent-profiling` | Agent AI-BOM + authority boundaries from code or recorded traffic |
-| `dast-generation` | Generate DAST tests from the graphs |
+| `dast-generation` | Plan + generate DAST tests from the graphs |
+| `proxy-recon` | Record a live agent through the broker/proxy (no code) → traffic corpus + audit trail |
+
+**Behavioral red-team — tier 2** (follow-on; targets the risky paths tier 1 surfaced)
+
+| Skill | Capability |
+|---|---|
 | `behavioral-redteam` | Orchestrator — composes attacker/defender/judge + canaries into an adaptive, self-improving episode (ASR@budget) |
-| `attacker` | Reusable adversarial driver — `attacker(context) → attack_turn`; user-fed brief, canaries woven in, selectable attacker-model, recalls prior breaks |
-| `defender` | Reusable system-under-test wrapper — `defender(attack_turn) → target_response` with its real defenses |
-| `judge` | Reusable evaluator — `judge(turn, response, canary_evidence) → verdict` from out-of-band evidence; captures/promotes proven breaks |
+| `attacker` | Adversarial driver — `attacker(context) → attack_turn`; user-fed brief, canaries woven in, selectable attacker-model, recalls prior breaks |
+| `defender` | System-under-test wrapper — `defender(attack_turn) → target_response` with its real defenses |
+| `judge` | Evaluator — `judge(turn, response, canary_evidence) → verdict` from out-of-band evidence; captures/promotes proven breaks |
 | `canary-testing` | Plant canary tokens and detect them on any egress — hard, code-checkable proof of exfiltration / injection / scope violation |
-| `security-judge` | Score test runs broke/held → findings (LLM-as-judge) + safety metrics |
-| `risk-context` | Hand the agent the model's feature vector (KEV/EPSS/reachability/data-class/…) so it calculates & calibrates risk itself — not a black-box score |
-| `remediation` | Generate least-privilege egress/identity policy-as-code (SPIFFE, IAM, egress, OPA/Cedar, DLP, AsterVault PDP, …) from findings |
-| `risk-report` | Render `graph.enrich`/`risk.score` JSON into the attack-path visual (data-driven) as an HTML Artifact |
+| `security-judge` | Score test runs broke/held → findings + safety metrics |
+
+**Risk, remediation & memory**
+
+| Skill | Capability |
+|---|---|
+| `risk-context` | Hand the agent the **feature vector** (KEV/EPSS/reachability/data-class/owasp-weight/…) so **the harness composes the risk itself** — no ARS model or eval runs client-side; the trained models live in the full platform |
+| `remediation` | Generate least-privilege egress/identity policy-as-code (SPIFFE, IAM, egress, OPA/Cedar, DLP, runtime PDP, …) from findings |
+| `risk-report` | Render the graph + findings into the attack-path visual (data-driven) as an HTML Artifact |
+| `knowledge-recall` | Pull the common knowledge + prior session memory for the app/area at task start |
+| `memory-capture` | Write decisions/findings/fixes/waivers (with the why) back to the knowledge store at task end |
 
 ### Audit readiness
 

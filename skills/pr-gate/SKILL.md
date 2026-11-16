@@ -45,9 +45,10 @@ is cacheable, resumable, and inspectable, and builds to the shared schema (`grap
 3. **Scan the delta.** Run collectors scoped to the change — SAST (semgrep/opengrep) on changed files,
    `sca-graph` only if manifests changed, `data-flow` / `information-flow` delta on touched stores/fields.
    Build the partial graph and merge it onto the recalled baseline.
-4. **Resolve + score.** `registry.resolve` each finding → canonical weakness, `risk.score` for ARS,
+4. **Resolve + score.** `registry.resolve` each finding → canonical weakness, `risk.score` for the
+   **feature vector** (the harness composes the risk from it — no ARS model or eval runs here),
    `controls.map` for the clauses it touches. Diff against the baseline → the set of **new/worsened**
-   weaknesses and the **ARS delta**.
+   weaknesses and the **risk delta** (harness-composed from the features, not a model score).
 5. **Red-team what the change introduces.** For new/changed behavior (a new tool, a new egress, a new
    data path), run `behavioral-redteam` + `canary-testing` scoped to those paths; `security-judge` scores
    broke/held. A **new proven break** (a canary on egress) is the strongest gate signal.
@@ -66,10 +67,10 @@ is cacheable, resumable, and inspectable, and builds to the shared schema (`grap
 Default policy (fail-closed on what the change adds; everything keyed to the delta):
 
 - **FAIL** if the PR introduces any: new **proven break** (canary-verified); new **high/critical** finding
-  with no compensating control; new **PII/PCI/PHI → egress** flow with no gate; `ARS delta` above the
-  repo's threshold.
+  with no compensating control; new **PII/PCI/PHI → egress** flow with no gate; a **risk delta** above the
+  repo's threshold (the harness composes risk from the feature vector; no ARS model runs client-side).
 - **WARN** (merge allowed, flagged) for: new medium findings, new findings with a mitigating control
-  already present, or an `ARS delta` in the warn band.
+  already present, or a **risk delta** in the warn band.
 - **PASS** otherwise — including when pre-existing findings remain (they are reported, not blocked).
 
 The gate is reviewable, not a wall: a developer can **waive** a specific blocker with a reason, which is
