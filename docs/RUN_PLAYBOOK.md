@@ -206,7 +206,59 @@ enforces (policy.apply).
 
 ---
 
-## 4. Troubleshoot
+## 4. Persistence & graph build
+
+The MCP tools **ground and prove**; the actual scan and its persistence happen in the pipeline
+(`asterllmguard2` → `risk-pipeline` → `api`), not over the MCP. Order of a scan run:
+
+1. **Scan (producer)** — `asterllmguard2 scan` (`core/scanner.py`) writes four artifacts to a scan-dir:
+   `result.json` (findings), `report.sarif` (SAST rule hits), `components.json`, and `graph.json`
+   (the security graph, with the weakness and data-flow overlays already baked in). The agent's
+   `scanning/runner.py` shells out to this into `/tmp` and returns a dict — **it does not persist**
+   (an easy seam to miss; a separate load/ingest step is what writes the DB).
+
+2. **Persist to Postgres `phenom_egen_ai` — the source of truth.** `risk-pipeline/scripts/load_bronze_from_scan.py`
+   (or the API ingest endpoint `api/routers/ingest.py`) loads the artifacts into `bronze_*` tables, all
+   keyed by a `scan_run_id` (UUID):
+   - `bronze_scan_runs` — parent row (`scan_run_id`, `application_id`, `git_sha`, `scanner_version`)
+   - `bronze_sarif_findings` — the SAST rule hits · `bronze_components` · `bronze_graph_nodes` / `bronze_graph_edges` (topology)
+   - `silver_findings` is then derived from bronze (reachability / EPSS / ARS). **This silver layer is what the chat/analysis reads.**
+
+3. **Graph render blob.** The folded graph (both overlays) is stored as one JSONB blob in
+   `bronze_graph_render.graph` (keyed by `scan_run_id`; migration `0012_graph_render_snapshot`), plus a
+   searchable summary in the Qdrant `information_flow` collection. **This blob is the SSOT for the graph.**
+
+4. **Materialize for the UI.** `scripts/materialize_build_scan.py` reads the scored Postgres rows and
+   writes `api/data/cicd/asterllmguard.json` for the build view. **The JSON files are derived snapshots,
+   not the source of truth.**
+
+> There is also a **canned SQLite demo store** (`api/data/astheraguard.db`, `api/routers/scan.py`) with
+> its own `scans` / `security_graph_*` tables — that is the demo path, **not** the Postgres SSOT.
+
+### How the two overlays get built
+
+Both overlays fold into the **one** graph object (`graph.json` → `bronze_graph_render.graph`), keyed by `scan_run_id`:
+
+- **Weakness overlay** — built at scan time by `SecurityGraphBuilder.build` (`asterllmguard2/graph/builder.py`):
+  component nodes + `contains` edges, then each finding's `weakness_id` is deduped into a `weakness` node
+  and linked to its component with a **`has_weakness`** edge (weakness ↔ component); a framework overlay
+  adds `framework_ref` nodes (CWE / OWASP-LLM / ATT&CK / ATLAS / CAPEC) via `references` edges. Same
+  vocabulary as the MCP `registry.resolve` / `controls.map`.
+- **Information-flow (IFC) overlay** — two builders of the same idea:
+  - *Scan-time:* `DataAccessScanner` (Step 1d, `dataaccess/scanner.py`) emits `data_store` / `data_field`
+    (Presidio-grounded PII/PCI/PHI class) nodes and typed edges (`reads`, `flows_to`, `gates`,
+    `authorized_for`); `dataaccess/flow.py confidentiality_violations` flags a sensitive field that flows
+    to egress with no present gate.
+  - *Ingest-time (FIDES):* `api/services/information_flow.py build_and_persist` labels nodes
+    confidentiality/integrity, taint-propagates along edges, and adds `ifcEdges` + `informationFlow` to
+    the graph blob (a static take on FIDES, Costa et al.).
+  - **No dedicated IFC table** — it reuses `bronze_graph_render`. The scan-time and ingest-time builders
+    are two implementations of the same idea and can drift; keep them in sync.
+
+At serving time, `api/routers/cicd.py get_security_graph_for_app` re-folds both overlays onto the graph
+and derives the display layers (L1 Code … L5 Control Gap), preferring the persisted blob over recompute.
+
+## 5. Troubleshoot
 
 | Symptom | Cause / fix |
 |---|---|
