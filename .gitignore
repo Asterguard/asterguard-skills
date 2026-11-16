@@ -4,3 +4,4 @@ dist/
 __pycache__/
 *.pyc
 .astervault-dev/
+examples/scan-to-redteam/redteam-run.json
