@@ -45,6 +45,7 @@ call is needed to judge, only to map controls.
 
 ## Integration
 
+- judge — the reusable evaluator this specializes; `security-judge` = `judge` + finding/control mapping + safety metrics
 - dast-generation, behavioral-redteam — provide runs + oracles
 - weakness-graph — findings attach to its weakness nodes
 - AsterVault `controls.map` — control clauses per break

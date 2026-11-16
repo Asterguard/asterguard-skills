@@ -70,7 +70,7 @@ there is no server call.
 - knowledge-recall, memory-capture — the common-knowledge + memory bookends (recall first, capture last)
 - local-scan, proxy-recon — collection
 - sca-graph, data-flow, information-flow, weakness-graph, agent-profiling — architecture
-- dast-generation, behavioral-redteam, canary-testing, security-judge — testing
+- dast-generation, behavioral-redteam (orchestrates attacker/defender/judge), canary-testing, security-judge — testing
 - remediation — fix as least-privilege policy-as-code (SPIFFE/IAM/egress/OPA/Cedar/PDP/…)
 - risk-report — output
 - Substrate (from the context-engineering collection): multi-agent-patterns (parallel lane agents),

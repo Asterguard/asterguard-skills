@@ -32,7 +32,10 @@ following each skill against one shared schema ([docs/graph-schema.md](docs/grap
 | `weakness-graph` | Build the weakness↔component graph (WRG) + weakness→control crosswalk |
 | `agent-profiling` | Agent AI-BOM + authority boundaries from code or recorded traffic |
 | `dast-generation` | Generate DAST tests from the graphs |
-| `behavioral-redteam` | Attacker/defender/verifier episode harness — crescendo / boundary / injection, ASR@budget |
+| `behavioral-redteam` | Orchestrator — composes attacker/defender/judge + canaries into an adaptive, self-improving episode (ASR@budget) |
+| `attacker` | Reusable adversarial driver — `attacker(context) → attack_turn`; user-fed brief, canaries woven in, selectable attacker-model, recalls prior breaks |
+| `defender` | Reusable system-under-test wrapper — `defender(attack_turn) → target_response` with its real defenses |
+| `judge` | Reusable evaluator — `judge(turn, response, canary_evidence) → verdict` from out-of-band evidence; captures/promotes proven breaks |
 | `canary-testing` | Plant canary tokens and detect them on any egress — hard, code-checkable proof of exfiltration / injection / scope violation |
 | `security-judge` | Score test runs broke/held → findings (LLM-as-judge) + safety metrics |
 | `risk-context` | Hand the agent the model's feature vector (KEV/EPSS/reachability/data-class/…) so it calculates & calibrates risk itself — not a black-box score |
