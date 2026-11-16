@@ -1,0 +1,69 @@
+framework: soc2
+version: "2017 TSC (rev. 2022)"
+source: seed-pack      # representative subset of the Common Criteria; controls.rubric supersedes this
+controls:
+  - id: CC6.1
+    title: Logical and physical access controls — restrict access and protect data
+    objective: Logical access to data and systems is restricted; data is protected in transit and at rest.
+    evidence_required:
+      - { type: config, what: Access is least-privilege; egress/data flows are restricted by default-deny }
+      - { type: test,   what: Evidence that unauthorized data egress is prevented }
+    audit_questions:
+      - Is access to regulated data least-privilege and enforced?
+      - Is data protected from unauthorized egress (allow-list / DLP)?
+    maps_to: [iso-27001:A.8.12, hipaa:164.312(a)(1)]
+    security_signal:
+      weakness_ids: [llm_cfg_egress_no_dlp, over_privileged_agent, egress_unrestricted]
+      satisfied_when: Egress allow-list + least-privilege identity (SPIFFE/IAM) applied; exfil canary HELD.
+
+  - id: CC7.1
+    title: Detect and monitor — vulnerabilities and configuration changes
+    objective: Detect vulnerabilities and unauthorized or anomalous configuration changes.
+    evidence_required:
+      - { type: process, what: A vulnerability-detection process (scanning cadence + triage) }
+      - { type: test,    what: Recent scan results with remediation state }
+    audit_questions:
+      - Are systems scanned for vulnerabilities and misconfigurations on a cadence?
+      - Are detected issues triaged and remediated?
+    maps_to: [iso-27001:A.8.8]
+    security_signal:
+      weakness_ids: [vulnerable_dependency, iac_misconfiguration]
+      satisfied_when: local-scan SCA + IaC results present and triaged.
+
+  - id: CC7.2
+    title: Monitor system components for anomalies
+    objective: Security events are logged and monitored for anomalies that could indicate an incident.
+    evidence_required:
+      - { type: config, what: Security event logging on access, egress, and tool use }
+      - { type: record, what: Logs retained and reviewed }
+    audit_questions:
+      - Are security-relevant events logged with integrity and retained?
+      - Is there evidence of review/alerting?
+    maps_to: [iso-27001:A.8.16, hipaa:164.312(b)]
+    security_signal:
+      weakness_ids: [no_audit_trail]
+      satisfied_when: AsterVault append-only audit covers calls (audit_id per call).
+
+  - id: CC8.1
+    title: Change management
+    objective: Changes to infrastructure, data, and software are authorized, tested, and approved.
+    evidence_required:
+      - { type: change, what: Changes go through review/approval before deployment }
+      - { type: record, what: Evidence of testing/CI gates on changes }
+    audit_questions:
+      - Do code/config changes require review and pass CI before merge?
+      - Is there an audit trail of approvals?
+    maps_to: [iso-27001:A.8.9, iso-9001:8.5.1]
+    security_signal:
+      weakness_ids: []
+      satisfied_when: PRs show required reviews + passing CI; branch protection evidenced.
+
+  - id: CC1.1
+    title: Control environment — integrity and governance
+    objective: The organization demonstrates a commitment to integrity and defined security governance.
+    evidence_required:
+      - { type: policy, what: Approved security governance / code-of-conduct policies }
+      - { type: record, what: Evidence of communication and periodic review }
+    audit_questions:
+      - Are governance policies approved, published, and reviewed?
+    maps_to: [iso-27001:A.5.1]

@@ -1,0 +1,58 @@
+framework: iso-9001
+version: "2015"
+source: seed-pack      # representative subset; controls.rubric supersedes this
+# ISO 9001 is quality management, not security — included because the same evidence pipeline
+# (records -> cited verdict) applies, and change/record controls overlap with the security frameworks.
+controls:
+  - id: "7.5"
+    title: Documented information
+    objective: Create, control, and maintain the documented information the QMS requires.
+    evidence_required:
+      - { type: process, what: Document-control procedure (versioning, approval, availability) }
+      - { type: record,  what: Documents are versioned and access-controlled }
+    audit_questions:
+      - Is documented information version-controlled and approved before use?
+      - Is the current version available where needed and obsolete versions controlled?
+    maps_to: [iso-27001:A.5.1]
+
+  - id: "8.3"
+    title: Design and development control
+    objective: Control the design and development of products and services through defined stages.
+    evidence_required:
+      - { type: change,  what: Design/dev changes go through defined review + approval stages }
+      - { type: record,  what: Evidence of design reviews and verification }
+    audit_questions:
+      - Are design/development changes reviewed, verified, and approved at defined stages?
+    maps_to: [iso-27001:A.8.9, soc2:CC8.1]
+
+  - id: "8.5.1"
+    title: Control of production and service provision
+    objective: Carry out production and service provision under controlled conditions.
+    evidence_required:
+      - { type: process, what: Defined, controlled process for delivery/deployment }
+      - { type: config,  what: Deployment is repeatable and controlled (e.g. CI/CD with gates) }
+    audit_questions:
+      - Is production/deployment performed under controlled, repeatable conditions?
+    maps_to: [soc2:CC8.1, iso-27001:A.8.9]
+
+  - id: "9.2"
+    title: Internal audit
+    objective: Conduct internal audits at planned intervals to check the QMS conforms and is effective.
+    evidence_required:
+      - { type: process, what: An internal-audit programme and schedule }
+      - { type: record,  what: Internal audit results within the period }
+    audit_questions:
+      - Is there an internal-audit programme run at planned intervals?
+      - Are results recorded and acted on?
+    maps_to: []
+
+  - id: "10.2"
+    title: Nonconformity and corrective action
+    objective: React to nonconformities and take corrective action to prevent recurrence.
+    evidence_required:
+      - { type: record, what: Nonconformities logged with root cause and corrective action }
+      - { type: change, what: Evidence corrective actions were implemented and verified }
+    audit_questions:
+      - Are nonconformities logged, root-caused, and corrected?
+      - Is the effectiveness of corrective action verified?
+    maps_to: [iso-27001:A.5.27]

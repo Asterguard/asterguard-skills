@@ -1,0 +1,71 @@
+framework: iso-27001
+version: "2022"
+source: seed-pack      # representative subset; the AsterVault controls.rubric catalog supersedes this
+controls:
+  - id: A.8.12
+    title: Data leakage prevention
+    objective: Prevent unauthorized disclosure or exfiltration of sensitive information.
+    evidence_required:
+      - { type: policy, what: A documented DLP / data-egress control policy }
+      - { type: config, what: Enforced default-deny egress allow-list and/or DLP obligation on outbound channels }
+      - { type: test,   what: A test or run showing exfiltration of regulated data is blocked }
+    audit_questions:
+      - Is outbound egress restricted to an approved allow-list by default-deny?
+      - Is regulated data (PII/PHI) tokenized or redacted before it leaves the boundary?
+    maps_to: [soc2:CC6.1, hipaa:164.312(e)(1)]
+    security_signal:
+      weakness_ids: [llm_cfg_egress_no_dlp, egress_unrestricted, data_exfiltration]
+      satisfied_when: Egress allow-list + DLP/tokenize obligation applied at the gateway; exfil canary stays HELD on egress.
+
+  - id: A.8.8
+    title: Management of technical vulnerabilities
+    objective: Identify, evaluate, and remediate technical vulnerabilities in a timely way.
+    evidence_required:
+      - { type: process, what: A vulnerability-management process (scan cadence, SLAs, ownership) }
+      - { type: test,    what: Recent dependency/CVE scan results with triage/remediation state }
+    audit_questions:
+      - Are components scanned for known vulnerabilities on a defined cadence?
+      - Are KEV/high-severity findings remediated within the stated SLA?
+    maps_to: [soc2:CC7.1, hipaa:164.308(a)(1)(ii)(A)]
+    security_signal:
+      weakness_ids: [vulnerable_dependency, known_exploited_vuln]
+      satisfied_when: local-scan SCA/CVE results present with triage; KEV findings remediated or waived with the why.
+
+  - id: A.8.16
+    title: Monitoring activities
+    objective: Monitor systems for anomalous behavior and potential security incidents.
+    evidence_required:
+      - { type: config,  what: Audit logging enabled on security-relevant actions }
+      - { type: record,  what: Evidence logs are retained and reviewed }
+    audit_questions:
+      - Are security-relevant actions (access, egress, tool calls) logged with integrity?
+      - Is there evidence the logs are retained and reviewed?
+    maps_to: [soc2:CC7.2, hipaa:164.312(b)]
+    security_signal:
+      weakness_ids: [no_audit_trail]
+      satisfied_when: AsterVault append-only audit covers tool/egress calls (audit_id per call); retention documented.
+
+  - id: A.5.1
+    title: Policies for information security
+    objective: Define, approve, publish, and review an information-security policy set.
+    evidence_required:
+      - { type: policy,    what: An approved information-security policy set }
+      - { type: record,    what: Evidence of review/approval within the review period }
+    audit_questions:
+      - Is there an approved infosec policy set, published to staff?
+      - Was it reviewed/approved within the defined period?
+    maps_to: [soc2:CC1.1]
+
+  - id: A.8.9
+    title: Configuration management
+    objective: Establish, document, and monitor secure configurations of systems.
+    evidence_required:
+      - { type: config, what: Infrastructure/config defined as code with review }
+      - { type: change, what: Changes to configuration go through review/approval }
+    audit_questions:
+      - Are secure baselines defined as code (IaC) and version-controlled?
+      - Do configuration changes require review before merge?
+    maps_to: [soc2:CC8.1, iso-9001:8.5.1]
+    security_signal:
+      weakness_ids: [insecure_default_config, iac_misconfiguration]
+      satisfied_when: checkov/IaC scan clean or triaged; config changes via reviewed PRs.

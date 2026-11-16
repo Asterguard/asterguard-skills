@@ -118,9 +118,41 @@ re-runs as a **regression test that must stay held**.
                    └───────────────────────────────────────────────────────────────┘
 ```
 
+## 🧾 Audit readiness — the second pipeline
+
+The same parts run a second review: **evidence → controls**. Where the security pipeline asks *"where
+are my gaps?"*, `compliance-auditor` asks *"can I **prove** each control to an auditor?"* — for ISO
+27001, ISO 9001, SOC 2, and HIPAA. The rule is **no citation, no verdict**; the output is *readiness,
+not certification* — a human signs.
+
+```
+  framework (iso-27001 · iso-9001 · soc2 · hipaa)
+        │
+  evidence-collection ─► corpus: git · PRs · CI · docs · scan/graph · applied policies   (local + security graph)
+        │
+  control-rubric ──────► per control: audit questions + required evidence + security_signal
+        │                 (MCP controls.rubric · bundled YAML pack offline)
+        ▼
+  evidence-judge ──────► satisfied · gap · parked   +  CITATION        ← no citation, no verdict
+        │
+  audit-verify ────────► independent second opinion · one re-judge · disagree → parked
+        │
+  evidence-drafting ───► draft the missing artifact for each gap (unsigned, human completes)
+        │
+  audit-report ────────► HTML: coverage % · cited verdicts · gaps + drafts · parked items
+```
+
+**The differentiator:** AsterGuard's security review already produces *cited proof* — a canary that
+stays **held** on egress after the DLP policy merged is evidence for ISO 27001 A.8.12 / SOC 2 CC6.1 /
+HIPAA 164.312(e)(1). Each rubric control names a `security_signal`, so findings become first-class
+audit evidence — proof, not a policy doc that merely asserts it. Full design + the MCP surface:
+**[docs/COMPLIANCE.md](docs/COMPLIANCE.md)**.
+
 ---
 
 ## Capabilities (skills)
+
+### Security review
 
 | Skill | Capability |
 |---|---|
@@ -144,6 +176,18 @@ re-runs as a **regression test that must stay held**.
 | `risk-context` | Hand the agent the model's feature vector (KEV/EPSS/reachability/data-class/…) so it calculates & calibrates risk itself — not a black-box score |
 | `remediation` | Generate least-privilege egress/identity policy-as-code (SPIFFE, IAM, egress, OPA/Cedar, DLP, AsterVault PDP, …) from findings |
 | `risk-report` | Render `graph.enrich`/`risk.score` JSON into the attack-path visual (data-driven) as an HTML Artifact |
+
+### Audit readiness
+
+| Skill | Capability |
+|---|---|
+| `compliance-auditor` | Orchestrator — evidence → controls for a framework (ISO 27001 · ISO 9001 · SOC 2 · HIPAA) |
+| `evidence-collection` | Build the evidence corpus from local sources + the security graph; records are untrusted input |
+| `control-rubric` | Resolve a framework → per-control audit questions + required evidence (MCP `controls.rubric` · offline YAML packs) |
+| `evidence-judge` | Judge each control satisfied/gap/parked **with a citation** — no citation, no verdict |
+| `audit-verify` | Independent second opinion over the verdicts; one re-judge; disagreement → parked |
+| `evidence-drafting` | Draft the missing artifact for each gap (unsigned) for a human to complete and sign |
+| `audit-report` | Per-control verdicts + citations + coverage % as an HTML Artifact; readiness, not certification |
 
 ---
 
@@ -180,6 +224,8 @@ Only the client's *structural* findings (ids, `package==version`, graph shape) a
 | `remediation` | ✅ generates the policy-as-code PR | `policy.apply` → the gateway **enforces** it |
 | `risk-report` | ✅ renders the agent's own enrichment | renders grounded `graph.enrich`/`risk.score` JSON |
 | `knowledge-recall`, `memory-capture` | ✗ no shared store | **the whole point** — common knowledge + cross-session self-improvement |
+| `evidence-collection`, `evidence-judge`, `audit-verify`, `evidence-drafting`, `audit-report` | ✅ local corpus + seed packs, cited verdicts | shared `evidence.search` corpus (cross-run recall) |
+| `control-rubric` | ◐ bundled seed packs (subset) | `controls.rubric` — full grounded, versioned catalogs |
 
 ✅ runs the same · ◐ runs, with weaker grounding/proof/memory · ✗ needs the MCP
 
@@ -259,7 +305,8 @@ AsterVault MCP gateway (run by AsterGuard)
 
 Full detail: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · gateway wiring:
 **[docs/MCP_WIRING.md](docs/MCP_WIRING.md)** · offensive use: **[docs/OFFENSIVE_SECURITY.md](docs/OFFENSIVE_SECURITY.md)**
-· positioning: **[docs/POSITIONING.md](docs/POSITIONING.md)** · schema: **[docs/graph-schema.md](docs/graph-schema.md)**
+· audit readiness: **[docs/COMPLIANCE.md](docs/COMPLIANCE.md)** · positioning:
+**[docs/POSITIONING.md](docs/POSITIONING.md)** · schema: **[docs/graph-schema.md](docs/graph-schema.md)**
 
 ## Structure
 

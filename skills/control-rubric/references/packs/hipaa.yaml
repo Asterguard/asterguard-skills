@@ -1,0 +1,59 @@
+framework: hipaa
+version: "Security Rule 45 CFR Part 164 Subpart C"
+source: seed-pack      # representative subset of the Security Rule; controls.rubric supersedes this
+controls:
+  - id: 164.312(e)(1)
+    title: Transmission security
+    objective: Guard against unauthorized access to ePHI transmitted over a network.
+    evidence_required:
+      - { type: config, what: Encryption in transit and egress controls on channels carrying ePHI }
+      - { type: test,   what: Evidence ePHI cannot egress to unauthorized recipients }
+    audit_questions:
+      - Is ePHI encrypted in transit and restricted to approved destinations?
+      - Is exfiltration of ePHI prevented (allow-list / DLP / tokenization)?
+    maps_to: [iso-27001:A.8.12, soc2:CC6.1]
+    security_signal:
+      weakness_ids: [llm_cfg_egress_no_dlp, data_exfiltration, egress_unrestricted]
+      satisfied_when: Egress allow-list + tokenize/DLP on ePHI channels applied; PHI canary HELD on egress.
+
+  - id: 164.312(a)(1)
+    title: Access control
+    objective: Allow access to ePHI only to authorized persons or software.
+    evidence_required:
+      - { type: config, what: Least-privilege access / unique identity on ePHI systems }
+      - { type: record, what: Evidence of access reviews }
+    audit_questions:
+      - Is access to ePHI least-privilege with unique identities?
+      - Are access rights reviewed periodically?
+    maps_to: [soc2:CC6.1, iso-27001:A.8.2]
+    security_signal:
+      weakness_ids: [over_privileged_agent, broken_access_control]
+      satisfied_when: Least-privilege identity (SPIFFE/IAM) applied; no over-privilege findings open.
+
+  - id: 164.312(b)
+    title: Audit controls
+    objective: Record and examine activity in systems that contain or use ePHI.
+    evidence_required:
+      - { type: config, what: Audit logging on ePHI access and use }
+      - { type: record, what: Logs retained and reviewed }
+    audit_questions:
+      - Is activity on ePHI systems logged with integrity and retained?
+      - Is there evidence the logs are reviewed?
+    maps_to: [iso-27001:A.8.16, soc2:CC7.2]
+    security_signal:
+      weakness_ids: [no_audit_trail]
+      satisfied_when: AsterVault append-only audit covers ePHI tool/egress calls (audit_id per call).
+
+  - id: 164.308(a)(1)(ii)(A)
+    title: Risk analysis
+    objective: Conduct an accurate assessment of risks to the confidentiality, integrity, and availability of ePHI.
+    evidence_required:
+      - { type: process, what: A documented risk-analysis process }
+      - { type: test,    what: Recent risk/vulnerability assessment output }
+    audit_questions:
+      - Has a risk analysis of ePHI systems been performed and documented?
+      - Are identified risks tracked to remediation?
+    maps_to: [iso-27001:A.8.8, soc2:CC7.1]
+    security_signal:
+      weakness_ids: [vulnerable_dependency, known_exploited_vuln]
+      satisfied_when: An AsterGuard review (scan + risk report) exists with triaged findings.
