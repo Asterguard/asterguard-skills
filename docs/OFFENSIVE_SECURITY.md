@@ -67,10 +67,23 @@ straight to the blue team as **regression tests** (offense feeds defense).
 hard canary proof, and a memory corpus that compounds across engagements — run locally from your own
 agent, no SaaS.
 
-**Gaps to close:** a real web/agent **DAST engine** (ZAP / AgentDojo) for the HTTP layer; deeper
-**payload/exploit libraries**; attacker-model selection (wiring a less-restricted research model as the
-driver); and exploitation **beyond proof-of-reach** (chaining a canary hit into a full demonstrated
-compromise). These are additive — the loop above already produces proven breaks today.
+**DAST execution — an adapter, not an engine we own.** Assume a configured **HTTP-layer / DAST harness**
+exists (the customer's internal implementation, or ZAP / AgentDojo). The skills *generate and target*
+the tests from the graph and drive them through a pluggable adapter — the same seam as AsterVault's
+resource adapters. Swapping the harness never changes the skills. So this is an integration point, not a
+build.
+
+**Payloads — not a static exploit library (that's the old model).** Payloads come from three sources
+that beat a frozen DB: (1) **`testgen.patterns`** — a server-side corpus, extensible as data, seedable
+from public sets (PyRIT, Garak, Nuclei, promptfoo); (2) the **adaptive attacker model**, which generates
+and refines payloads per turn from the target's feedback; (3) **memory** — proven breaks on this org
+become reusable exemplars. Static jailbreak lists *overstate* robustness; the corpus + adaptive + memory
+model is the modern, stronger approach. The only real work is **seeding the corpus well**, not shipping a
+monolithic exploit database.
+
+**Real remaining gaps:** attacker-model selection (wiring a less-restricted research model as the
+driver), and exploitation **beyond proof-of-reach** (chaining a canary hit into a full demonstrated
+compromise). Both additive — the loop already produces proven breaks today.
 
 ## Dual-use note
 

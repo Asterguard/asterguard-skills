@@ -28,12 +28,19 @@ suite probes *this* target's actual surface, not a generic checklist. Emits the 
 2. For each, call `testgen.patterns` with the relevant `weakness_id` to get attack patterns.
 3. Emit `TestDefinition` entries: `{id, kind:"dast", target, weakness_id, objective, steps, oracle}`.
 4. Write to `./.asterguard/tests.dast.json`.
+5. **Execute through a configured adapter, not a built-in engine.** This skill generates and targets;
+   execution runs through a pluggable **HTTP-layer / DAST harness** — the customer's own internal
+   implementation configured for DAST/behavioral testing, or ZAP / AgentDojo — behind one adapter
+   interface (the same pattern as AsterVault's resource adapters). The adapter takes the
+   `TestDefinition`s, drives the target over HTTP, and returns results to `security-judge`. Swapping the
+   harness never changes the skill.
 
 ## Practical Guidance
 
 - **Ground every test (low freedom):** no test without a node/flow it targets — that's what keeps the
   suite precise and the findings explainable.
-- Prefer a web/API engine (ZAP-style) for HTTP endpoints; an agent-DAST driver for tool/prompt surface.
+- **The engine is pluggable:** assume a configured HTTP-layer harness exists; generate to its adapter.
+  A web/API harness drives HTTP endpoints; an agent-DAST driver drives the tool/prompt surface.
 - Keep payloads out of the SKILL — they come from `testgen.patterns`, so the corpus stays current and server-side.
 
 ## Integration
