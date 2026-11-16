@@ -1,18 +1,32 @@
 # AsterGuard Security Skills
 
-**Agent-native application security — the method ships as skills, the knowledge stays behind a gateway.**
+**Agentic Risk, as skills your agent runs itself — test and validate AI agents, prove where they
+break, and close the gaps before release.**
 
-Instead of installing a scanner library or calling a hosted API, you add these skills to your agent
-harness (Claude Code or Codex). The agent then **performs the review itself** — scans locally, builds
-the security architecture (SCA graph, data-flow, information-flow, weakness graph), generates DAST +
-behavioral red-team tests, runs an attacker ▸ defender ▸ judge campaign with canaries, and emits a
-risk report with recommended enforcement policies.
+AI agents *act*: they call tools, touch data, and take instructions from untrusted context. AsterGuard
+makes that risk testable. You add these skills to your agent harness (Claude Code or Codex), and the
+agent **does the work itself** — scans locally, builds the security architecture (SCA graph, data-flow,
+information-flow, weakness graph), generates DAST + behavioral red-team tests, runs an
+attacker ▸ defender ▸ judge campaign with canaries, and ends with a grounded risk report and the
+enforcement policies that close each gap.
 
-The *method* lives in the skills (open, thin, local). The proprietary *knowledge* — the 578-weakness
-registry, the control crosswalk, the calibrated risk models, the attack-pattern corpus, the
-cross-session memory — lives server-side behind the **AsterVault MCP gateway** and is never shipped to
-the client. The only client binaries are raw collectors (`grype`, `checkov`, `trufflehog`) and a small
-proxy; everything else is the harness's own model following each skill against one shared schema
+### Two ways to use it — one skill pack
+
+- **Security engineers — validate & recommend.** Point the agent at a repo, container, or live agent
+  and get ranked, grounded gaps with recommended enforcement policies to take back to the team. It
+  finds, proves, and recommends; a human decides.
+- **Developers — test, enforce, release.** Run it yourself before you ship: red-team your agent's
+  behavior, prove a break is closed with a canary, apply the policy, and gate the release — no
+  security-team round-trip. **`test → enforce → ship`.**
+
+Both are the *same chain*; the only difference is the enforcement switch — recommend (review) vs. apply
+(self-gate).
+
+The *method* lives in the skills (open, thin, local); the proprietary *knowledge* — the 578-weakness
+registry, control crosswalk, calibrated risk models, attack-pattern corpus, and cross-session memory —
+stays server-side behind the **AsterVault MCP gateway** and never ships to the client. The only client
+binaries are raw collectors (`grype`, `checkov`, `trufflehog`) and a small proxy; everything else is the
+harness's own model following each skill against one shared schema
 ([docs/graph-schema.md](docs/graph-schema.md)).
 
 > **One question up front: do you need our server to run these?** No — the skills run standalone in
