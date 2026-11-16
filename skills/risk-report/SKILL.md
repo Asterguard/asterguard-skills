@@ -31,10 +31,14 @@ renders — no server round-trip to display.
    edges→{from,to,label,onPath} (onPath from the flow's `path_labels`), the path + badges (`proven`
    from a `canary.verify` hit), the control chips (from each flow's `missing_control` + state), and the
    ARS band from `risk.score`.
-3. **Render data-driven, not hand-placed:** inject that model into `templates/attack-path.html`
-   (replace its `GRAPH` const) and **publish it as an Artifact**. The template auto-lays-out *any*
-   enrich output — layers nodes by path distance, colors by kind, draws the proven path red. Add the
-   other views (BOM roll-up, exec scorecard, control coverage) the same way: one template, fed the model.
+3. **Render data-driven, not hand-placed, and publish as an Artifact.** Two templates, both auto-layout:
+   - `templates/report.html` (**the composite** — use this by default): replace its four consts with the
+     **raw tool JSON** — `ENRICH` = `graph.enrich`, `CONTROLS` = `controls.map`, `RISK` = `risk.score`
+     (features on free, +ars on enterprise), `SCA` = the package roll-up or null. It draws the risk
+     features, the information-flow (proven path), the security graph, and the crosswalk from that JSON.
+   - `templates/attack-path.html` (the focused single-path view) for just the attack path.
+   Both lay out *any* enrich output (layers by path distance, color by kind, proven path red). Add more
+   views (BOM, exec scorecard, control coverage) the same way: feed a template the standardized JSON.
 4. Numbers only from the data; the picture is computed from the schema, never drawn by hand.
 
 ## Practical Guidance
@@ -53,6 +57,7 @@ renders — no server round-trip to display.
 ## References
 
 - [Visual grammar (shared across views)](./references/visual-grammar.md)
+- [Composite report renderer — inject graph.enrich/controls.map/risk.score JSON](./templates/report.html)
 - [Attack-path renderer template (data-driven)](./templates/attack-path.html)
 - [Graph schema (SSOT)](../../docs/graph-schema.md)
 - [AsterVault MCP tools](../weakness-graph/references/astervault-tools.md)

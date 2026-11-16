@@ -1,0 +1,142 @@
+<title>Security Report</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{--bg:#090d0c;--panel:#0e1413;--panel2:#0b100f;--line:#1c2622;--line2:#28342f;--fg:#e7eeea;--dim:#7b8b83;
+    --blue:#7b86f5;--red:#f0776b;--redBg:#2a1512;--amber:#e9b64a;--amberBg:#211a0e;--lime:#bcd36a;--accent:#37d5a0;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--sans:'Inter',system-ui,sans-serif;color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 440px at 50% -8%,rgba(55,213,160,.06),transparent 60%),var(--bg);color:var(--fg);font-family:var(--sans)}
+  .wrap{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:30px 48px}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{font-size:clamp(24px,5vw,34px);font-weight:800;letter-spacing:-.02em;margin:0}
+  .ars{font:800 14px/1 var(--mono);padding:8px 12px;border-radius:8px}
+  .ars.critical{background:var(--redBg);color:var(--red)}.ars.high{background:#2a2110;color:var(--amber)}.ars.medium{background:#1b2410;color:var(--lime)}.ars.low{background:#0f2018;color:var(--accent)}.ars.free{background:var(--panel2);color:var(--dim);border:1px solid var(--line)}
+  .sub{color:var(--dim);font-size:14px;margin:8px 0 0}.sub code{color:var(--accent);font-family:var(--mono)}
+  .stage{margin-top:22px;border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden}
+  .st-hd{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .st-hd h2{font-size:15px;font-weight:700;margin:0}.st-hd .m{font:600 10.5px/1 var(--mono);color:var(--dim)}
+  .viz{padding:16px 18px}.scroll{overflow-x:auto}.hide{display:none}
+  svg{display:block;width:100%;min-width:600px;height:auto}
+  .lbl{font:600 11px/1 var(--mono);fill:var(--fg)}.slbl{font:500 9.5px/1 var(--mono);fill:var(--dim)}.elbl{font:600 10px/1 var(--mono);fill:var(--fg)}
+  .wk{border:1px solid var(--line);border-radius:10px;padding:12px 13px;background:var(--panel2)}
+  .wk .id{font:600 12.5px/1 var(--mono);color:var(--fg)} .ctrls{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+  .ctrl{font:600 10.5px/1 var(--mono);padding:5px 8px;border-radius:6px;border:1px solid var(--line2)}
+  .fw-soc2{color:#8fd3ff}.fw-gdpr{color:#b9a4ff}.fw-pci{color:#ffc98a}.fw-nist{color:#8fe6c0}.fw-hipaa{color:#ff9fb0}.fw-iso{color:#c9ccff}.fw-owasp{color:#f0a0a0}
+  .pkg{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--panel2)}
+  .pkg .nm{font:600 12.5px/1.2 var(--mono)}.pkg .nm .v{color:var(--dim);font-weight:500}
+  .cc{font:700 10.5px/1 var(--mono);padding:5px 9px;border-radius:6px;white-space:nowrap}
+  .sev-critical{background:var(--redBg);color:var(--red)}.sev-high{background:#2a2110;color:var(--amber)}.sev-medium{background:#1b2410;color:var(--lime)}.sev-low,.sev-none{background:#0f2018;color:var(--accent)}
+  .ifoot{border-top:1px solid var(--line);padding:13px 18px;background:var(--panel2)}
+  .ipath{font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .badge{font:700 9px/1 var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:4px 7px;border-radius:5px}
+  .b-proven{background:var(--redBg);color:var(--red);border:1px solid rgba(240,119,107,.4)}.b-pii{background:var(--redBg);color:var(--red)}
+  .cchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.cchip{font:600 10.5px/1 var(--mono);padding:6px 9px;border-radius:6px}
+  .fail{background:var(--redBg);color:var(--red);border:1px solid rgba(240,119,107,.3)}.unver{background:var(--amberBg);color:var(--amber);border:1px solid rgba(233,182,74,.3)}
+  .feat{display:flex;gap:7px;flex-wrap:wrap}.chip{font:600 10.5px/1 var(--mono);padding:6px 9px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);color:var(--dim)}.chip b{color:var(--fg)}
+  .foot{margin-top:22px;color:var(--dim);font-size:11.5px;text-align:center}.foot code{color:var(--accent);font-family:var(--mono)}
+</style>
+<div class="wrap">
+  <div class="top"><h1 id="title">Security Report</h1><span class="ars" id="ars"></span></div>
+  <p class="sub" id="sub"></p>
+
+  <div class="stage" id="s-feat"><div class="st-hd"><h2>Risk context — the features</h2><span class="m" id="featm">free · reason from these</span></div>
+    <div class="viz"><div class="feat" id="features"></div></div></div>
+
+  <div class="stage" id="s-flow"><div class="st-hd"><h2>Information flow — where regulated data can go</h2><span class="m">graph.enrich · attackSurface</span></div>
+    <div class="viz scroll"><svg id="flowSvg"></svg></div>
+    <div class="ifoot"><div class="ipath" id="ipath"></div><div class="cchips" id="cchips"></div></div></div>
+
+  <div class="stage" id="s-graph"><div class="st-hd"><h2>Security graph</h2><span class="m">graph.enrich</span></div>
+    <div class="viz scroll"><svg id="graphSvg"></svg></div></div>
+
+  <div class="stage" id="s-xwalk"><div class="st-hd"><h2>Weakness → controls / frameworks</h2><span class="m">controls.map</span></div>
+    <div class="viz"><div class="wk"><span class="id" id="wkid"></span><div class="ctrls" id="xwalk"></div></div></div></div>
+
+  <div class="stage hide" id="s-sca"><div class="st-hd"><h2>Dependencies (SCA)</h2><span class="m" id="scam"></span></div>
+    <div class="viz" id="sca"></div></div>
+
+  <p class="foot">Rendered by the <code>risk-report</code> skill from live <code>graph.enrich</code> · <code>controls.map</code> · <code>risk.score</code> JSON — one standardized source, drawn with the shared visual grammar.</p>
+</div>
+<script>
+/* ──────────────────────────────────────────────────────────────────────────
+   risk-report injects the LIVE tool JSON here (replace these four consts):
+     ENRICH   = graph.enrich(graph)                       (required)
+     CONTROLS = controls.map(weakness_id)                 (required)
+     RISK     = risk.score(finding)  — {features,...} free / {ars,band,...} ent
+     SCA      = [{name,version,cves,severity}]  or null   (optional, from scan)
+   The defaults below are a sample so the template renders standalone.
+   ────────────────────────────────────────────────────────────────────────── */
+const ENRICH = {"nodes":[{"id":"comp:endpoint:crm_record","kind":"endpoint","label":"CRM record","meta":{"untrusted":true}},{"id":"comp:agent_node:copilot","kind":"agent_node","label":"Sales Copilot"},{"id":"comp:mcp_tool:email_send","kind":"mcp_tool","label":"email.send","meta":{"side_effect":"effectful"}},{"id":"comp:data_store:crm_vectors","kind":"data_store","label":"crm_vectors","meta":{"data_class":"PII"}},{"id":"comp:service:any_recipient","kind":"service","label":"any recipient","meta":{"host":"graph.microsoft.com"}}],"edges":[{"src":"comp:endpoint:crm_record","dst":"comp:agent_node:copilot","rel":"flows_to","meta":{"label":"instructs"}},{"src":"comp:agent_node:copilot","dst":"comp:mcp_tool:email_send","rel":"uses_tool"},{"src":"comp:data_store:crm_vectors","dst":"comp:mcp_tool:email_send","rel":"flows_to","meta":{"label":"content"}},{"src":"comp:mcp_tool:email_send","dst":"comp:service:any_recipient","rel":"flows_to","meta":{"label":"sends to"}}],"attackSurface":{"paths":[{"kind":"confidentiality","hops":4,"path":"CRM record → Sales Copilot → email.send → any recipient","sink":"any recipient","classes":["PII"],"missing_control":"Output PII redaction (DLP)"}],"reach":[{"store":"crm_vectors","classes":["PII"]}],"sinks":["any recipient"]}};
+const CONTROLS = {"controls":[{"framework":"soc2","id":"CC6.1"},{"framework":"gdpr","id":"Art-32"},{"framework":"pci-dss","id":"3.4"},{"framework":"nist-ai-rmf","id":"MEASURE-2.10"}]};
+const RISK = {"weakness_id":"llm_cfg_egress_no_dlp","features":{"severity_weight":0.9,"kev":1.0,"epss":0.72,"reachability":1.0,"data_class":0.7,"tool_authority":1.0,"auth_anon":1.0,"external_facing":1.0}};
+const SCA = null;
+
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const KIND=id=>(id.split(":")[1]||""); const RED=new Set(["data_store","data_field","service"]);
+const isRed=n=>RED.has(KIND(n.id))||(KIND(n.id)==="endpoint"&&n.meta&&n.meta.untrusted);
+const ICON={data_store:"◆",data_field:"◆",service:"◆",endpoint:"◆",agent_node:"▣",mcp_tool:"✉",service_account:"☻",role:"☻",llm_app:"▣"};
+const elabel=e=>(e.meta&&e.meta.label)||e.rel||"";
+
+function layout(nodes,edges,colW,rowH){
+  const indeg={},adj={}; nodes.forEach(n=>{indeg[n.id]=0;adj[n.id]=[];});
+  edges.forEach(e=>{if(adj[e.src]){adj[e.src].push(e.dst);indeg[e.dst]=(indeg[e.dst]||0)+1;}});
+  const layer={}; nodes.forEach(n=>layer[n.id]=0);
+  let fr=nodes.filter(n=>indeg[n.id]===0).map(n=>n.id),g=0;
+  while(fr.length&&g++<60){const nx=[];fr.forEach(u=>(adj[u]||[]).forEach(v=>{if(layer[v]<layer[u]+1){layer[v]=layer[u]+1;nx.push(v);}}));fr=nx;}
+  const cols={}; nodes.forEach(n=>{(cols[layer[n.id]]=cols[layer[n.id]]||[]).push(n.id);});
+  const R=28,padX=64,padY=56,nc=Object.keys(cols).length,maxR=Math.max(1,...Object.values(cols).map(c=>c.length));
+  const W=padX*2+nc*colW,H=padY*2+maxR*rowH,pos={};
+  Object.keys(cols).forEach(L=>{const ids=cols[L],colH=ids.length*rowH;ids.forEach((id,i)=>pos[id]={x:padX+(+L)*colW+R,y:padY+(H-padY*2-colH)/2+i*rowH+rowH/2});});
+  return {pos,W,H,R};
+}
+function drawGraph(svgId,nodes,edges,onPath){
+  if(!nodes.length){document.getElementById(svgId).parentElement.parentElement.classList.add("hide");return;}
+  const {pos,W,H,R}=layout(nodes,edges,170,128);
+  let defs=`<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f0776b"/></marker></defs>`,E="",EL="",N="";
+  edges.forEach(e=>{const a=pos[e.src],b=pos[e.dst];if(!a||!b)return;const on=onPath&&onPath(e);
+    const col=on?"#f0776b":"#3a463f",dash=on?"":'stroke-dasharray="5 5"',mk=on?'marker-end="url(#ar)"':"",mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    E+=`<path d="M${a.x+R},${a.y} C ${mx},${a.y} ${mx},${b.y} ${b.x-R},${b.y}" stroke="${col}" stroke-width="${on?2.5:1.8}" fill="none" ${dash} ${mk}/>`;
+    const lb=elabel(e); if(lb){const w=lb.length*6.6+14;EL+=`<rect x="${mx-w/2}" y="${my-10}" width="${w}" height="20" rx="5" fill="#0b100f" stroke="#1c2622"/><text x="${mx}" y="${my+4}" text-anchor="middle" class="elbl">${esc(lb)}</text>`;}});
+  nodes.forEach(n=>{const p=pos[n.id];if(!p)return;const red=isRed(n),k=KIND(n.id);
+    N+=`<circle cx="${p.x}" cy="${p.y}" r="${R}" fill="${red?'#f0776b':'none'}" stroke="${red?'none':'#7b86f5'}" stroke-width="2"/>`;
+    N+=`<text x="${p.x}" y="${p.y+7}" text-anchor="middle" font-size="${red?20:16}" fill="${red?'#fff':'#cdd8d3'}">${ICON[k]||"●"}</text>`;
+    N+=`<text x="${p.x}" y="${p.y+R+17}" text-anchor="middle" class="lbl">${esc(n.label)}</text>`;
+    const sub=(n.meta&&(n.meta.data_class||n.meta.side_effect||n.meta.host))||k.replace("_"," ");
+    N+=`<text x="${p.x}" y="${p.y+R+31}" text-anchor="middle" class="slbl">${esc(sub)}</text>`;});
+  const svg=document.getElementById(svgId); svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.style.minWidth=Math.min(W,900)+"px"; svg.innerHTML=defs+E+EL+N;
+}
+function render(){
+  // header + sub
+  const ent = RISK && RISK.ars!=null;
+  const a=document.getElementById("ars");
+  if(ent){a.className="ars "+(RISK.band||"high"); a.textContent="ARS "+(+RISK.ars).toFixed(1);}
+  else{a.className="ars free"; a.textContent="free · features";}
+  const n=ENRICH.nodes.length, paths=(ENRICH.attackSurface&&ENRICH.attackSurface.paths)||[];
+  document.getElementById("sub").innerHTML=`${n} components · ${paths.length} attack path${paths.length===1?"":"s"} · rendered from <code>graph.enrich</code>`;
+  // features (free-tier risk context)
+  const fv=(RISK&&RISK.features)||{}; const order=["kev","epss","reachability","auth_anon","data_class","tool_authority","external_facing","severity_weight"];
+  document.getElementById("features").innerHTML=order.filter(k=>k in fv).map(k=>`<span class="chip">${k} <b>${typeof fv[k]==="number"?fv[k]:esc(fv[k])}</b></span>`).join("")||'<span class="chip">no feature context</span>';
+  // graph (full)
+  drawGraph("graphSvg",ENRICH.nodes,ENRICH.edges,null);
+  // information flow (the first path)
+  const p=paths[0]||{}; const seq=(p.path||"").split("→").map(s=>s.trim());
+  const onNodes=ENRICH.nodes.filter(x=>seq.includes(x.label));
+  const labelOf=id=>(ENRICH.nodes.find(x=>x.id===id)||{}).label;
+  const onFlow=e=>{const i=seq.indexOf(labelOf(e.src));return i>=0&&seq[i+1]===labelOf(e.dst);};
+  drawGraph("flowSvg",onNodes,ENRICH.edges.filter(onFlow),onFlow);
+  document.getElementById("ipath").innerHTML=`${esc(p.path||"").replace(/→/g,'<span style="color:var(--dim)">→</span>')} <span class="badge b-proven">proven</span>${(p.classes||[]).map(c=>`<span class="badge b-pii">${esc(c)}</span>`).join("")}`;
+  document.getElementById("cchips").innerHTML=`<span style="font:600 11px/1 var(--mono);color:var(--dim)">missing control:</span><span class="cchip fail">${esc(p.missing_control||"—")} · failing</span>`;
+  // crosswalk
+  const fw={soc2:"fw-soc2",gdpr:"fw-gdpr","pci-dss":"fw-pci","nist-ai-rmf":"fw-nist",hipaa:"fw-hipaa","iso-27001":"fw-iso","owasp-llm":"fw-owasp"};
+  const seen=new Set();
+  document.getElementById("wkid").textContent=(RISK&&RISK.weakness_id)||"weakness";
+  document.getElementById("xwalk").innerHTML=(CONTROLS.controls||[]).filter(c=>{const k=c.framework+":"+c.id;if(seen.has(k))return false;seen.add(k);return true;}).map(c=>`<span class="ctrl ${fw[c.framework]||''}">${esc(c.framework)}:${esc(c.id)}</span>`).join("");
+  // SCA (optional)
+  if(Array.isArray(SCA)&&SCA.length){ document.getElementById("s-sca").classList.remove("hide");
+    const tot=SCA.reduce((s,p)=>s+(p.cves||0),0); document.getElementById("scam").textContent=SCA.length+" packages · "+tot+" CVEs";
+    document.getElementById("sca").innerHTML=SCA.map(p=>`<div class="pkg"><div class="nm">${esc(p.name)}<span class="v"> ==${esc(p.version||"")}</span></div><div class="cc sev-${esc(p.severity||"none")}">${p.cves||0} CVE</div></div>`).join(""); }
+}
+render();
+</script>
