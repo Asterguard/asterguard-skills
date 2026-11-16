@@ -54,6 +54,29 @@ there is no server call.
 9. **Capture** — `memory-capture` writes the decisions, findings, fixes and waivers (with the *why*)
    back to the team memory, so the next task on this app starts informed. The loop closes.
 
+## Pack enrichment — read the target through its vendor packs
+
+Every stage is grounded in the **packs** for the target's detected vendors (agent-framework / provider /
+runtime / harness), so a LangChain app is read and tested *as LangChain*, not generically. `check-planner`
+profiles the target and resolves the packs — **connected** via `rules.fetch(profile)` (the MCP serves the
+rule content; the client evaluates locally), or **offline** by loading them from disk
+(`PluginRegistry.discover` + `ThreatRuleEngine.from_pack`). Each pack ships four facets, and each stage
+pulls the one it needs:
+
+| Stage | Pack facet | How it enriches the response |
+|---|---|---|
+| Recall + scope | the pack set | `rules.fetch(profile)` → a pack-driven plan (which lanes, rules, frameworks) |
+| Scan | **static** (`semgrep_rules_path`) + matchers | run the pack's SAST rules; its include/exclude scope the files |
+| Build architecture | **how-to-read** (`system_prompt` + `examples` + `allowed_node_types`) | the extractor reads *this* framework → a framework-accurate graph (where tools/prompts/egress/data live) |
+| Weakness graph | **behavioral** (`threat_rules_path`) + **mappings** | the rule engine evaluates the pack's `.rule.yaml` over the graph → findings **born resolved** to `weakness_id` + controls |
+| Test / red-team | **behavioral** + `testgen.patterns` | the attacker aims at the paths the rules flagged |
+| Remediate | **mappings** (`weakness_id → controls`) | drives the policy bundle |
+
+**Call flow:** `check-planner` profile → `rules.fetch(profile)` (or local load) → scan with the pack's
+semgrep + build the graph through its `system_prompt`/`examples` →
+`ThreatRuleEngine.from_records(fetched).evaluate_graph(graph)` → findings → the usual remediate/report.
+The heavy work (semgrep, graph build, CEL eval) is client-side; only the pack *content* is served.
+
 ## Practical Guidance
 
 - **Source-type branch (low freedom):** `code` → full pipeline incl. SAST-style weakness mapping;
@@ -67,7 +90,11 @@ there is no server call.
 
 ## Integration
 
+- check-planner — profiles the target, resolves the vendor packs, and emits the standard-checks plan
+- engagement — opens/checkpoints the long-lived engagement (context + history) around the run
 - knowledge-recall, memory-capture — the common-knowledge + memory bookends (recall first, capture last)
+- packs / `rules.fetch` (MCP) — framework/provider/runtime/harness rule packs; evaluated by the
+  threat-rule engine over the built graph
 - local-scan, proxy-recon — collection
 - sca-graph, data-flow, information-flow, weakness-graph, agent-profiling — architecture
 - dast-generation, behavioral-redteam (orchestrates attacker/defender/judge), canary-testing, security-judge — testing

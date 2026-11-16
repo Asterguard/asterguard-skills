@@ -75,9 +75,11 @@ Written to `./.asterguard/plan.json` — a list of planned checks across the sta
 
 1. **Profile the target** (local, cheap): languages, frameworks, entrypoints, declared data stores, IaC
    presence, dependency manifests. This decides which check types apply.
-2. **Recall knowledge**: `knowledge-recall` → the weaknesses relevant to this stack, the control
-   crosswalk, approved patterns, prior findings/waivers. (MCP `scan.plan` gives lane routing; this skill
-   expands it into concrete checks.)
+2. **Recall knowledge + resolve packs**: `knowledge-recall` → the weaknesses relevant to this stack, the
+   control crosswalk, approved patterns, prior findings/waivers. Then resolve the **vendor packs** for the
+   detected profile — `rules.fetch(profile)` (connected; the MCP serves the rule content) or load from
+   disk (offline: `PluginRegistry.discover` + `ThreatRuleEngine.from_pack`). (MCP `scan.plan` gives lane
+   routing; this skill expands it into concrete checks, and the packs supply the rules + how-to-read.)
 3. **Plan each check type** from the profile × recalled weaknesses: pick the SAST rules, the IaC policies,
    the data/PII sinks to trace, the compliance frameworks — each tagged with its `weakness_id`/controls.
 4. **Scope** to full or diff.
@@ -102,7 +104,10 @@ Written to `./.asterguard/plan.json` — a list of planned checks across the sta
   `data-flow`, `information-flow`, `weakness-graph`, `dast-generation`, `compliance-auditor`.
 - **Behavioral follow-on (tier 2):** `behavioral-redteam` → `attacker` ▸ `defender` ▸ `judge` +
   `canary-testing`, targeting the plan's `behavioral_followon.target_paths`.
-- **MCP (grounding only):** `scan.plan`, `registry.resolve`, `controls.map`, `knowledge.*`, `memory.recall`.
+- **Pack rules → engine:** the fetched pack threat-rules are evaluated by the scanner's
+  `ThreatRuleEngine` over the built graph (`evaluate_graph`) → findings resolved to weakness ids, consumed
+  by `weakness-graph` / `security-engineer`. The rule *content* is served; the *evaluation* is client-side.
+- **MCP (grounding only):** `scan.plan`, `rules.fetch`, `registry.resolve`, `controls.map`, `knowledge.*`, `memory.recall`.
 
 ## References
 
