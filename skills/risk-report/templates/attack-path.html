@@ -1,0 +1,142 @@
+<title>Attack Path</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{--bg:#0a0e0d;--panel:#0e1413;--panel2:#0b100f;--line:#1c2622;--fg:#e7eeea;--dim:#7b8b83;
+    --blue:#7b86f5;--red:#f0776b;--redBg:#2a1512;--amber:#e9b64a;--accent:#37d5a0;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--sans:'Inter',system-ui,sans-serif;color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);min-height:100vh}
+  .wrap{max-width:1060px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 40px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;flex-wrap:wrap}
+  .hd h1{font-size:16px;font-weight:700;margin:0}.hd .meta{font:600 11px/1 var(--mono);color:var(--dim)}
+  .hd .meta b{color:var(--accent)} .ars{font:800 13px/1 var(--mono);padding:6px 10px;border-radius:7px}
+  .ars.critical{background:var(--redBg);color:var(--red)}.ars.high{background:#2a2110;color:var(--amber)}
+  .ars.medium{background:#1a2410;color:#bcd36a}.ars.low{background:#0f2018;color:var(--accent)}
+  .stage{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow-x:auto;background:
+    repeating-linear-gradient(0deg,transparent 0 23px,rgba(255,255,255,.012) 23px 24px),
+    repeating-linear-gradient(90deg,transparent 0 23px,rgba(255,255,255,.012) 23px 24px),var(--panel2)}
+  svg{display:block;height:auto}
+  .foot{padding:18px 20px}
+  .path{font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .badge{font:700 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:4px 8px;border-radius:5px}
+  .badge.proven{background:var(--redBg);color:var(--red);border:1px solid rgba(240,119,107,.4)}
+  .badge.pii{background:var(--redBg);color:var(--red)}.badge.info{background:#16100a;color:var(--amber)}
+  .note{color:var(--dim);font-size:12.5px;margin:8px 0 14px}.note code{color:var(--fg)}
+  .ctrls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.ctrls .k{font:600 11px/1 var(--mono);color:var(--dim)}
+  .chip{font:600 11px/1 var(--mono);padding:7px 11px;border-radius:7px}
+  .chip.failing{background:var(--redBg);color:var(--red);border:1px solid rgba(240,119,107,.35)}
+  .chip.unverified{background:#1a1510;color:var(--amber);border:1px solid rgba(233,182,74,.3)}
+  .chip.passing{background:#0f2018;color:var(--accent);border:1px solid rgba(55,213,160,.3)}
+  .src{margin-top:16px;color:var(--dim);font-size:11.5px}.src code{color:var(--accent);font-family:var(--mono)}
+</style>
+
+<div class="wrap"><div class="card">
+  <div class="hd"><h1 id="title">Classification and attack paths</h1>
+    <div style="display:flex;gap:10px;align-items:center"><span class="ars" id="ars"></span><span class="meta" id="meta"></span></div></div>
+  <div class="stage"><svg id="svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Attack path graph"></svg></div>
+  <div class="foot">
+    <div class="path" id="path"></div>
+    <div class="note" id="evidence"></div>
+    <div class="ctrls"><span class="k">Controls on the path:</span><span id="controls"></span></div>
+    <div class="src">Rendered from <code>graph.enrich</code> + <code>risk.score</code> JSON — the same standardized schema the console draws from the lake. Layout, colors, the <b>proven</b> badge and the control chips are all computed from the data.</div>
+  </div>
+</div></div>
+
+<script>
+/* ── risk-report injects the live graph.enrich/risk.score render-model here ──
+   Replace GRAPH with the normalized model (see visual-grammar.md). The default
+   below is the support-agent export path so the template renders standalone. */
+const GRAPH = {
+  title: "Classification and attack paths",
+  meta: { paths: 1, proven: 1, source: "graph.enrich", ars: 9.2, band: "critical" },
+  nodes: [
+    {id:"ticket", label:"support ticket", sub:"untrusted · via ticket.read", kind:"untrusted"},
+    {id:"svc", label:"svc-support-07", sub:"8 open · 3 critical", kind:"service"},
+    {id:"agent", label:"Support Agent", sub:"PII · customer", kind:"agent"},
+    {id:"drole", label:"support-data-role", sub:"unused privilege", kind:"identity"},
+    {id:"orole", label:"support-send-oauth", sub:"unused privilege", kind:"identity"},
+    {id:"store", label:"admin_export_records", sub:"PII · ssn · card", kind:"pii"},
+    {id:"send", label:"email.send", sub:"email · sends out", kind:"tool"},
+    {id:"rcpt", label:"any recipient", sub:"graph.microsoft.com", kind:"recipient"},
+  ],
+  edges: [
+    {from:"ticket", to:"agent", label:"instructs", onPath:true},
+    {from:"svc", to:"agent", label:"runs on", onPath:false},
+    {from:"agent", to:"drole", label:"acts as", onPath:false},
+    {from:"agent", to:"orole", label:"acts as", onPath:false},
+    {from:"drole", to:"store", label:"reads", onPath:true},
+    {from:"orole", to:"send", label:"can call", onPath:false},
+    {from:"store", to:"send", label:"content", onPath:true},
+    {from:"send", to:"rcpt", label:"sends to", onPath:true},
+  ],
+  path: { label:"support ticket → email.send → any recipient", badges:[{text:"proven",tone:"proven"},{text:"untrusted input",tone:"info"},{text:"PII",tone:"pii"}] },
+  evidence: "Proven by an offensive prompt-injection test that broke on this agent (t-pi-indirect) and a canary.verify → fired hit on egress.",
+  controls: [
+    {name:"Output PII redaction (DLP)", status:"failing"},
+    {name:"Prompt-injection guardrail", status:"failing"},
+    {name:"Recipient allow-list on send tools", status:"unverified"},
+  ],
+};
+
+// ── data-driven layout: layer nodes by longest-path distance from a source ──
+const ICON = {untrusted:"◆", pii:"◆", recipient:"◆", identity:"☻", tool:"✉", agent:"▣", service:"▤"};
+const DANGER = new Set(["untrusted","pii","recipient"]);
+function layout(g){
+  const byId={}; g.nodes.forEach(n=>byId[n.id]=n);
+  const indeg={}, adj={}; g.nodes.forEach(n=>{indeg[n.id]=0;adj[n.id]=[];});
+  g.edges.forEach(e=>{adj[e.from].push(e.to); indeg[e.to]=(indeg[e.to]||0)+1;});
+  // longest-path layering (DAG-ish; cycles fall back gracefully)
+  const layer={}; const q=g.nodes.filter(n=>indeg[n.id]===0).map(n=>n.id);
+  g.nodes.forEach(n=>layer[n.id]=0); const seen={};
+  let frontier=q.slice(); let guard=0;
+  while(frontier.length && guard++<50){
+    const next=[];
+    frontier.forEach(u=>adj[u].forEach(v=>{ if(layer[v]<layer[u]+1){layer[v]=layer[u]+1; next.push(v);} }));
+    frontier=next;
+  }
+  const cols={}; g.nodes.forEach(n=>{(cols[layer[n.id]]=cols[layer[n.id]]||[]).push(n.id);});
+  const COLW=175, ROWH=135, R=30, padX=70, padY=70;
+  const maxRows=Math.max(...Object.values(cols).map(c=>c.length));
+  const W=padX*2+(Object.keys(cols).length)*COLW, H=padY*2+maxRows*ROWH;
+  const pos={};
+  Object.keys(cols).forEach(L=>{ const ids=cols[L]; const colH=ids.length*ROWH;
+    ids.forEach((id,i)=>{ pos[id]={x:padX+(+L)*COLW+R, y:padY+(H-padY*2-colH)/2 + i*ROWH + ROWH/2}; }); });
+  return {pos,W,H,R,byId};
+}
+function draw(g){
+  const {pos,W,H,R,byId}=layout(g);
+  const svg=document.getElementById("svg"); svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.style.minWidth=Math.min(W,1000)+"px"; svg.style.width="100%";
+  const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  let defs=`<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f0776b"/></marker></defs>`;
+  let edges="", elabels="";
+  g.edges.forEach(e=>{ const a=pos[e.from],b=pos[e.to]; if(!a||!b)return;
+    const col=e.onPath?"#f0776b":"#3a463f", dash=e.onPath?"":'stroke-dasharray="5 5"', mk=e.onPath?'marker-end="url(#ar)"':"";
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    edges+=`<path d="M${a.x+R},${a.y} C ${mx},${a.y} ${mx},${b.y} ${b.x-R},${b.y}" stroke="${col}" stroke-width="${e.onPath?2.5:2}" fill="none" ${dash} ${mk}/>`;
+    const w=e.label.length*7+14;
+    elabels+=`<rect x="${mx-w/2}" y="${my-10}" width="${w}" height="20" rx="5" fill="#0b100f" stroke="#1c2622"/><text x="${mx}" y="${my+4}" text-anchor="middle" font-family="var(--mono)" font-size="10.5" font-weight="600" fill="#e7eeea">${esc(e.label)}</text>`;
+  });
+  let nodes="";
+  g.nodes.forEach(n=>{ const p=pos[n.id]; if(!p)return; const danger=DANGER.has(n.kind);
+    const fill=danger?"#f0776b":"none", stroke=danger?"none":"#7b86f5";
+    nodes+=`<circle cx="${p.x}" cy="${p.y}" r="${R}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+    nodes+=`<text x="${p.x}" y="${p.y+7}" text-anchor="middle" font-size="${danger?22:17}" fill="${danger?'#fff':'#cdd8d3'}">${ICON[n.kind]||"●"}</text>`;
+    nodes+=`<text x="${p.x}" y="${p.y+R+18}" text-anchor="middle" font-family="var(--mono)" font-size="11" font-weight="600" fill="#e7eeea">${esc(n.label)}</text>`;
+    nodes+=`<text x="${p.x}" y="${p.y+R+33}" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="#7b8b83">${esc(n.sub||"")}</text>`;
+  });
+  svg.innerHTML=defs+edges+elabels+nodes;
+}
+function render(g){
+  document.getElementById("title").textContent=g.title||"Classification and attack paths";
+  const m=g.meta||{}; document.getElementById("meta").innerHTML=`${m.paths||1} path · <b>${m.proven||0} proven</b> · from <code style="font-family:var(--mono)">${m.source||"graph.enrich"}</code>`;
+  if(m.ars!=null){ const a=document.getElementById("ars"); a.className="ars "+(m.band||"high"); a.textContent="ARS "+(+m.ars).toFixed(1); }
+  const p=g.path||{}; document.getElementById("path").innerHTML=`${(p.label||"").replace(/→/g,'<span style="color:var(--dim)">→</span>')} ${(p.badges||[]).map(b=>`<span class="badge ${b.tone}">${b.text}</span>`).join(" ")}`;
+  document.getElementById("evidence").textContent=g.evidence||"";
+  document.getElementById("controls").innerHTML=(g.controls||[]).map(c=>`<span class="chip ${c.status}">${c.name} · ${c.status}</span>`).join(" ");
+  draw(g);
+}
+render(GRAPH);
+</script>

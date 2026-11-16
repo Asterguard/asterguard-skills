@@ -26,12 +26,16 @@ renders — no server round-trip to display.
 
 ## Method
 
-1. Load `./.asterguard/graph.json` + `findings.json`; call `graph.enrich` + `risk.score` (or compute
-   locally if the gateway is unreachable).
-2. Build sections: ARS headline · attack-surface (3 facet boxes + attack paths) · SCA (package
-   roll-up) · data-flow + information-flow · findings by weakness · control/compliance view.
-3. Render a themed, responsive HTML Artifact (light/dark, phone-safe). Numbers only from the data;
-   charts only from real rows.
+1. Call `graph.enrich` + `risk.score` (or load `./.asterguard/graph.json` + `findings.json`).
+2. **Map the JSON to the render-model** (see `references/visual-grammar.md`): nodes→{id,label,sub,kind},
+   edges→{from,to,label,onPath} (onPath from the flow's `path_labels`), the path + badges (`proven`
+   from a `canary.verify` hit), the control chips (from each flow's `missing_control` + state), and the
+   ARS band from `risk.score`.
+3. **Render data-driven, not hand-placed:** inject that model into `templates/attack-path.html`
+   (replace its `GRAPH` const) and **publish it as an Artifact**. The template auto-lays-out *any*
+   enrich output — layers nodes by path distance, colors by kind, draws the proven path red. Add the
+   other views (BOM roll-up, exec scorecard, control coverage) the same way: one template, fed the model.
+4. Numbers only from the data; the picture is computed from the schema, never drawn by hand.
 
 ## Practical Guidance
 
@@ -48,5 +52,7 @@ renders — no server round-trip to display.
 
 ## References
 
+- [Visual grammar (shared across views)](./references/visual-grammar.md)
+- [Attack-path renderer template (data-driven)](./templates/attack-path.html)
 - [Graph schema (SSOT)](../../docs/graph-schema.md)
 - [AsterVault MCP tools](../weakness-graph/references/astervault-tools.md)

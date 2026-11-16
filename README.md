@@ -35,8 +35,9 @@ following each skill against one shared schema ([docs/graph-schema.md](docs/grap
 | `behavioral-redteam` | Attacker/defender/verifier episode harness — crescendo / boundary / injection, ASR@budget |
 | `canary-testing` | Plant canary tokens and detect them on any egress — hard, code-checkable proof of exfiltration / injection / scope violation |
 | `security-judge` | Score test runs broke/held → findings (LLM-as-judge) + safety metrics |
+| `risk-context` | Hand the agent the model's feature vector (KEV/EPSS/reachability/data-class/…) so it calculates & calibrates risk itself — not a black-box score |
 | `remediation` | Generate least-privilege egress/identity policy-as-code (SPIFFE, IAM, egress, OPA/Cedar, DLP, AsterVault PDP, …) from findings |
-| `risk-report` | Emit the console/BOM + attack-surface as an HTML Artifact |
+| `risk-report` | Render `graph.enrich`/`risk.score` JSON into the attack-path visual (data-driven) as an HTML Artifact |
 
 ## Install
 
