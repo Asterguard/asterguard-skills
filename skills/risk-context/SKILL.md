@@ -5,10 +5,18 @@ description: Give the agent the full risk CONTEXT for a finding or app — the m
 
 # Risk Context
 
-Don't hand down a number — hand over the **context to compute one**. The AsterVault gateway returns the
-same feature vector its calibrated model uses; this skill lays those features out so the agent (or the
-engineer) reasons to a risk judgment transparently, and can **build its own calibration** over them.
-The reference ARS is available as a sanity-check, not the verdict.
+Don't hand down a number — hand over the **context to compute one**. This skill lays out the risk
+features with their reasoning so the agent (or engineer) reasons to a risk judgment transparently, maps
+the app's tests/findings onto those features, and can **build its own calibration** over them.
+
+**Free vs Enterprise (the line):**
+- **Free** — the feature **explanations** (`references/features.md`: what each means, why it matters, how
+  tests map to it) + the feature **values** from your own scan + **your own reasoning**. No number needed.
+- **Enterprise** — the calibrated **ARS (0–10)** + band + the four scoring heads, i.e. the weight tables
+  that collapse the features into one number. The weights are the proprietary model and stay server-side.
+
+So the free tier is fully useful on its own: the agent reasons about risk from the features; enterprise
+adds the calibrated score on top of the same features.
 
 ## When to Activate
 
@@ -41,14 +49,17 @@ can reason without them.
 
 ## Method
 
-1. `risk.score({finding})` or `{app}` → `{ars, band, features, heads, floor}`. Read the **features**, not
-   just the number.
-2. Pull the surrounding context: the attack path + `missing_control` (`graph.enrich`), whether a canary
-   **proved** it (`canary.verify`), the data classes on the path.
-3. **Reason to a judgment:** lead with the dominant features — "KEV + runtime-reachable + anonymous +
+1. `risk.score({finding})` or `{app}` → `features` (the 12 values) + `floor`. On enterprise the response
+   also carries `{ars, band, breakdown}`; on free it's the features alone — reason from them.
+2. **Map the app's tests/findings onto the features** (LLM-reasoned, see `references/features.md`): e.g. a
+   `canary.verify → fired` ⇒ runtime-reachable + anonymous + the canary's data class; an SCA CVE ⇒
+   severity + kev/epss + reachability. State the mapping, don't just assert a level.
+3. Pull the surrounding context: the attack path + `missing_control` (`graph.enrich`), the proven
+   evidence, the data classes on the path.
+4. **Reason to a judgment:** lead with the dominant features — "KEV + runtime-reachable + anonymous +
    PII ⇒ top-tier" — and name what's *missing* ("not reachable" or "a passing DLP control" would drop it).
-4. **Prioritize** by the features the org weights most (reachability + KEV + regulated data first).
-5. Use the reference ARS only to sanity-check your reasoning; if you disagree, say why (a feature the
+5. **Prioritize** by the features the org weights most (reachability + KEV + regulated data first).
+6. On enterprise, use the ARS to sanity-check the reasoning; if you disagree, say why (a feature the
    model can't see — e.g. a compensating control it didn't know about).
 
 ## Build-your-own calibration
@@ -75,4 +86,5 @@ That calibration is itself a skill the agent can write, grounded in the standard
 
 ## References
 
+- [Risk features — explanations + test→feature mapping (free tier)](./references/features.md)
 - [AsterVault MCP tools](../weakness-graph/references/astervault-tools.md)
