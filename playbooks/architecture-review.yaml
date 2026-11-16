@@ -1,0 +1,20 @@
+name: architecture-review
+description: Trust boundaries, agent↔tool authority, segmentation, blast radius — over the security graph.
+posture: validate
+input: graph
+scope: { mode: full }
+packs: { axes: [framework, provider], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { skill: data-flow }
+  - { skill: information-flow }
+  - { skill: weakness-graph }
+  - { skill: agent-profiling }
+  - { lens: architecture }
+  - { skill: engagement, with: { op: checkpoint } }
+rules: { include: [architecture, authority, segmentation, agent-control], severity_min: medium }
+gate: null
+report:
+  format: html
+  sections: [summary, trust_boundaries, authority, segmentation, blast_radius, recommendations]

@@ -1,0 +1,28 @@
+name: pr-gate
+description: Diff-scoped pre-release gate — review what the PR introduces, prove breaks, return PASS|FAIL|WARN.
+posture: gate
+input: repo
+scope: { mode: diff }
+packs: { axes: [framework, provider, runtime, language], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { skill: check-planner, with: { scope: diff } }
+  - { skill: local-scan, with: { scope: diff } }
+  - { skill: data-flow, with: { scope: diff } }
+  - { skill: information-flow }
+  - { skill: weakness-graph }
+  - { lens: architecture }
+  - { lens: data-exposure }
+  - { skill: behavioral-redteam, with: { scope: changed_paths } }
+  - { skill: security-judge }
+  - { skill: remediation }
+  - { skill: engagement, with: { op: checkpoint } }
+rules: { severity_min: low }
+gate:
+  baseline: knowledge-store
+  fail_on: [new_proven_break, new_ungated_sensitive_egress]
+  risk_delta: { fail_at: 1.5, warn_at: 0.5 }
+report:
+  format: md
+  sections: [verdict, blockers, drafts, waived]

@@ -173,9 +173,12 @@ audit evidence — proof, not a policy doc that merely asserts it. Full design +
 
 | Skill | Capability |
 |---|---|
-| `security-engineer` | SecEng posture — full advisory review of a target (repo, container, or live agent) |
-| `pr-gate` | Dev posture — diff-scoped review of a pull request → pass/fail gate; blocks only on what the change introduces, then `test → enforce → ship` |
+| `playbook-runner` | Execute a review **playbook** — configurable YAML that composes the building blocks + packs into a named review. Reviews are data (`playbooks/`), customized/overridden per org, not code |
+| `security-engineer` | SecEng posture — the **`full-360`** playbook (full advisory review of a repo, container, or live agent) |
+| `pr-gate` | Dev posture — the **`pr-gate`** playbook (diff-scoped → PASS/FAIL/WARN; blocks only on what the change introduces, then `test → enforce → ship`) |
 | `check-planner` | Plan the standard checks (SAST/DAST/IaC/secrets/data-flow/PII/SCA/compliance) as one client-side plan; marks the behavioral follow-on targets |
+
+Shipped playbooks (`playbooks/`): `full-360`, `architecture-review`, `design-review`, `deployment-review`, `pr-gate` — the security engineer's review functions, each a configurable composition of the skills + packs + rules + gate + report.
 
 **Standard checks — tier 1** (deterministic / structural, run first)
 

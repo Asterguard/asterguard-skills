@@ -5,6 +5,10 @@ description: Orchestrates a local, agent-native application-security assessment 
 
 # Security Engineer (orchestrator)
 
+> Realized as the **`full-360`** playbook (`playbooks/full-360.yaml`), run by `playbook-runner`. This
+> skill is the named entrypoint; the pipeline below is the playbook's composition as data, so it can be
+> customized or overridden per org without editing this skill.
+
 Run a full AppSec assessment locally, composing the AsterGuard capability skills. The target is a
 **repo path**, a **container image ref**, or a **live agent endpoint**; the deliverable is a risk
 report backed by a security graph that is byte-compatible with the AsterGuard platform.

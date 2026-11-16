@@ -5,6 +5,10 @@ description: Run a diff-scoped agentic-security review on a pull request and ret
 
 # PR Security Gate (developer pre-release gate)
 
+> Realized as the **`pr-gate`** playbook (`playbooks/pr-gate.yaml`, `posture: gate`), run by
+> `playbook-runner`. This skill is the named entrypoint; the pipeline below is that playbook's
+> composition as data — customizable per org.
+
 The developer-posture twin of `security-engineer`. Where that skill does a full, advisory review of a
 whole target, this one reviews **a pull request's change** and ends in a **gate decision** —
 `PASS | FAIL | WARN` — so a developer can run `test → enforce → ship` themselves before merge, without a

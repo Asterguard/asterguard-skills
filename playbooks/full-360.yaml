@@ -1,0 +1,30 @@
+name: full-360
+description: The complete AppSec review — scan, build the architecture, all review lenses, red-team, report.
+posture: validate
+input: repo
+scope: { mode: full }
+packs: { axes: [framework, provider, runtime, language], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { skill: check-planner }
+  - { skill: local-scan }
+  - { skill: sca-graph }
+  - { skill: data-flow }
+  - { skill: information-flow }
+  - { skill: weakness-graph }
+  - { skill: agent-profiling }
+  - { lens: architecture }
+  - { lens: data-exposure }
+  - { lens: controls }
+  - { skill: dast-generation }
+  - { skill: behavioral-redteam }
+  - { skill: security-judge }
+  - { skill: remediation }
+  - { skill: risk-report }
+  - { skill: engagement, with: { op: checkpoint } }
+rules: { severity_min: low }
+gate: null
+report:
+  format: html
+  sections: [summary, architecture, data_exposure, weaknesses, redteam, controls, remediation]

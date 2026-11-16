@@ -1,0 +1,17 @@
+name: design-review
+description: STRIDE / attack-tree over a design doc or threat model, pre-code — grounded in the weakness registry.
+posture: validate
+input: design-doc
+scope: { mode: full }
+packs: { axes: [framework, provider], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { lens: design }
+  - { skill: remediation, with: { mode: design_recommendations } }
+  - { skill: engagement, with: { op: checkpoint } }
+rules: { severity_min: medium }
+gate: null
+report:
+  format: html
+  sections: [summary, assets, threats_by_category, trust_boundaries, recommendations]

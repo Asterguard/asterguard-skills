@@ -1,0 +1,20 @@
+name: deployment-review
+description: Deployment posture — egress allow-lists, network policy, secrets management, identity/least-privilege, exposure.
+posture: validate
+input: iac
+scope: { mode: full }
+packs: { axes: [runtime, provider], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { skill: local-scan, with: { lanes: [iac, secrets] } }
+  - { skill: information-flow }
+  - { lens: deployment }
+  - { lens: data-exposure }
+  - { skill: remediation }
+  - { skill: engagement, with: { op: checkpoint } }
+rules: { include: [external-access, credential-access, risky-command], severity_min: medium }
+gate: null
+report:
+  format: html
+  sections: [summary, egress, network_policy, secrets, identity, exposure, recommendations]
