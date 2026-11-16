@@ -170,7 +170,8 @@ audit evidence — proof, not a policy doc that merely asserts it. Full design +
 
 | Skill | Capability |
 |---|---|
-| `security-engineer` | Orchestrator — runs the pipeline for a target (repo, container, or live agent) |
+| `security-engineer` | Orchestrator (SecEng posture) — full advisory review of a target (repo, container, or live agent) |
+| `pr-gate` | Orchestrator (dev posture) — diff-scoped review of a pull request → pass/fail gate; blocks only on what the change introduces, then `test → enforce → ship` |
 | `knowledge-recall` | Pull the common knowledge + prior session memory for the app/area at task start |
 | `memory-capture` | Write decisions/findings/fixes/waivers (with the why) back to shared memory at task end |
 | `local-scan` | Run SCA/IaC/secrets/AI-BOM collectors locally; bootstrap any that are missing |
