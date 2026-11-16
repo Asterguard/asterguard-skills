@@ -205,6 +205,7 @@ audit evidence — proof, not a policy doc that merely asserts it. Full design +
 
 | Skill | Capability |
 |---|---|
+| `engagement` | The harness-independent **context / history / session manager** — opens a long-lived engagement per target, records a typed security-event stream, folds it into the current context, and feeds contextual decisions (baseline, waivers, proven breaks) to the other skills. Local-first; structural-only sync to the knowledge store |
 | `risk-context` | Hand the agent the **feature vector** (KEV/EPSS/reachability/data-class/owasp-weight/…) so **the harness composes the risk itself** — no ARS model or eval runs client-side; the trained models live in the full platform |
 | `remediation` | Generate least-privilege egress/identity policy-as-code (SPIFFE, IAM, egress, OPA/Cedar, DLP, runtime PDP, …) from findings |
 | `risk-report` | Render the graph + findings into the attack-path visual (data-driven) as an HTML Artifact |
