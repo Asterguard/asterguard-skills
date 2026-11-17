@@ -198,7 +198,7 @@
     </div>
     <div class="eyebrow">Customer Playbook</div>
     <h1>From install to a signed-off security report</h1>
-    <p class="lede">Set up the skill pack in Claude Code or Codex, connect it to your org, and generate a
+    <p class="lede">Set up the skill pack in Claude Code, Codex, or Cursor, connect it to your org, and generate a
       grounded SAST + DAST security report for any app or agent — SAST and DAST tests derived from
       <b>your own code</b>, proven with checkable evidence, and metered to your organization.</p>
     <div class="acts">
@@ -217,12 +217,13 @@
       <div class="actlabel"><span class="big">Act 1</span><span class="eyebrow">Setup</span></div>
       <h2>Install the skill pack in your harness</h2>
       <p class="muted" style="max-width:62ch">The skills carry the <em>method</em>, not your data. Pick your
-        coding agent — the flow is identical across both.</p>
+        coding agent — the flow is identical across all three.</p>
     </div>
 
     <div class="toggle" role="tablist" aria-label="Harness" data-group="harness" style="margin-bottom:16px">
       <button role="tab" aria-selected="true" data-val="cc"><span class="tdot"></span>Claude Code</button>
       <button role="tab" aria-selected="false" data-val="cx"><span class="tdot"></span>Codex</button>
+      <button role="tab" aria-selected="false" data-val="cu"><span class="tdot"></span>Cursor</button>
     </div>
 
     <div class="grid">
@@ -240,6 +241,16 @@
           <div class="cmd"><span class="cm"># emits ./dist/codex/ (AGENTS.md + skills/) to drop into a Codex project</span>
 scripts/build-codex.sh<button class="copy" data-cmd="scripts/build-codex.sh">Copy</button></div>
           <div class="note">The bundle carries <code>mcp.json</code>; point Codex's MCP config at it to reach the same gateway (Act&nbsp;2).</div>
+        </div>
+      </div>
+      <div class="card" data-h="cu" hidden>
+        <div class="card-body" style="padding-top:18px">
+          <div><b>Cursor</b> — the skills are platform-agnostic Markdown; add them as project rules and register the gateway as an MCP server:</div>
+          <div class="cmd"><span class="cm"># 1 · build the portable bundle (AGENTS.md + skills/)</span>
+scripts/build-codex.sh
+<span class="cm"># 2 · register the gateway in Cursor's MCP config</span>
+cp mcp.json .cursor/mcp.json<button class="copy" data-cmd="scripts/build-codex.sh&#10;cp mcp.json .cursor/mcp.json">Copy</button></div>
+          <div class="note">Drop the skill bodies in as <code>.cursor/rules</code>. Cursor reaches the same gateway (Act&nbsp;2) over MCP — the knowledge is harness-portable, so a review here shows up in the next Claude&nbsp;Code or Codex run.</div>
         </div>
       </div>
 
