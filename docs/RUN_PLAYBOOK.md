@@ -17,10 +17,16 @@ tool surface and [`ARCHITECTURE.md`](ARCHITECTURE.md) for the thin-client / serv
 The gateway speaks Streamable-HTTP MCP and authenticates with an audience-bound Bearer JWT.
 
 ```bash
-# Claude Code
+# Claude Code — Bearer JWT authenticates to the gateway; the ARS token meters the scan to your org
 claude mcp add --transport http astervault <ASTERVAULT_URL>/mcp \
-  --header "Authorization: Bearer $JWT"
+  --header "Authorization: Bearer $JWT" \
+  --header "X-ARS-Token: $ASTERGUARD_ARS_TOKEN"
 ```
+
+> **ARS token (connected/metered runs).** `X-ARS-Token` is the per-org scan credential (`asg_…`, scope
+> `scan:run`); every connected scan/run/review call it carries is metered to the org. Set
+> `ASTERGUARD_ARS_TOKEN` from your secret store, or let the `ars-token` skill mint-or-fetch the org's
+> Default token when a member is signed in. **Omit it for offline/local runs** — they draw no quota.
 
 - **Claude Desktop:** add a custom connector at `<ASTERVAULT_URL>/mcp` with header
   `Authorization: Bearer <JWT>`. No proxy needed for an HTTPS endpoint.

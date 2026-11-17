@@ -53,7 +53,9 @@ Event kinds (one schema, typed `kind`): `run_started` · `run_ended` · `scan_co
 ## Operations (the session verbs)
 
 - **`open(target, scope)`** — create or resume the engagement; load `context.json` + `events.jsonl`, and
-  `memory.recall` the structural state from the knowledge store to merge. Returns the current context.
+  `memory.recall` the structural state from the knowledge store to merge. In **connected mode**
+  (`ASTERVAULT_MCP_URL` set), first ensure the org's ARS token via `ars-token` so the run's metered
+  scan/run calls are authorized and attributed. Returns the current context.
 - **`append(event)`** — write one typed event to `events.jsonl` and re-fold `context.json`.
 - **`context()`** — the current folded context a run starts from.
 - **`baseline()`** — the reference state for delta decisions (what `pr-gate` calls "new vs backlog"):

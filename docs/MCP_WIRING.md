@@ -27,6 +27,23 @@ AsterVault is an OAuth 2.1 Resource Server (MCP Authorization spec, RFC 9728/870
 the OAuth flow on first use and binds the token to the gateway's audience. No secrets live in this
 repo — the gateway issues and scopes everything.
 
+## Metering & entitlement — the ARS token
+
+The gateway Bearer JWT proves *who* is calling. Running a scan also draws on an **organization's**
+entitlement, so connected scan/run/review calls carry a second, per-org credential — the **ARS token**,
+sent as the **`X-ARS-Token`** header (an `asg_…` service credential, scope `scan:run`). Every call it
+carries is metered to the org and returns an `audit_id`.
+
+```bash
+# set from your secret store (CI) — never commit it; the ars-token skill reads, attaches, and renews it
+export ASTERGUARD_ARS_TOKEN="asg_…"
+```
+
+A signed-in member can instead let the `ars-token` skill mint-or-fetch the org's *Default* scan token on
+first use. **Offline mode needs no ARS token** — local runs draw no quota. The `ars-token` capability skill
+owns this end to end (resolve → attach alongside the Bearer JWT → renew on `401 invalid or missing
+X-ARS-Token`); the raw value never lands in this repo or in `./.asterguard/`.
+
 ## Per-harness
 
 - **Claude Code** — `.mcp.json` is picked up automatically when the plugin is installed.
