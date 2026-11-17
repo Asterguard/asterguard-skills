@@ -62,20 +62,19 @@ The *method* is yours to run with nothing from us; the *shared brain* is one end
 
 ## 🎬 Demo
 
-> _**[▶ Watch the walkthrough]( )**_ &nbsp;·&nbsp; _(video link — TODO)_
+A security engineer asks their agent: *"Review `support-agent` for AppSec — scan it, red-team the risky
+paths, and recommend enforcement policies."* The `security-engineer` orchestrator runs the whole
+**full-360** pipeline over the live gateway and closes the loop:
 
-A security engineer asks their agent: *"Review `sales-copilot` for AppSec — scan it, red-team the
-risky paths, and recommend enforcement policies."* The agent runs the whole pipeline and ends with a
-grounded report:
+![full-360 skills walkthrough — recall → scan + graph → resolve the lede weakness → attacker ▸ defender ▸ judge (canary-proven PII exfil) → remediation PR → review-gated enforcement → grounded report → shared memory](docs/media/full-360-demo.gif)
 
-| | |
-|---|---|
-| **The agent session** | the orchestrator invoking each skill + MCP tool, visuals rendering inline — _(screenshot / artifact — TODO)_ |
-| **The output report** | SCA · attack path · offensive red-team (per-test) · recommended policies — _(screenshot / artifact — TODO)_ |
+*recall → scan + build the graphs → resolve the lede weakness → attacker ▸ defender ▸ judge
+(**canary-proven** PII exfil, not a guess) → remediation PR → review-gated enforcement → grounded report
+→ shared memory.* &nbsp;·&nbsp; [▶ MP4](docs/media/full-360-demo.mp4) &nbsp;·&nbsp; re-recordable:
+`vhs examples/demo-recording/full360.tape` ([source](examples/demo-recording/)).
 
-Runnable walkthroughs live in [`examples/`](examples/) — start with
-[`examples/scan-to-redteam/`](examples/scan-to-redteam/) (scan → graph → attacker ▸ defender ▸ judge →
-policy, over the live gateway) and [`examples/live-demo/`](examples/live-demo/).
+Runnable walkthroughs live in [`examples/`](examples/) — the live Claude Code ↔ AsterVault MCP flow is
+[`examples/live-demo/`](examples/live-demo/).
 
 ---
 
