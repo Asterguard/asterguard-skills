@@ -1,0 +1,26 @@
+name: soc-triage
+description: Triage one agent-security alert or finding — recall, enrich, score, route (escalate / investigate / hunt / close), and record the disposition on the engagement.
+posture: validate
+input: alert
+scope: { mode: single_event }
+packs: { axes: [framework, provider, runtime, language], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { skill: check-planner }
+  - { skill: triage-agent-alert }
+  - { skill: enrich-indicator }
+  - { skill: record-in-engagement, with: { route: true } }
+  - { skill: engagement, with: { op: checkpoint } }
+rules:
+  severity_min: low
+  human_gate: confirm-action
+  routes:
+    ESCALATE_IRP: incident-response        # confirmed / high-risk → hand off
+    INVESTIGATE: investigate-agent-incident # suspicious, needs scoping
+    HUNT: threat-hunt                       # pattern worth sweeping
+    CLOSE_BENIGN: close-finding             # benign / waived → close with reason
+gate: null
+report:
+  format: markdown
+  sections: [summary, indicator, enrichment, risk_read, disposition, audit_ids]

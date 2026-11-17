@@ -1,0 +1,31 @@
+name: incident-response
+description: Respond to a confirmed agent-security incident PICERL-style — open, investigate, run the matching IRP, contain (human-gated) and remediate, report, review, ship a detection, and checkpoint.
+posture: validate
+input: incident
+scope: { mode: incident }
+packs: { axes: [framework, provider, runtime, language], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { skill: investigate-agent-incident }
+  - { skill: irp-prompt-injection, with: { select_by: incident_type } }   # → irp-* by type
+  - { skill: contain-indicator, with: { gate: confirm-action } }
+  - { skill: remediation }
+  - { skill: agent-incident-report }
+  - { skill: post-incident-review }
+  - { skill: detection-as-code-agent-rules }
+  - { skill: engagement, with: { op: checkpoint } }
+rules:
+  severity_min: low
+  human_gate: confirm-action          # every containment/state-change is gated + recorded as a decision
+  irp_select:                         # incident_type → the IRP runbook to run
+    prompt_injection: irp-prompt-injection
+    credential_compromise: irp-agent-credential-compromise
+    tool_abuse_rce: irp-tool-abuse-rce
+    data_exfil: irp-data-exfil-via-agent
+    model_supply_chain: irp-model-supply-chain
+  recovery_check: canary-testing      # path must verify HELD before recovery is complete
+gate: null
+report:
+  format: html
+  sections: [summary, scope, containment, eradication, recovery, lessons_learned, detection, audit_ids]
