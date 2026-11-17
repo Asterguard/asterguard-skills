@@ -52,6 +52,8 @@ suite probes *this* target's actual surface, not a generic checklist. Emits the 
 ## Integration
 
 - information-flow, agent-profiling — provide the targets
+- sast-generation — the **static** counterpart (same `testgen.patterns` corpus, same adapter seam):
+  generates grounded semgrep rules so every CWE has both a static and a runtime test
 - AsterVault `testgen.patterns` — the attack corpus
 - security-judge — scores the run
 - behavioral-redteam — the multi-turn counterpart (this skill is single-shot dynamic probes)

@@ -17,6 +17,7 @@ steps:
   - { lens: architecture }
   - { lens: data-exposure }
   - { lens: controls }
+  - { skill: sast-generation }
   - { skill: dast-generation }
   - { skill: behavioral-redteam }
   - { skill: security-judge }

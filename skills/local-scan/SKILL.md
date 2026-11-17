@@ -41,6 +41,9 @@ gap, never aborts the run. "Local" is the whole point — nothing is uploaded.
   `p/security-audit`, `p/secrets`), never rules fitted to the target; map each result's CWE to a
   registry `weakness_id` (via the registry's `cwe_refs`) so the sink lines up with the control
   crosswalk and any DAST probe for the same CWE. Code targets only — skip for an image ref.
+  This lane is **collection** with generic rulesets; to **generate** target-grounded semgrep rules
+  from the weakness graph (the static twin of DAST probes), hand off to `sast-generation` after the
+  graph is built.
 - **Image vs repo (low freedom):** for an image ref, run `syft`/`grype` against `registry:<ref>` or
   a local tarball — no checkout. For a repo, run all four lanes over the working tree.
 - Normalize every finding to: `{lane, source, title, severity, file|resource, package, version,
@@ -61,5 +64,7 @@ gap, never aborts the run. "Local" is the whole point — nothing is uploaded.
 ## Integration
 
 - sca-graph, weakness-graph, data-flow — consume `scan.json` / `sbom`
+- sast-generation — the **generation** counterpart: turns the resulting weakness graph into
+  target-grounded semgrep rules (this lane only runs generic rulesets)
 - security-engineer — calls this first for code/infra targets
 - proxy-recon — the traffic-source counterpart (no collectors; records live calls instead)

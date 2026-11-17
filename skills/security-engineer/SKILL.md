@@ -41,8 +41,10 @@ there is no server call.
    - `information-flow` — the IFC overlay (integrity/confidentiality flows + missing controls)
    - `weakness-graph` — weakness↔component graph + control crosswalk
    - `agent-profiling` — agent AI-BOM + authority boundaries (for agentic targets)
-4. **Test** — `dast-generation` and `behavioral-redteam` emit tests from the graphs
-   (same `TestDefinition` schema the platform ingests).
+4. **Test** — `sast-generation` (target-grounded semgrep rules + static assertions), `dast-generation`
+   (dynamic probes) and `behavioral-redteam` emit tests from the graphs (same `TestDefinition` schema
+   the platform ingests). SAST and DAST share the `testgen.patterns` corpus, so every CWE gets both a
+   static and a runtime test.
 5. **Red-team episode** — for agent targets, run the attacker/defender/verifier harness
    (`behavioral-redteam`) with `canary-testing`: plant fresh canaries, drive the attack with a
    concurrent benign task (utility under attack), and let AsterVault's egress + audit be the
