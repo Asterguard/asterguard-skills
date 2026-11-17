@@ -38,6 +38,28 @@ harness's own model following each skill against one shared schema
 
 ---
 
+## What you need to run it
+
+The *method* is yours to run with nothing from us; the *shared brain* is one endpoint we host. Two levels:
+
+| You want… | AsterGuard gateway? | Other components | Who runs it |
+|---|---|---|---|
+| **The method (offline)** — scan, graphs, generated tests, attacker▸defender▸judge, local canaries, policy-as-code, HTML report | ❌ no | local scanners (`grype`/`syft`/`checkov`/`trufflehog`) — `local-scan` auto-installs any that are missing | **you**, fully local — nothing leaves the box |
+| **The shared brain** — registry-grounded IDs, the independent canary verifier, enforcement, and cross-session **shared knowledge + memory** | ✅ yes — **one** gateway (an MCP endpoint) | none — no second service, no separate DB, no per-harness plugin | **we host it**; you point your harness at the URL + use an **ARS token** we provision |
+
+- **In any harness** (Claude Code, Codex, Cursor, OpenCode, a DeepSeek harness): offline needs only the
+  harness + the skill Markdown + local scanners. To turn on the shared brain, register the gateway as an
+  **MCP server** and attach the ARS token — the knowledge is reached over **MCP**, so it is harness-portable
+  (it is *not* tied to Claude Code "skills"; see [Cross-harness by design](#-cross-harness-by-design)).
+- **The one component is the AsterVault gateway**, and we run it — it bundles auth, policy PDP/PEP, the
+  broker/proxy, the append-only audit, the weakness registry, the crosswalk, scoring, and the shared
+  memory store behind a single endpoint. The SQLite-vs-Postgres store is our deployment detail, invisible
+  to you unless you self-host.
+- **ARS token** — provisioned per organization on request; the `ars-token` skill attaches and renews it.
+  Offline runs carry no token and draw no quota.
+
+---
+
 ## 🎬 Demo
 
 > _**[▶ Watch the walkthrough]( )**_ &nbsp;·&nbsp; _(video link — TODO)_
