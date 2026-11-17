@@ -1,7 +1,7 @@
 {
   "name": "asterguard-marketplace",
   "owner": {
-    "name": "CoMatrix Labs"
+    "name": "AsterGuard"
   },
   "metadata": {
     "description": "AsterGuard security-engineer skills and the companion packages they drive — local, agent-native application security for AI agents.",
@@ -15,7 +15,7 @@
       "source": "./skills",
       "category": "security",
       "strict": false,
-      "author": { "name": "CoMatrix Labs" },
+      "author": { "name": "AsterGuard" },
       "homepage": "https://github.com/Asterguard/asterguard-skills",
       "repository": "https://github.com/Asterguard/asterguard-skills",
       "license": "LicenseRef-Proprietary",

@@ -249,6 +249,33 @@ Shipped playbooks (`playbooks/`): `full-360`, `architecture-review`, `design-rev
 | `evidence-drafting` | Draft the missing artifact for each gap (unsigned) for a human to complete and sign |
 | `audit-report` | Per-control verdicts + citations + coverage % as an HTML Artifact; readiness, not certification |
 
+### Security operations (runbook library)
+
+Persona-driven **runbooks as skills** for agent-security *operations* — the build-and-run-time half that
+composes with the AppSec skills above over the same engagement + graph + gateway. ~60 skills across
+`atomic → common → triage · investigation · hunting · detection · irp · reporting`, plus an `evals` skill
+(trajectory + schema + rubric + benchmark scoring of a run) and a `security-operations` orchestrator run
+as the `soc-triage` / `incident-response` / `threat-hunt` playbooks. 13 security **personas**
+(`personas/`) map each role to the runbooks it uses. See [docs/RUNBOOKS.md](docs/RUNBOOKS.md) for the
+catalog + the authoring contract; a growing team shares context + memory across these runbooks via the
+[Context & Memory data layer](deploy/context-memory/) (you run the stores, we provide the MCP server).
+
+**Using the ops runbooks** — you never call 60 skills by hand; you state the situation or name a
+playbook/persona, and the pack composes the right runbooks over the same engagement + graph + gateway:
+
+- **By situation (auto-trigger):** *"a canary just egressed from the billing agent"* → `irp-prompt-injection`
+  walks containment → recovery; *"triage this scan finding"* → `triage-agent-finding` scores + routes it.
+- **By playbook:** *"run the `incident-response` playbook on `svc:billing-agent`"* → `playbook-runner`
+  executes investigate → IRP → contain → remediate → report → PIR → ship a detection rule.
+- **By persona:** *"work this as a Tier-2 SOC analyst"* → the persona loads just the runbooks that role uses.
+- **Progressive disclosure:** the workflow you call composes **common** steps (`enrich-indicator`,
+  `confirm-action`) which call **atomic** leaves (`atom-resolve-weakness` → one `registry.resolve`).
+- **Grade any run:** the `evals` skill scores a run (trajectory + schema + 0–100 rubric) against a dataset
+  case — the regression harness; a runbook isn't done until it has an evals case.
+
+Offline the method + local collectors still run (containment is advisory); connected adds gateway
+grounding, shared memory, canary verification, and metered containment.
+
 ---
 
 ## Run it with or without AsterVault

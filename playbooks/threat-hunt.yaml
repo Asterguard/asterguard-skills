@@ -1,0 +1,31 @@
+name: threat-hunt
+description: Hunt an agent-security hypothesis across the graph and recorded events — recall, open, run the matching hunt, deep-dive and correlate findings, close the gap with a detection rule, report, and checkpoint.
+posture: validate
+input: hypothesis
+scope: { mode: hunt }
+packs: { axes: [framework, provider, runtime, language], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { skill: hunt-prompt-injection-exposure, with: { select_by: hypothesis } }  # → hunt-* by hypothesis
+  - { skill: deep-dive-indicator-analysis }
+  - { skill: correlate-finding-groups }
+  - { skill: detection-as-code-agent-rules }
+  - { skill: agent-incident-report }
+  - { skill: engagement, with: { op: checkpoint } }
+rules:
+  severity_min: low
+  human_gate: confirm-action
+  hunt_select:                        # hypothesis → the hunt runbook to run
+    over_privilege: hunt-over-privilege
+    prompt_injection_exposure: hunt-prompt-injection-exposure
+    exfil_paths: hunt-exfil-paths
+    credential_access: hunt-agentic-ttp-credential-access
+    tool_abuse_lateral: hunt-tool-abuse-lateral
+    campaign: proactive-pattern-campaign-hunt
+    apt: apt-agent-threat-hunt
+  escalate_on_hit: incident-response  # a live threat found → open an incident
+gate: null
+report:
+  format: markdown
+  sections: [summary, hypothesis, scope, findings, correlation, detection, audit_ids]

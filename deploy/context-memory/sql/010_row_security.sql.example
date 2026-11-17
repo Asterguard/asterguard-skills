@@ -1,0 +1,18 @@
+-- OPTIONAL defense-in-depth: Postgres Row-Level Security so the database itself enforces tenant scope,
+-- in addition to the MCP server's identity-derived filtering. Not applied automatically (the `.example`
+-- suffix keeps it out of docker-entrypoint-initdb). Rename to 010_row_security.sql to enable, and have
+-- the server set `SET app.tenant = '<tenant>'` on each connection/transaction.
+
+ALTER TABLE security_memory     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE engagement_context  ENABLE ROW LEVEL SECURITY;
+ALTER TABLE engagement_event    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE working_memory      ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation_security_memory ON security_memory
+    USING (tenant = current_setting('app.tenant', true));
+CREATE POLICY tenant_isolation_engagement_context ON engagement_context
+    USING (tenant = current_setting('app.tenant', true));
+CREATE POLICY tenant_isolation_engagement_event ON engagement_event
+    USING (tenant = current_setting('app.tenant', true));
+CREATE POLICY tenant_isolation_working_memory ON working_memory
+    USING (tenant = current_setting('app.tenant', true));

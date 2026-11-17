@@ -1,0 +1,35 @@
+{
+  "comment": "Team-memory vector collections for semantic recall over YOUR OWN context and memory. These hold embeddings of security_memory + engagement_context documents so knowledge-recall finds by meaning. The MCP server populates them; this file is only the FORMAT. 'size' must match the embedding model the server uses (default 1536 = OpenAI text-embedding-3-small); override with ASTERGUARD_EMBED_DIM. The proprietary knowledge catalog (ATT&CK/CAPEC/CWE/control crosswalk) is NOT defined here — it is vendor-maintained and never shipped.",
+  "embedding": {
+    "env": "ASTERGUARD_EMBED_DIM",
+    "default_size": 1536,
+    "distance": "Cosine"
+  },
+  "collections": [
+    {
+      "name": "security_memory",
+      "purpose": "semantic recall over team security memory (decision/finding/fix/review/waiver docs)",
+      "vectors": { "size": 1536, "distance": "Cosine" },
+      "payload_indexes": [
+        { "field": "tenant", "schema": "keyword" },
+        { "field": "team", "schema": "keyword" },
+        { "field": "app", "schema": "keyword" },
+        { "field": "weakness_id", "schema": "keyword" },
+        { "field": "kind", "schema": "keyword" },
+        { "field": "memory_id", "schema": "keyword" },
+        { "field": "promoted", "schema": "bool" }
+      ]
+    },
+    {
+      "name": "engagement_context",
+      "purpose": "semantic recall over folded engagement-context summaries (resume the nearest prior context by meaning)",
+      "vectors": { "size": 1536, "distance": "Cosine" },
+      "payload_indexes": [
+        { "field": "tenant", "schema": "keyword" },
+        { "field": "team", "schema": "keyword" },
+        { "field": "app", "schema": "keyword" },
+        { "field": "engagement_id", "schema": "keyword" }
+      ]
+    }
+  ]
+}
