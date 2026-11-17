@@ -81,9 +81,27 @@ become reusable exemplars. Static jailbreak lists *overstate* robustness; the co
 model is the modern, stronger approach. The only real work is **seeding the corpus well**, not shipping a
 monolithic exploit database.
 
-**Real remaining gaps:** attacker-model selection (wiring a less-restricted research model as the
-driver), and exploitation **beyond proof-of-reach** (chaining a canary hit into a full demonstrated
-compromise). Both additive — the loop already produces proven breaks today.
+**Formerly the remaining gaps, now first-class skills:** the two additive gaps — attacker-model
+selection and exploitation beyond proof-of-reach — are now closed, and the whole loop is a named
+offensive posture:
+
+- **`offensive-engineer`** — the authorized-pentest orchestrator (the `pentest` playbook): authorize →
+  recon → plan → campaign → exploit-chain → prove → report → feed-forward. Rules of engagement are a
+  mandatory, recorded step 0.
+- **`recon`** — the attack-map + path-selection skill (doctrine steps 1–2).
+- **`attack-planner`** — the MCP as a **knowledge base**: given the agent, it decides *what* to test
+  (test kinds + example techniques), which **canary types** to plant (egress / credential-identity /
+  **workload-identity** / document / injection / …), the budget, and the next steps.
+- **`exploit-chain`** — chains a canary-proven foothold into a demonstrated multi-step compromise
+  (escalate → lateral → impact), each step independently proven (closes "beyond proof-of-reach").
+- **`attacker-model`** — selects and **governs** the attacker model: authorized-only, recorded in the
+  run artifacts + the audit, reported with ASR (closes "attacker-model selection").
+- **`pentest-report`** — the compliance-ready deliverable (PoCs + ASR@budget + kill-chain + remediation
+  + regression handoff).
+
+Still deferred (server-side, additive): **seeding the `testgen.patterns` corpus well** (PyRIT / Garak /
+Nuclei / promptfoo) and extending `canary.mint` with the workload-identity type — an astervault
+follow-up, the same shape as the gateway integration.
 
 ## Dual-use note
 
