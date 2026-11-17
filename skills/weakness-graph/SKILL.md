@@ -46,6 +46,18 @@ and this control would stop it."
 - If the gateway is unreachable, keep the structural node with its public CWE/OWASP and mark controls
   `unresolved` — never invent an id or a control citation.
 
+## Added detectors & crosswalk
+
+**Instruction / obfuscation / taint detectors.** Beyond code CWEs, the graph carries agent-specific
+detector rules evaluated via the `ThreatRuleEngine` (`rules.fetch`): hidden-unicode / whitespace-padding
+(obfuscated instructions), taint (untrusted-input → privileged-sink), and injection-in-instructions —
+the **same** rule content `skill-scan` uses, so a weakness found when *building* and when *vetting*
+resolves to the same `weakness_id`.
+
+**OWASP Agentic crosswalk.** Each weakness crosswalks to **OWASP LLM Top-10** *and* **OWASP Agentic AI
+Threats & Mitigations** (alongside CWE → CAPEC → ATT&CK + controls), so findings map to both frameworks
+in the report.
+
 ## Integration
 
 - local-scan, sca-graph — findings + CVEs to classify

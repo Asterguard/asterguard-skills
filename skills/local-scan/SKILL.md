@@ -61,6 +61,20 @@ gap, never aborts the run. "Local" is the whole point — nothing is uploaded.
   "sbom": [ { "name": "...", "version": "...", "ecosystem": "...", "transitive": true, "deps": ["…"] } ] }
 ```
 
+## Enrichment, output formats & suppression
+
+**CVE freshness via the gateway (no direct calls).** `grype` gives the local CVE baseline; connected,
+`knowledge.query` enriches it with fresh CVE data that the **AsterVault gateway** sources upstream (e.g.
+OSV) and meters — the client never calls a third-party CVE API directly. Offline, the local `grype`
+result stands and the report notes reduced freshness.
+
+**SARIF.** Besides `scan.json`, emit a **SARIF** report (`./.asterguard/scan.sarif`) so findings feed
+GitHub code-scanning / CI. Each finding carries its `weakness_id` + severity.
+
+**Baseline / FP-suppression.** Accept known findings via a baseline (fingerprint + glob rules) in
+`./.asterguard/baseline.json`, so a re-scan surfaces only **new** issues. A suppressed finding stays in
+the output marked `suppressed` with its baseline reason — never silently dropped.
+
 ## Integration
 
 - sca-graph, weakness-graph, data-flow — consume `scan.json` / `sbom`

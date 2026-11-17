@@ -41,6 +41,12 @@ shared schema. This is the structure behind "which package pulls in what, and wh
 - Collapse the view to **vulnerable packages** (one row per package, worst sev + CVE count), not a
   flat CVE list — the graph already holds the full detail for drill-down.
 
+## CVE source & output
+
+The CVE overlay's baseline comes from the local scan (`grype`). Connected, the **gateway** supplies CVE
+freshness (`knowledge.query`, OSV upstream, metered) — no direct third-party calls; offline the local
+result stands. Export the vulnerable-package roll-up as **SARIF** alongside the graph for CI interop.
+
 ## Integration
 
 - local-scan — provides the SBOM + CVEs
