@@ -19,7 +19,7 @@ AsterVault MCP call. Run it in Claude Code today, Cursor or Codex tomorrow — s
 ## Setup (once)
 
 ```bash
-/plugin marketplace add CoMatrixlabs/asterguard-skills
+/plugin marketplace add Asterguard/asterguard-skills
 /plugin install asterguard-security@asterguard-marketplace
 export ASTERVAULT_MCP_URL="https://<your-astervault-host>/mcp"   # .mcp.json wires the skills to the gateway
 ```

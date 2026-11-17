@@ -323,7 +323,7 @@ Cursor is recalled from Codex; a policy merged after a Claude Code review is enf
 ### Claude Code (plugin)
 
 ```bash
-/plugin marketplace add CoMatrixlabs/asterguard-skills
+/plugin marketplace add Asterguard/asterguard-skills
 /plugin install asterguard-security@asterguard-marketplace
 ```
 
@@ -360,7 +360,7 @@ shows up in the next (see [Cross-harness by design](#-cross-harness-by-design)).
 Offline mode needs nothing. For **connected mode** — grounded weakness IDs, the independent canary
 verifier, enforcement and shared memory — a run also carries a per-org **ARS token** (`X-ARS-Token`)
 so scans are metered and attributed to your org. **We provision that token per organization — [open an
-issue](https://github.com/CoMatrixlabs/asterguard-skills/issues) or contact CoMatrixlabs and we'll issue
+issue](https://github.com/Asterguard/asterguard-skills/issues) or contact AsterGuard and we'll issue
 one;** the `ars-token` skill then attaches and renews it automatically. See
 [docs/MCP_WIRING.md](docs/MCP_WIRING.md).
 

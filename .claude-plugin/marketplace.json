@@ -16,8 +16,8 @@
       "category": "security",
       "strict": false,
       "author": { "name": "CoMatrix Labs" },
-      "homepage": "https://github.com/CoMatrixlabs/asterguard-skills",
-      "repository": "https://github.com/CoMatrixlabs/asterguard-skills",
+      "homepage": "https://github.com/Asterguard/asterguard-skills",
+      "repository": "https://github.com/Asterguard/asterguard-skills",
       "license": "LicenseRef-Proprietary",
       "keywords": [
         "appsec",
