@@ -1,0 +1,51 @@
+# Context & Memory data layer — the stores the AsterVault MCP server reads.
+# No application server here: we provide the MCP server; this brings up only the stores you own.
+#   cp .env.example .env && docker compose up -d
+services:
+  postgres:
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-asterguard}
+      POSTGRES_USER: ${POSTGRES_USER:-asterguard}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # sql/*.sql run in lexical order on FIRST init (empty data dir) only:
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-asterguard} -d ${POSTGRES_DB:-asterguard}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.4
+    ports:
+      - "${QDRANT_PORT:-6333}:6333"
+    volumes:
+      - qdrantdata:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333'"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # One-shot: create the team-memory vector collection(s) from qdrant/collections.json, then exit.
+  qdrant-init:
+    image: curlimages/curl:8.10.1
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      ASTERGUARD_EMBED_DIM: ${ASTERGUARD_EMBED_DIM:-1536}
+    volumes:
+      - ./qdrant:/qdrant-init:ro
+    entrypoint: ["sh", "/qdrant-init/create-collections.sh"]
+    restart: "no"
+
+volumes:
+  pgdata:
+  qdrantdata:
