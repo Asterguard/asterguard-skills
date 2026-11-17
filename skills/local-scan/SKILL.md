@@ -1,6 +1,6 @@
 ---
 name: local-scan
-description: Perform a security scan locally — run SCA (SBOM+CVE), IaC, secrets and AI-BOM collectors against a repo path or container image, and bootstrap any missing collector. Produces raw, normalized findings the graph skills consume. Use when a security engineer needs scan results on a repo or image without a hosted scanner.
+description: Perform a security scan locally — run SAST (code sinks), SCA (SBOM+CVE), IaC, secrets and AI-BOM collectors against a repo path or container image, and bootstrap any missing collector. Produces raw, normalized findings the graph skills consume. Use when a security engineer needs scan results on a repo or image without a hosted scanner.
 ---
 
 # Local Scan
@@ -25,6 +25,7 @@ gap, never aborts the run. "Local" is the whole point — nothing is uploaded.
 
 | Lane | Collector | Command | Emits |
 |---|---|---|---|
+| SAST | `semgrep` (registry rulesets) | `semgrep --config p/python --config p/flask --config p/security-audit --config p/secrets --json <path>` | code-level sinks (CWE) |
 | SCA | `grype` (+ `syft` for SBOM) | `syft <target> -o json > sbom.json; grype sbom:sbom.json -o json` | packages + CVEs |
 | IaC | `checkov` | `checkov -d <path> -o json` | misconfigurations |
 | Secrets | `trufflehog` | `trufflehog filesystem <path> --json` | exposed secrets |
@@ -36,6 +37,10 @@ gap, never aborts the run. "Local" is the whole point — nothing is uploaded.
 
 ## Practical Guidance
 
+- **SAST (low freedom):** run `semgrep` with community registry rulesets (`p/python`, `p/flask`,
+  `p/security-audit`, `p/secrets`), never rules fitted to the target; map each result's CWE to a
+  registry `weakness_id` (via the registry's `cwe_refs`) so the sink lines up with the control
+  crosswalk and any DAST probe for the same CWE. Code targets only — skip for an image ref.
 - **Image vs repo (low freedom):** for an image ref, run `syft`/`grype` against `registry:<ref>` or
   a local tarball — no checkout. For a repo, run all four lanes over the working tree.
 - Normalize every finding to: `{lane, source, title, severity, file|resource, package, version,

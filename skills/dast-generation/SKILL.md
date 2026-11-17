@@ -34,6 +34,12 @@ suite probes *this* target's actual surface, not a generic checklist. Emits the 
    interface (the same pattern as AsterVault's resource adapters). The adapter takes the
    `TestDefinition`s, drives the target over HTTP, and returns results to `security-judge`. Swapping the
    harness never changes the skill.
+   - **`nuclei` reference adapter (real execution):** emit one grounded nuclei template per probe —
+     endpoint + `weakness_id` + a **proof-matcher** that asserts exploitation, not a 200 (cross-tenant
+     row leak for SQLi, `/etc/passwd` for cmd-injection/traversal, a leaked secret for authz/SSRF, the
+     reflected payload for XSS). Run `nuclei -u <base> -t templates/ -jsonl`; a hit is hard,
+     code-checkable evidence a `security-judge` can trust. A matcher that fires is `broke`; no hit is
+     `held`. Worked example: `demo-apps/vuln-agent-gateway/scan/` (generate → run → normalize).
 
 ## Practical Guidance
 
