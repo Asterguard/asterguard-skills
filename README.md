@@ -237,6 +237,20 @@ Shipped playbooks (`playbooks/`): `full-360`, `architecture-review`, `design-rev
 | `knowledge-recall` | Pull the common knowledge + prior session memory for the app/area at task start |
 | `memory-capture` | Write decisions/findings/fixes/waivers (with the why) back to the knowledge store at task end |
 
+### Supply chain — trust what you consume
+
+The scanners above secure the agent you **build**; these vet what you **install or publish**. All
+grounding (CVE, signatures, patterns) flows through the AsterVault gateway — no direct third-party calls.
+
+| Skill | Capability |
+|---|---|
+| `skill-scan` | Vet a skill/plugin/MCP server **before install or publish** — injection-in-instructions, hidden-unicode, dangerous code (AST/taint), data-exfil, dependency CVE + rug-pull, YARA malware signatures → 0–100 risk + install gate (`PASS/WARN/FAIL`) + SARIF |
+| `mcp-tool-audit` | Audit an MCP server's tools — **tool-poisoning**, **least-privilege** (granted vs needed), **rug-pull** (schema drift between fetch and use) |
+| `prompt-hardening` | Emit hardened, injection-resistant system prompts/instructions as a **human-reviewed** remediation (complements policy-as-code `remediation`) |
+
+Run the **`vet-skill`** playbook to scan → audit MCP tools → gate the install → report (SARIF+HTML) →
+remember the verdict, end to end.
+
 ### Audit readiness
 
 | Skill | Capability |

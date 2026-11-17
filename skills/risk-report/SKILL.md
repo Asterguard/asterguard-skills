@@ -48,6 +48,12 @@ renders — no server round-trip to display.
 - Reach reachable by an **anonymous/external** identity is the lede — surface it at the top.
 - Keep the report self-contained; it must render from the local artifacts even with no network.
 
+## Output formats
+
+Besides the HTML attack-surface Artifact, risk-report emits **SARIF** (`./.asterguard/report.sarif`)
+when asked (`formats: [sarif, html]`), so the same findings feed GitHub code-scanning / CI gates. The
+HTML stays the human view, SARIF the machine view — one finding set, two renderings.
+
 ## Integration
 
 - all graph skills + security-judge — provide graph + findings
