@@ -226,11 +226,12 @@ Shipped playbooks (`playbooks/`): `full-360`, `architecture-review`, `design-rev
 | `canary-testing` | Plant canary tokens and detect them on any egress — hard, code-checkable proof of exfiltration / injection / scope violation |
 | `security-judge` | Score test runs broke/held → findings + safety metrics |
 
-**Offensive — authorized pentest** _(see [`docs/OFFENSIVE_SECURITY.md`](docs/OFFENSIVE_SECURITY.md); authorized engagements only — scoped + audited through the gateway)_
+**Offensive — authorized pentest** _(see [`docs/OFFENSIVE_SECURITY.md`](docs/OFFENSIVE_SECURITY.md); authorized engagements only — scoped + audited, and **execution gated behind a privileged offensive token**)_
 
 | Skill | Capability |
 |---|---|
-| `offensive-engineer` | The authorized-pentest **orchestrator** (the `pentest` playbook): authorize → recon → plan → campaign → exploit-chain → prove → report → feed-forward |
+| `offensive-token` | The **privileged gate** — offensive *execution* needs a separate token (`offensive:run`); the gateway blocks behavior-changing attacks without it. *Planning* (`recon`, `attack-planner`) runs on the scan token |
+| `offensive-engineer` | The authorized-pentest **orchestrator** (the `pentest` playbook): authorize → entitle → recon → plan → campaign → exploit-chain → prove → report → feed-forward |
 | `recon` | Build the offensive attack map + pick the highest-value path (lethal-trifecta legs, over-privileged tools, anon-reachable stores) |
 | `attack-planner` | The MCP as a **knowledge base** decides *what* to test for this agent — test kinds + example techniques + which canary types (egress / identity / workload-identity / injection / memory / context / …) + next steps |
 | `exploit-chain` | Chain a canary-proven foothold into a **demonstrated** multi-step compromise (escalate → lateral → impact), each step proven |

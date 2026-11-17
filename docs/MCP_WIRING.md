@@ -44,6 +44,27 @@ first use. **Offline mode needs no ARS token** — local runs draw no quota. The
 owns this end to end (resolve → attach alongside the Bearer JWT → renew on `401 invalid or missing
 X-ARS-Token`); the raw value never lands in this repo or in `./.asterguard/`.
 
+## Privileged offensive tier — the offensive token
+
+Offensive **execution** changes a live agent's runtime behavior, so it runs on a **separate, higher-trust
+credential**, not the scan token. A third header gates it — the **offensive token** (`asg_off_…`, scope
+**`offensive:run`**), sent as **`X-ARS-Offensive-Token`**:
+
+```bash
+# set from your secret store (CI) — a privileged grant, provisioned-on-request, separately rotated
+export ASTERGUARD_OFFENSIVE_TOKEN="asg_off_…"
+```
+
+The gateway PDP **enforces** it: a behavior-changing attack (the attacker↔target proxy exchange,
+`exploit-chain`, live canary planting, a non-default attacker model, the forge engine) without
+`offensive:run` is blocked — **`403 offensive privilege required`**. This draws the privilege line between
+**plan** and **execute**: `recon` / `attack-planner` *plan* an attack on the scan token (`scan:run`);
+nothing *executes* one without the offensive token. The `offensive-token` capability skill owns it
+(require authorization → attach alongside `X-ARS-Token` + the Bearer JWT → renew on `403`; never persist
+the raw value, never downgrade to the scan token for execution). *(The PDP enforcement + the
+forge-behind-MCP engine the token unlocks + the token minting are the server side — an astervault
+follow-up.)*
+
 ## The shared brain's store — SQLite or Postgres
 
 The gateway *is* the shared brain: the `knowledge.*` corpus and the `memory.*` records (what

@@ -40,8 +40,10 @@ attacker_model: {
 
 ## Governance (inseparable from selection)
 
-1. **Authorized-only.** A `less_restricted` attacker model runs only under a recorded RoE authorization
-   (`offensive-engineer` step 0). Without it, fall back to the default model and note why.
+1. **Authorized-only + privileged.** A `less_restricted` / non-default attacker model runs only under a
+   recorded RoE authorization (`offensive-engineer` step 0) **and** the **offensive token**
+   (`offensive:run`, via `offensive-token`) — driving it is privileged-tier execution. Without both, fall
+   back to the default model and note why.
 2. **Record it everywhere.** Write `attacker_model` into the run artifacts (`tests.behavioral.json` /
    `runs/`) **and** stamp it to the AsterVault audit (every tool call returns an `audit_id`), so the run
    is reproducible and attributable.

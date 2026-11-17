@@ -31,27 +31,47 @@ Before anything runs, establish and **record** the authorization as the first en
 - **Limits:** no destructive/irreversible actions without `confirm-action`; no real third parties; no
   production data exfiltration beyond planted canaries; a budget (ASR@N) ceiling.
 - **Attacker model:** which model drives the campaign (via `attacker-model`) — recorded for attribution.
+- **Privilege:** offensive **execution** requires the separate **offensive token** (`offensive:run`, via
+  `offensive-token`), acquired *after* authorization. Without it, only **planning** (`recon`,
+  `attack-planner`) runs — the gateway blocks every behavior-changing attack (`403 offensive privilege
+  required`).
 
 The orchestrator refuses to proceed until this is captured (`engagement.append(kind: decision,
 authorization)`). A run with no recorded authorization is not a pentest; it is an abuse.
 
+## Plan vs execute (the privilege boundary)
+
+| Phase | Skills | Credential |
+|---|---|---|
+| **Plan** (read-only: map + decide what to test) | `recon`, `attack-planner` | scan tier — `ars-token` (`scan:run`) |
+| **Execute** (behavior-changing attack on a live target) | `attacker` / `behavioral-redteam`, `exploit-chain`, live `canary-testing`, a non-default `attacker-model`, the forge engine | privileged tier — `offensive-token` (`offensive:run`) |
+
+Planning always runs; execution runs only with the offensive token — enforced server-side at the
+runtime (attacker↔target) path. **Engine mode:** when the offensive token is present and the
+forge-behind-MCP is available, the campaign/exploit run on the server-side forge engine (adaptive
+tree-search, routed attacker backends), gated by `offensive:run` and audited; otherwise client mode
+(the harness drives the loop). Same contract either way.
+
 ## The pipeline (the pentest loop)
 
-1. **Authorize + recall.** Record the RoE (above); `knowledge-recall` + `memory.recall({target,
-   topic:"redteam"})` seed the campaign with prior proven breaks and strategies that already worked here.
-2. **Recon.** `recon` builds the offensive attack map (trifecta legs, over-privileged tools,
-   anon-reachable stores) and picks the highest-value path.
-3. **Campaign.** `behavioral-redteam` runs the adaptive attacker ▸ defender ▸ judge loop against the
-   chosen path with fresh canaries per attempt, driven by the selected `attacker-model`; reports
-   **ASR@budget** and utility-under-attack.
-4. **Exploit + chain.** `exploit-chain` turns a proven canary-hit into a **demonstrated multi-step
+1. **Authorize + entitle + recall.** Record the RoE (above); acquire the **offensive token** via
+   `offensive-token` (refuse the execution phases if absent — planning may still run); `knowledge-recall`
+   + `memory.recall({target, topic:"redteam"})` seed the campaign with prior proven breaks.
+2. **Recon** *(plan tier)*. `recon` builds the offensive attack map (trifecta legs, over-privileged
+   tools, anon-reachable stores) and picks the highest-value path.
+3. **Plan** *(plan tier)*. `attack-planner` — the MCP knowledge base decides what to test, the example
+   techniques, the canary types, and the budget for the chosen path.
+4. **Campaign** *(execute — privileged)*. `behavioral-redteam` runs the adaptive attacker ▸ defender ▸
+   judge loop against the chosen path with fresh canaries per attempt, driven by the selected
+   `attacker-model`, on the forge engine when available; reports **ASR@budget** and utility-under-attack.
+5. **Exploit + chain** *(execute — privileged)*. `exploit-chain` turns a proven canary-hit into a **demonstrated multi-step
    compromise** (initial access → privilege/authority escalation → lateral tool/agent abuse → impact),
    each step independently proven. Irreversible steps gate through `confirm-action`.
-5. **Prove.** Impact is decided from out-of-band evidence (`canary-testing` egress/honeytoken, a state
+6. **Prove.** Impact is decided from out-of-band evidence (`canary-testing` egress/honeytoken, a state
    diff, the gateway audit) — never the attacker's or target's own claim.
-6. **Report.** `pentest-report` delivers the compliance-ready engagement report (scope · methodology ·
+7. **Report.** `pentest-report` delivers the compliance-ready engagement report (scope · methodology ·
    findings-with-PoCs · kill-chain · ASR · remediation).
-7. **Feed forward.** `memory-capture` + `memory.promote` save the **proven break** into the reusable
+8. **Feed forward.** `memory-capture` + `memory.promote` save the **proven break** into the reusable
    corpus; the broke tests hand to the blue team as regression tests (offense feeds defense).
 
 ## Practical Guidance
@@ -67,9 +87,9 @@ authorization)`). A run with no recorded authorization is not a pentest; it is a
 
 ## Integration
 
-- **Composes:** `recon`, `behavioral-redteam` (attacker/defender/judge), `exploit-chain`,
-  `attacker-model`, `canary-testing`, `pentest-report`, `remediation`/`prompt-hardening` (the fix),
-  `engagement` + `knowledge-recall` + `memory-capture`.
+- **Composes:** `offensive-token` (the privileged gate), `recon`, `attack-planner`, `behavioral-redteam`
+  (attacker/defender/judge), `exploit-chain`, `attacker-model`, `canary-testing`, `pentest-report`,
+  `remediation`/`prompt-hardening` (the fix), `engagement` + `knowledge-recall` + `memory-capture`.
 - **Run via:** `playbooks/pentest.yaml` (full engagement) · `playbooks/pentest-pr-gate.yaml` (scoped,
   gates a change).
 - **Doctrine:** see [`docs/OFFENSIVE_SECURITY.md`](../../docs/OFFENSIVE_SECURITY.md).
