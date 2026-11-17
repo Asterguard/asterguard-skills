@@ -65,6 +65,27 @@ in the skills changes.
 This is the *shared* store. Engagement stays **local-first** regardless (`./.asterguard/` files, no store
 at all); the backend above only decides how the structural state it syncs is shared and persisted.
 
+## Run your own stores — the team tier
+
+A growing team that wants shared context and memory (but not yet the full enterprise install) runs the
+**stores** itself and points the gateway at them. **We provide the MCP server; you own the data.** The
+open, portable contract for those stores — the Postgres schema, the Qdrant collection formats, and a
+one-command `docker compose` — ships in [`../deploy/context-memory/`](../deploy/context-memory/). It
+manages three planes the skills use:
+
+| Plane | Store | What it gives the team |
+| --- | --- | --- |
+| **Long-lived memory** (`security_memory`, reused verbatim) | Postgres | durable `decision`/`finding`/`fix`/`review`/`waiver` with the *why*, shared across people + harnesses |
+| **App/engagement context** (`engagement_context` + `engagement_event`) | Postgres | the folded per-target picture + structural event stream, so anyone resumes the same context |
+| **Short-lived memory** (`working_memory`, TTL'd) | Postgres | a run's scratch + cross-skill handoff, expired automatically — keeps durable memory clean |
+| **Semantic recall** (`security_memory`, `engagement_context` collections) | Qdrant | `knowledge-recall` finds prior memory/context by meaning, not keyword |
+
+Create the objects wherever you already run Postgres/Qdrant (managed, your cluster, or the compose), then
+set `ASTERVAULT_DATABASE_URL` + `ASTERVAULT_PACKS_QDRANT_URL` where the server runs. The proprietary
+knowledge catalog and the behavioral red-team are **not** part of this tier — they are vendor/enterprise.
+Progression: **local-first** (offline files) → **team tier** (these stores) → **enterprise** (knowledge
+grounding + behavioral + runtime enforcement).
+
 ## Per-harness
 
 - **Claude Code** — `.mcp.json` is picked up automatically when the plugin is installed.

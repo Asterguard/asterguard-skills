@@ -249,6 +249,17 @@ Shipped playbooks (`playbooks/`): `full-360`, `architecture-review`, `design-rev
 | `evidence-drafting` | Draft the missing artifact for each gap (unsigned) for a human to complete and sign |
 | `audit-report` | Per-control verdicts + citations + coverage % as an HTML Artifact; readiness, not certification |
 
+### Security operations (runbook library)
+
+Persona-driven **runbooks as skills** for agent-security *operations* — the build-and-run-time half that
+composes with the AppSec skills above over the same engagement + graph + gateway. ~60 skills across
+`atomic → common → triage · investigation · hunting · detection · irp · reporting`, plus an `evals` skill
+(trajectory + schema + rubric + benchmark scoring of a run) and a `security-operations` orchestrator run
+as the `soc-triage` / `incident-response` / `threat-hunt` playbooks. 13 security **personas**
+(`personas/`) map each role to the runbooks it uses. See [docs/RUNBOOKS.md](docs/RUNBOOKS.md) for the
+catalog + the authoring contract; a growing team shares context + memory across these runbooks via the
+[Context & Memory data layer](deploy/context-memory/) (you run the stores, we provide the MCP server).
+
 ---
 
 ## Run it with or without AsterVault
