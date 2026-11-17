@@ -237,7 +237,7 @@ Shipped playbooks (`playbooks/`): `full-360`, `architecture-review`, `design-rev
 | `attacker-model` | Select + **govern** the attacker model (authorized-only, recorded in the audit, reported with ASR@budget) |
 | `pentest-report` | Compliance-ready engagement report: PoCs + ASR@budget + kill-chain + remediation + regression handoff |
 
-Proven breaks feed the reusable corpus and hand to the blue team as regression tests. Playbooks: `pentest`, `pentest-pr-gate`.
+Proven breaks feed the reusable corpus and hand to the blue team as regression tests. Playbooks: `pentest`, `pentest-pr-gate`. Runnable, proven scenarios (with videos) live in [`use-cases/`](use-cases/).
 
 **Risk, remediation & memory**
 
