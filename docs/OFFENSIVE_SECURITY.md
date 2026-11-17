@@ -91,7 +91,7 @@ offensive posture:
 - **`recon`** — the attack-map + path-selection skill (doctrine steps 1–2).
 - **`attack-planner`** — the MCP as a **knowledge base**: given the agent, it decides *what* to test
   (test kinds + example techniques), which **canary types** to plant (egress / credential-identity /
-  **workload-identity** / document / injection / …), the budget, and the next steps.
+  **workload-identity** / injection / **memory** / **context** / document / …), the budget, and the next steps.
 - **`exploit-chain`** — chains a canary-proven foothold into a demonstrated multi-step compromise
   (escalate → lateral → impact), each step independently proven (closes "beyond proof-of-reach").
 - **`attacker-model`** — selects and **governs** the attacker model: authorized-only, recorded in the

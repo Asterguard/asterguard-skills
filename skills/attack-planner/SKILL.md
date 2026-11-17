@@ -56,9 +56,11 @@ Each decision is grounded by a gateway call — the server holds the knowledge, 
 2. **Pull the corpus + techniques** per weakness (`testgen.patterns`, `knowledge.query/patterns`) — the
    example payloads/strategies to seed each test (crescendo / PAIR / TAP / injection / decomposition).
 3. **Pull what worked here** (`memory.recall`) — prioritize strategies with prior success on this org.
-4. **Decide canary types per test** — for an exfil test, plant an **egress** + **secret** canary; for an
+4. **Decide canary types per test** — for an exfil test, an **egress** + **secret** canary; for an
    authz/identity test, an **identity** canary; for a workload/tool-authority test, a **workload-identity**
-   canary; for an indirect-injection test, a **document** canary. (See `canary-testing` for the taxonomy.)
+   canary; for an indirect-injection test, an **injection** / **document** canary; for a memory-poisoning
+   test, a **memory** canary; for a RAG / context-bleed test, a **context** canary. (See `canary-testing`
+   for the full taxonomy.)
 5. **Order + budget** — sequence by impact/effort, attach ASR@N budgets, mark the escalation point to
    `exploit-chain`. Emit `${ATTACK_PLAN}` + `${CANARY_PLAN}` + `${NEXT_STEPS}`; `record-in-engagement`.
 

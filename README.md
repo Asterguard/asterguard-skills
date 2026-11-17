@@ -232,7 +232,7 @@ Shipped playbooks (`playbooks/`): `full-360`, `architecture-review`, `design-rev
 |---|---|
 | `offensive-engineer` | The authorized-pentest **orchestrator** (the `pentest` playbook): authorize → recon → plan → campaign → exploit-chain → prove → report → feed-forward |
 | `recon` | Build the offensive attack map + pick the highest-value path (lethal-trifecta legs, over-privileged tools, anon-reachable stores) |
-| `attack-planner` | The MCP as a **knowledge base** decides *what* to test for this agent — test kinds + example techniques + which canary types (egress / identity / workload-identity / …) + next steps |
+| `attack-planner` | The MCP as a **knowledge base** decides *what* to test for this agent — test kinds + example techniques + which canary types (egress / identity / workload-identity / injection / memory / context / …) + next steps |
 | `exploit-chain` | Chain a canary-proven foothold into a **demonstrated** multi-step compromise (escalate → lateral → impact), each step proven |
 | `attacker-model` | Select + **govern** the attacker model (authorized-only, recorded in the audit, reported with ASR@budget) |
 | `pentest-report` | Compliance-ready engagement report: PoCs + ASR@budget + kill-chain + remediation + regression handoff |

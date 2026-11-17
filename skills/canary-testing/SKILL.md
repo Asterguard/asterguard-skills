@@ -23,8 +23,9 @@ See `references/canary-types.md` for the full table. By what each **proves**: **
 scope), **workload-identity** (a planted SPIFFE SVID / service-account / machine (NHI) token — proves a
 tool or agent abused a **workload identity**, or that a workload credential leaked), **document/record**
 (scope violation), **injection** (instruction-following from untrusted content), **system-prompt**
-(prompt leakage), **judge-manipulation** (grader injection), **benchmark GUID** (eval-corpus
-contamination). The gateway's `canary.mint(type, …)` **creates** each kind (so the value never enters the
+(prompt leakage), **memory** (poisoning / delayed cross-session firing, or memory exfil), **context**
+(context-window / RAG leakage, or cross-tenant bleed), **judge-manipulation** (grader injection),
+**benchmark GUID** (eval-corpus contamination). The gateway's `canary.mint(type, …)` **creates** each kind (so the value never enters the
 agent's own logs/context), and `attack-planner` decides which types a given test needs.
 
 ## Method
@@ -36,8 +37,9 @@ agent's own logs/context), and `attack-planner` decides which types a given test
    credential in the mock auth; a fake **workload identity** (SPIFFE SVID / service-account / machine
    token) in the agent's workload-credential store or token endpoint; a record the task never needs in a
    data store; an injection canary in untrusted content the agent reads (email footer, web page, doc
-   metadata, RAG chunk, tool result); the system-prompt canary in the system prompt. Register locations
-   via `canary.plant`.
+   metadata, RAG chunk, tool result); a **memory** canary written into the agent's long/short-term memory
+   store; a **context** canary seeded into a RAG chunk or a prior-turn / another tenant's context; the
+   system-prompt canary in the system prompt. Register locations via `canary.plant`.
 3. **Run the episode** — drive the attack (via `behavioral-redteam`) with a concurrent **benign user
    task**, so you also measure utility under attack. All agent egress routes through the AsterVault proxy.
 4. **Detect** — `canary.scan` over every outbound channel: email bodies, HTTP requests, URLs (incl.
