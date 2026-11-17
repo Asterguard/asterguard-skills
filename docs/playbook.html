@@ -1,0 +1,583 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>AsterGuard Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#f6f8f7; --surface:#ffffff; --surface-2:#eef1f0; --surface-3:#e7ecea;
+    --fg:#112421; --muted:#5a6a65; --faint:#869590; --border:#dde3e1; --border-strong:#cbd4d1;
+    --accent:#0f9d8e; --accent-strong:#0b7a6f; --accent-soft:rgba(15,157,142,.10);
+    --broke:#cf3f4b; --broke-soft:rgba(207,63,75,.12);
+    --held:#2a9557; --held-soft:rgba(42,149,87,.12);
+    --incon:#bc8211; --incon-soft:rgba(188,130,17,.14);
+    --display:'Sora',system-ui,sans-serif;
+    --body:'IBM Plex Sans',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --radius:14px; --shadow:0 1px 2px rgba(16,32,29,.04),0 8px 24px rgba(16,32,29,.06);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0c1312; --surface:#111a18; --surface-2:#16211e; --surface-3:#1d2a26;
+    --fg:#e7efec; --muted:#95a49e; --faint:#6d7c76; --border:#23312d; --border-strong:#2f403b;
+    --accent:#34c9b5; --accent-strong:#5bd8c8; --accent-soft:rgba(52,201,181,.13);
+    --broke:#ff6b74; --broke-soft:rgba(255,107,116,.14);
+    --held:#4fd389; --held-soft:rgba(79,211,137,.13);
+    --incon:#e6b24a; --incon-soft:rgba(230,178,74,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#0c1312; --surface:#111a18; --surface-2:#16211e; --surface-3:#1d2a26;
+    --fg:#e7efec; --muted:#95a49e; --faint:#6d7c76; --border:#23312d; --border-strong:#2f403b;
+    --accent:#34c9b5; --accent-strong:#5bd8c8; --accent-soft:rgba(52,201,181,.13);
+    --broke:#ff6b74; --broke-soft:rgba(255,107,116,.14);
+    --held:#4fd389; --held-soft:rgba(79,211,137,.13);
+    --incon:#e6b24a; --incon-soft:rgba(230,178,74,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6;margin:0;
+    -webkit-font-smoothing:antialiased;font-size:15.5px}
+  .wrap{max-width:960px;margin:0 auto;
+    padding-left:max(18px,env(safe-area-inset-left,0px));
+    padding-right:max(18px,env(safe-area-inset-right,0px));}
+  h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;text-wrap:balance;margin:0}
+  h2{font-size:clamp(1.3rem,3.3vw,1.7rem);letter-spacing:-.01em}
+  h3{font-size:1.06rem;font-weight:600}
+  p{margin:0}
+  a{color:var(--accent-strong);text-decoration:none}
+  code,kbd{font-family:var(--mono)}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent-strong);font-weight:500}
+  .muted{color:var(--muted)}
+
+  header.hero{border-bottom:1px solid var(--border);background:
+    radial-gradient(120% 140% at 85% -20%,var(--accent-soft),transparent 55%)}
+  .hero-inner{padding-block:40px 30px;display:flex;flex-direction:column;gap:17px}
+  .brandrow{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+  .mark{width:30px;height:30px;flex:0 0 auto}
+  .brandname{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.01em}
+  .tagpill{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--muted);
+    border:1px solid var(--border-strong);border-radius:999px;padding:3px 9px}
+  h1{font-size:clamp(1.9rem,5.6vw,2.85rem);letter-spacing:-.025em;max-width:17ch}
+  .lede{font-size:clamp(1rem,2.5vw,1.16rem);color:var(--muted);max-width:62ch}
+
+  /* act progress strip */
+  .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+  .actpill{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);
+    border-radius:999px;padding:7px 15px 7px 8px;font-size:.88rem}
+  .actpill .num{font-family:var(--display);font-weight:700;font-size:.82rem;width:22px;height:22px;border-radius:50%;
+    background:var(--accent);color:var(--bg);display:grid;place-items:center;flex:0 0 auto}
+  .actpill b{font-weight:600}
+  .actpill .arw{color:var(--faint)}
+
+  section{padding-block:34px}
+  section+section{border-top:1px solid var(--border)}
+  .sechead{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+  .actlabel{display:inline-flex;align-items:center;gap:9px}
+  .actlabel .big{font-family:var(--display);font-weight:700;font-size:.8rem;color:var(--bg);background:var(--accent);
+    border-radius:7px;padding:3px 9px;letter-spacing:.02em}
+
+  .grid{display:grid;gap:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  .card-top{display:flex;align-items:flex-start;gap:14px;padding:18px 20px 12px}
+  .stagenum{font-family:var(--display);font-weight:700;font-size:1.1rem;color:var(--bg);
+    background:var(--accent);width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto}
+  .card-top h3{margin-bottom:2px}
+  .card-top .sub{font-size:.86rem;color:var(--muted)}
+  .card-body{padding:0 20px 18px;display:flex;flex-direction:column;gap:13px}
+
+  .lanes{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:.9rem}
+  .lanes .k{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);padding-top:3px;white-space:nowrap}
+  .skill{display:inline-block;font-family:var(--mono);font-size:.82rem;color:var(--accent-strong);
+    background:var(--accent-soft);border-radius:6px;padding:1px 7px}
+
+  .cmd{position:relative;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
+    font-family:var(--mono);font-size:.83rem;padding:12px 46px 12px 14px;overflow-x:auto;white-space:pre;line-height:1.7}
+  .cmd .pr{color:var(--accent-strong);user-select:none}
+  .cmd .cm{color:var(--muted)}
+  .cmd .st{color:var(--incon)}
+  .copy{position:absolute;top:7px;right:7px;border:1px solid var(--border-strong);background:var(--surface);
+    color:var(--muted);border-radius:7px;font-family:var(--body);font-size:.72rem;padding:4px 9px;cursor:pointer}
+  .copy:hover{color:var(--fg);border-color:var(--accent)}
+  .copy.ok{color:var(--held);border-color:var(--held)}
+
+  ul.tight{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:5px;font-size:.92rem}
+  ul.tight li::marker{color:var(--accent)}
+  .note{font-size:.84rem;color:var(--muted)}
+
+  /* generic toggle */
+  .toggle{display:inline-flex;background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:4px;gap:4px}
+  .toggle button{border:0;background:transparent;color:var(--muted);font-family:var(--display);font-weight:600;
+    font-size:.86rem;padding:8px 15px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .toggle button[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow)}
+  .toggle button[aria-selected="true"] .tdot{background:var(--accent)}
+  .tdot{width:8px;height:8px;border-radius:50%;background:var(--border-strong)}
+
+  /* pipeline */
+  .pipe{display:flex;flex-wrap:wrap;align-items:stretch;gap:9px}
+  .stagechip{flex:1 1 120px;min-width:0;background:var(--surface);border:1px solid var(--border);
+    border-radius:12px;padding:12px 13px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--shadow)}
+  .stagechip .n{font-family:var(--mono);font-size:.68rem;color:var(--accent-strong)}
+  .stagechip .t{font-family:var(--display);font-weight:600;font-size:.92rem}
+  .stagechip .s{font-size:.76rem;color:var(--muted);line-height:1.4}
+
+  .verdicts{display:flex;flex-wrap:wrap;gap:9px}
+  .vb{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:9px 13px;font-size:.85rem;border:1px solid var(--border)}
+  .vb .l{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:500;padding:2px 7px;border-radius:5px}
+  .vb.broke .l{background:var(--broke-soft);color:var(--broke)}
+  .vb.held .l{background:var(--held-soft);color:var(--held)}
+  .vb.incon .l{background:var(--incon-soft);color:var(--incon)}
+
+  .postplate{margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:20px;box-shadow:var(--shadow);display:grid;gap:13px}
+  .postplate .who{font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-strong)}
+  .postplate h3{font-size:1.16rem}
+  .flowline{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-weight:600;font-size:.94rem}
+  .flowline .step{background:var(--accent-soft);color:var(--accent-strong);border-radius:8px;padding:4px 11px}
+  .flowline .arw{color:var(--faint)}
+
+  .ev{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px}
+  .evc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+  .evc .ic{width:26px;height:26px;color:var(--accent);margin-bottom:9px}
+  .evc h4{font-family:var(--display);font-weight:600;font-size:.98rem;margin:0 0 5px}
+  .evc p{font-size:.85rem;color:var(--muted)}
+
+  .tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:.88rem;background:var(--surface)}
+  th,td{text-align:left;padding:11px 15px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  tr:last-child td{border-bottom:0}
+  td code{font-size:.82rem;color:var(--accent-strong)}
+  td .d{color:var(--muted)}
+
+  .callout{background:var(--accent-soft);border:1px solid var(--border);border-left:3px solid var(--accent);
+    border-radius:10px;padding:13px 16px;font-size:.89rem;display:flex;gap:11px;align-items:flex-start}
+  .callout svg{color:var(--accent);flex:0 0 auto;margin-top:2px}
+  .callout.key{border-left-color:var(--incon);background:var(--incon-soft)}
+  .callout.key svg{color:var(--incon)}
+
+  /* capability catalog */
+  .cathead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .catcount{font-family:var(--mono);font-size:.72rem;color:var(--muted);border:1px solid var(--border-strong);border-radius:999px;padding:3px 10px}
+  .catgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:14px}
+  .catgroup{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px 17px;box-shadow:var(--shadow)}
+  .catgroup.lead{border-color:var(--accent);background:linear-gradient(180deg,var(--accent-soft),transparent 60%)}
+  .catgroup h4{font-family:var(--display);font-weight:600;font-size:.82rem;letter-spacing:.02em;margin:0 0 12px;
+    display:flex;align-items:center;gap:8px}
+  .catgroup h4::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);flex:0 0 auto}
+  .catlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+  .catlist li{display:flex;flex-direction:column;gap:1px}
+  .catlist code{font-family:var(--mono);font-size:.8rem;color:var(--accent-strong)}
+  .catlist span{color:var(--muted);font-size:.8rem;line-height:1.4}
+  footer{border-top:1px solid var(--border);padding-block:24px 40px;color:var(--muted);font-size:.82rem;
+    display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between}
+
+  @media (max-width:560px){
+    .card-top{flex-wrap:wrap}
+    .lanes{grid-template-columns:1fr;gap:3px 0}
+    .lanes .k{padding-top:9px}
+    .toggle{width:100%}.toggle button{flex:1;justify-content:center}
+  }
+</style>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div class="brandrow">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M16 2.5 28 8v8.4C28 24 22.8 28.6 16 31 9.2 28.6 4 24 4 16.4V8z"
+          fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6"/>
+        <path d="M11 16.3l3.4 3.4L21.5 12" stroke="var(--accent)" stroke-width="2.1"
+          stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="brandname">AsterGuard</span>
+      <span class="tagpill">Agent-native AppSec</span>
+    </div>
+    <div class="eyebrow">Customer Playbook</div>
+    <h1>From install to a signed-off security report</h1>
+    <p class="lede">Set up the skill pack in Claude Code or Codex, connect it to your org, and generate a
+      grounded SAST + DAST security report for any app or agent — SAST and DAST tests derived from
+      <b>your own code</b>, proven with checkable evidence, and metered to your organization.</p>
+    <div class="acts">
+      <span class="actpill"><span class="num">1</span><b>Setup</b></span>
+      <span class="actpill"><span class="num">2</span><b>Integration</b></span>
+      <span class="actpill"><span class="num">3</span><b>Generate a report</b></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ ACT 1 — SETUP ============ -->
+  <section>
+    <div class="sechead">
+      <div class="actlabel"><span class="big">Act 1</span><span class="eyebrow">Setup</span></div>
+      <h2>Install the skill pack in your harness</h2>
+      <p class="muted" style="max-width:62ch">The skills carry the <em>method</em>, not your data. Pick your
+        coding agent — the flow is identical across both.</p>
+    </div>
+
+    <div class="toggle" role="tablist" aria-label="Harness" data-group="harness" style="margin-bottom:16px">
+      <button role="tab" aria-selected="true" data-val="cc"><span class="tdot"></span>Claude Code</button>
+      <button role="tab" aria-selected="false" data-val="cx"><span class="tdot"></span>Codex</button>
+    </div>
+
+    <div class="grid">
+      <div class="card" data-h="cc">
+        <div class="card-body" style="padding-top:18px">
+          <div><b>Claude Code</b> — install the plugin from the marketplace:</div>
+          <div class="cmd"><span class="pr">/</span>plugin marketplace add CoMatrixlabs/asterguard-skills
+<span class="pr">/</span>plugin install asterguard-security@asterguard-marketplace<button class="copy" data-cmd="/plugin marketplace add CoMatrixlabs/asterguard-skills&#10;/plugin install asterguard-security@asterguard-marketplace">Copy</button></div>
+          <div class="note">Installing ships <code>.mcp.json</code>, so the skills auto-discover the gateway once you point them at it (Act&nbsp;2).</div>
+        </div>
+      </div>
+      <div class="card" data-h="cx" hidden>
+        <div class="card-body" style="padding-top:18px">
+          <div><b>Codex</b> — the skill bodies are platform-agnostic; build the bundle from the same source:</div>
+          <div class="cmd"><span class="cm"># emits ./dist/codex/ (AGENTS.md + skills/) to drop into a Codex project</span>
+scripts/build-codex.sh<button class="copy" data-cmd="scripts/build-codex.sh">Copy</button></div>
+          <div class="note">The bundle carries <code>mcp.json</code>; point Codex's MCP config at it to reach the same gateway (Act&nbsp;2).</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>
+        <div><b>Collectors self-bootstrap.</b> On first run <span class="skill">local-scan</span> delivers any
+          missing scanner — <code>semgrep</code>, <code>nuclei</code>, <code>grype</code>, <code>checkov</code>,
+          <code>trufflehog</code> — so there's nothing else to install by hand.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ACT 2 — INTEGRATION ============ -->
+  <section>
+    <div class="sechead">
+      <div class="actlabel"><span class="big">Act 2</span><span class="eyebrow">Integration</span></div>
+      <h2>Connect to your organization</h2>
+      <p class="muted" style="max-width:63ch">Two credentials. The <b>gateway JWT</b> proves who is calling;
+        the <b>ARS token</b> meters the scan to your org. Or skip both and run fully offline.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-top">
+          <div class="stagenum">a</div>
+          <div><h3>Point the skills at your gateway</h3><div class="sub">Streamable-HTTP MCP, OAuth 2.1 — the harness runs the auth flow on first use.</div></div>
+        </div>
+        <div class="card-body">
+          <div class="cmd"><span class="cm"># your AsterVault gateway (leave unset to run fully offline — see below)</span>
+export ASTERVAULT_MCP_URL=<span class="st">"https://&lt;your-host&gt;/mcp"</span><button class="copy" data-cmd='export ASTERVAULT_MCP_URL="https://<your-host>/mcp"'>Copy</button></div>
+          <div class="note">The gateway is the shared brain — the 578-weakness registry, the control crosswalk and the scoring knowledge live there. The same gateway serves Claude Code, Codex and CI, so knowledge and memory compound across tools.</div>
+          <div class="lanes" style="margin-top:11px">
+            <div class="k">Memory store</div><div>The gateway's shared memory is a pluggable backend — <b>SQLite</b> for a single box or pilot (<code>ASTERVAULT_MEMORY_DB</code>, durable across restarts, nothing extra to run), or <b>Postgres</b> for team-shared, multi-node memory that also backs the audit log (<code>ASTERVAULT_DATABASE_URL</code>). Same skills either way — <b>start on SQLite, move to Postgres as the team grows.</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="stagenum">b</div>
+          <div><h3>Add your ARS token — per-org metering &amp; entitlement</h3><div class="sub">The organization's scan credential, sent as <code>X-ARS-Token</code>, carried on every connected scan/run call.</div></div>
+        </div>
+        <div class="card-body">
+          <div class="lanes">
+            <div class="k">What</div><div>A per-org service credential (<code>asg_…</code>, scope <code>scan:run</code>). Every connected call it carries is attributed to your org and counts against your entitlement, returning an <code>audit_id</code>.</div>
+            <div class="k">Capability</div><div><span class="skill">ars-token</span> — resolves the token, attaches it alongside the gateway JWT, and renews it on expiry. The raw value never lands in the repo or in <code>./.asterguard/</code>.</div>
+          </div>
+          <div class="cmd"><span class="cm"># set from your secret store — never commit it</span>
+export ASTERGUARD_ARS_TOKEN=<span class="st">"asg_…"</span>
+
+<span class="cm"># Claude Code: JWT authenticates to the gateway, ARS token meters the scan</span>
+claude mcp add --transport http astervault <span class="st">$ASTERVAULT_MCP_URL</span> \
+  --header <span class="st">"Authorization: Bearer $JWT"</span> \
+  --header <span class="st">"X-ARS-Token: $ASTERGUARD_ARS_TOKEN"</span><button class="copy" data-cmd='export ASTERGUARD_ARS_TOKEN="asg_…"&#10;claude mcp add --transport http astervault $ASTERVAULT_MCP_URL \&#10;  --header "Authorization: Bearer $JWT" \&#10;  --header "X-ARS-Token: $ASTERGUARD_ARS_TOKEN"'>Copy</button></div>
+          <ul class="tight">
+            <li><b>Signed-in member?</b> Skip the export — <span class="skill">ars-token</span> mints-or-fetches your org's <i>Default</i> scan token on first use (raw value returned only on mint/rotate).</li>
+            <li><b>One org, many harnesses.</b> The same token meters Claude Code, Codex and CI runs into one entitlement.</li>
+            <li><b>Self-healing.</b> On a <code>401 invalid or missing X-ARS-Token</code> the capability renews the token (or refreshes the JWT) and retries once.</li>
+          </ul>
+          <div class="callout key">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <div><b>Least privilege, metered, auditable.</b> Scope <code>scan:run</code> only — it runs scans, it can't administer the org. Rotate on leak; the old value dies immediately.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="stagenum">c</div>
+          <div><h3>…or run fully offline</h3><div class="sub">No gateway, no token, no quota — everything local.</div></div>
+        </div>
+        <div class="card-body">
+          <div>Leave <code>ASTERVAULT_MCP_URL</code> unset. The skills detect the missing gateway and run every stage locally — nothing leaves your box and no ARS token is needed (local runs draw no quota). Connect later to gain shared knowledge, team memory, and metered entitlement.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ACT 3 — GENERATE A REPORT ============ -->
+  <section>
+    <div class="sechead">
+      <div class="actlabel"><span class="big">Act 3</span><span class="eyebrow">Generate a report</span></div>
+      <h2>One command — scan, test, judge, remediate, report</h2>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+      <div class="card-body" style="padding-top:18px">
+        <div class="cmd"><span class="cm"># point it at a repo path, a container image, or a live agent endpoint</span>
+<span class="pr">/</span>security-engineer <span class="st">&lt;repo-path | image-ref | https://your-agent&gt;</span><button class="copy" data-cmd="/security-engineer <target>">Copy</button></div>
+        <div class="note" style="margin-top:11px">This runs the <b>full-360</b> playbook end to end. Every stage writes a cacheable artifact to <code>./.asterguard/</code>, so the run is resumable and inspectable — and each connected scan call is metered to your org.</div>
+      </div>
+    </div>
+
+    <div class="pipe">
+      <div class="stagechip"><span class="n">01</span><span class="t">Scan &amp; map</span><span class="s">Collectors → security graph</span></div>
+      <div class="stagechip"><span class="n">02</span><span class="t">Generate</span><span class="s">SAST + DAST from the graph</span></div>
+      <div class="stagechip"><span class="n">03</span><span class="t">Run &amp; judge</span><span class="s">broke / held, evidence cited</span></div>
+      <div class="stagechip"><span class="n">04</span><span class="t">Remediate</span><span class="s">Breaks → policy-as-code</span></div>
+      <div class="stagechip"><span class="n">05</span><span class="t">Report</span><span class="s">HTML + machine-readable JSON</span></div>
+    </div>
+
+    <div class="grid" style="margin-top:18px">
+      <div class="card">
+        <div class="card-top"><div class="stagenum">2</div><div><h3>How the tests are generated</h3><div class="sub">One test per weakness, grounded in <em>your</em> sinks — static and dynamic.</div></div></div>
+        <div class="card-body">
+          <div class="lanes">
+            <div class="k">SAST</div><div><span class="skill">sast-generation</span> — a target-grounded <b>semgrep rule</b> per weakness sink (not generic rulesets). Default posture asserts the sink is fixed, so a rule hit means the vuln is still present.</div>
+            <div class="k">DAST</div><div><span class="skill">dast-generation</span> — <b>runtime probes</b> with a proof-matcher each (a cross-tenant row, <code>/etc/passwd</code>, a leaked key, a reflected payload) — proof of exploitation, not a 200.</div>
+            <div class="k">Agents</div><div><span class="skill">behavioral-redteam</span> — optional multi-turn attacker/defender/judge episode, with canaries woven in.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="stagenum">3</div><div><h3>How a result earns its verdict</h3><div class="sub"><span class="skill">security-judge</span> decides each test against its oracle and cites the evidence.</div></div></div>
+        <div class="card-body">
+          <div class="verdicts">
+            <span class="vb broke"><span class="l">broke</span> the sink fired / the probe proved exploitation</span>
+            <span class="vb held"><span class="l">held</span> the target refused or the sink is absent</span>
+            <span class="vb incon"><span class="l">inconclusive</span> no evidence either way — never forced</span>
+          </div>
+          <div class="note">A planted <b>canary</b> seen on egress is a verified break — no judgment call. Confirmed breaks become findings mapped to their weakness and controls, then <span class="skill">remediation</span> emits least-privilege policy-as-code as a PR.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POSTURE -->
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">Who's driving</div>
+      <h2>Same engine, your posture</h2>
+    </div>
+    <div class="toggle" role="tablist" aria-label="Posture" data-group="posture">
+      <button role="tab" aria-selected="true" data-val="sec"><span class="tdot"></span>Security Engineer</button>
+      <button role="tab" aria-selected="false" data-val="dev"><span class="tdot"></span>Developer</button>
+    </div>
+
+    <div class="postplate" data-p="sec">
+      <div class="who">Validate &amp; recommend</div>
+      <h3>Assess an agent or app, rank the gaps, recommend the fix</h3>
+      <div class="flowline"><span class="step">scan</span><span class="arw">→</span><span class="step">generate</span><span class="arw">→</span><span class="step">prove</span><span class="arw">→</span><span class="step">rank</span><span class="arw">→</span><span class="step">recommend</span></div>
+      <ul class="tight">
+        <li>Run <span class="skill">/security-engineer &lt;target&gt;</span> for the full 360° assessment.</li>
+        <li>Findings are ranked by composed risk — you see the feature vector (reachability, data class, KEV/EPSS, weakness weight), not a black-box score.</li>
+        <li>Deliverable: the HTML risk report + the recommended least-privilege policy, as an advisory PR.</li>
+      </ul>
+    </div>
+    <div class="postplate" data-p="dev" hidden>
+      <div class="who">Test → enforce → ship</div>
+      <h3>Shift-left self-gate before you release the agent</h3>
+      <div class="flowline"><span class="step">test</span><span class="arw">→</span><span class="step">enforce</span><span class="arw">→</span><span class="step">ship</span></div>
+      <ul class="tight">
+        <li>Generate + run the same tests on your change, then apply the policy PR yourself.</li>
+        <li>Gate on the <b>delta</b>, not the backlog: <span class="skill">/pr-gate</span> scores only what the change introduced → <b>PASS</b> / <b>WARN</b> / <b>FAIL</b> on the risk delta.</li>
+        <li>Wire it into CI (with <code>ASTERGUARD_ARS_TOKEN</code> from the pipeline secret store) so a behavioral regression blocks the merge.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- EVIDENCE -->
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">Why you can trust it</div>
+      <h2>Grounded tests, proven breaks, metered runs</h2>
+    </div>
+    <div class="ev">
+      <div class="evc">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+        <h4>Grounded, not generic</h4><p>No test without a graph node or flow it targets. Every finding traces back to a line of your code.</p>
+      </div>
+      <div class="evc">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 5-3.5 7.5-9 9-5.5-1.5-9-4-9-9V6l9-3 9 3z"/></svg>
+        <h4>Proof, not a status code</h4><p>A DAST hit matches real exploitation; a SAST hit cites the exact file and line.</p>
+      </div>
+      <div class="evc">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 4-3 6.5-7 8-4-1.5-7-4-7-8V6z"/><path d="M12 8v4l2.5 1.5"/></svg>
+        <h4>Metered &amp; auditable</h4><p>Every connected run carries your ARS token, is attributed to your org, and returns an <code>audit_id</code> the agent under test can't alter.</p>
+      </div>
+      <div class="evc">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <h4>Local by design</h4><p>Scanning, generation and red-teaming run on your box. The store only grounds and remembers — your code stays with you.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTPUTS -->
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">What you get</div>
+      <h2>The deliverables</h2>
+      <p class="muted">Human-readable and machine-readable, side by side — written to <code>./.asterguard/</code>.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Artifact</th><th>Stage</th><th>What it is</th></tr></thead>
+        <tbody>
+          <tr><td><code>scan.json</code></td><td>Scan</td><td class="d">Normalized findings across SCA, IaC, secrets and AI-BOM lanes.</td></tr>
+          <tr><td><code>graph</code></td><td>Map</td><td class="d">The security graph in the shared SSOT schema — the grounding for everything downstream.</td></tr>
+          <tr><td><code>tests.sast.json</code> + <code>rules/*.semgrep.yaml</code></td><td>Generate</td><td class="d">Target-grounded static tests and the semgrep rules that back them.</td></tr>
+          <tr><td><code>tests.dast.json</code></td><td>Generate</td><td class="d">Runtime probes, each with its proof-matcher and oracle.</td></tr>
+          <tr><td><code>findings.json</code> · <code>results.json</code> · <code>metrics.json</code></td><td>Judge</td><td class="d">Verdicts, confirmed breaks with controls, and safety metrics (ASR@budget, utility-under-attack).</td></tr>
+          <tr><td>Policy PR</td><td>Remediate</td><td class="d">Least-privilege policy-as-code diff (IAM / SPIFFE / egress / OPA / Cedar).</td></tr>
+          <tr><td>Risk report</td><td>Report</td><td class="d">A shareable HTML report folding findings, graph and fixes into the attack-surface view.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:12px">Every artifact is byte-compatible with the AsterGuard platform schema — push a connected run's results up with no translation.</p>
+  </section>
+
+  <!-- CAPABILITY CATALOG -->
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">The full pack</div>
+      <h2>Every capability, one install</h2>
+      <p class="muted" style="max-width:62ch">The orchestrators compose these building-block skills. Each is
+        a reusable capability you can also run on its own — the method travels, your data never does.</p>
+    </div>
+    <div class="cathead"><span class="catcount">33 skills</span><span class="muted" style="font-size:.84rem">grouped by what they do</span></div>
+
+    <div class="catgrid">
+      <div class="catgroup lead">
+        <h4>Orchestration</h4>
+        <ul class="catlist">
+          <li><code>security-engineer</code><span>Full-360 assessment — scan → graph → test → judge → remediate → report.</span></li>
+          <li><code>playbook-runner</code><span>Run a named review: architecture · design · deployment · full-360 · pr-gate.</span></li>
+        </ul>
+      </div>
+
+      <div class="catgroup">
+        <h4>Session &amp; knowledge</h4>
+        <ul class="catlist">
+          <li><code>engagement</code><span>Long-lived context &amp; history per target, across runs and harnesses.</span></li>
+          <li><code>knowledge-recall</code><span>Start informed — approved patterns, prior findings, fixes, waivers.</span></li>
+          <li><code>memory-capture</code><span>Write outcomes back to shared memory so the next run starts ahead.</span></li>
+          <li><code>ars-token</code><span>Per-org scan credential (<code>X-ARS-Token</code>) — metered &amp; entitled.</span></li>
+        </ul>
+      </div>
+
+      <div class="catgroup">
+        <h4>Scan &amp; map</h4>
+        <ul class="catlist">
+          <li><code>local-scan</code><span>SAST / SCA / IaC / secrets / AI-BOM collectors, locally.</span></li>
+          <li><code>proxy-recon</code><span>Record a live or black-box agent — no source needed.</span></li>
+          <li><code>check-planner</code><span>Plan the standard battery of checks before anything runs.</span></li>
+          <li><code>sca-graph</code><span>Dependency tree + CVE overlay.</span></li>
+          <li><code>data-flow</code><span>Where regulated data lives and how it travels.</span></li>
+          <li><code>information-flow</code><span>Untrusted input → privileged sink; the exfil paths.</span></li>
+          <li><code>weakness-graph</code><span>Weaknesses ↔ components ↔ the control that closes them.</span></li>
+          <li><code>agent-profiling</code><span>Agent AI-BOM + authority boundaries.</span></li>
+        </ul>
+      </div>
+
+      <div class="catgroup">
+        <h4>Generate &amp; red-team</h4>
+        <ul class="catlist">
+          <li><code>sast-generation</code><span>Target-grounded semgrep rules (static).</span></li>
+          <li><code>dast-generation</code><span>Dynamic web/API &amp; agent probes, proof-matched.</span></li>
+          <li><code>behavioral-redteam</code><span>Adaptive multi-turn red-team episode.</span></li>
+          <li><code>attacker</code><span>The adversarial driver (reusable primitive).</span></li>
+          <li><code>defender</code><span>Wraps the system-under-test (primitive).</span></li>
+          <li><code>judge</code><span>Reusable broke / held / inconclusive evaluator.</span></li>
+          <li><code>canary-testing</code><span>Honeytokens → hard, code-checkable exfil evidence.</span></li>
+        </ul>
+      </div>
+
+      <div class="catgroup">
+        <h4>Judge, remediate &amp; gate</h4>
+        <ul class="catlist">
+          <li><code>security-judge</code><span>Breaks → findings with control mapping + safety metrics.</span></li>
+          <li><code>risk-context</code><span>The feature vector to reason about risk, not a black-box score.</span></li>
+          <li><code>remediation</code><span>Finding → least-privilege policy-as-code (IAM/SPIFFE/egress/OPA/Cedar).</span></li>
+          <li><code>pr-gate</code><span>Diff-scoped PASS / WARN / FAIL on the risk delta.</span></li>
+        </ul>
+      </div>
+
+      <div class="catgroup">
+        <h4>Report</h4>
+        <ul class="catlist">
+          <li><code>risk-report</code><span>Shareable HTML assessment — graph, attack surface, findings, ARS.</span></li>
+          <li><code>audit-report</code><span>HTML audit-readiness report — per-control verdicts + citations.</span></li>
+        </ul>
+      </div>
+
+      <div class="catgroup">
+        <h4>Compliance (audit-readiness)</h4>
+        <ul class="catlist">
+          <li><code>compliance-auditor</code><span>Orchestrates it — ISO 27001 / ISO 9001 / SOC 2 / HIPAA.</span></li>
+          <li><code>control-rubric</code><span>Framework → per-control rubric (questions + evidence types).</span></li>
+          <li><code>evidence-collection</code><span>Build a cited evidence corpus from repo + graph.</span></li>
+          <li><code>evidence-judge</code><span>Each control satisfied / gap / parked — no citation, no verdict.</span></li>
+          <li><code>audit-verify</code><span>Second-opinion the verdicts against self-grading bias.</span></li>
+          <li><code>evidence-drafting</code><span>Draft the missing artifact for a human to own and sign.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>AsterGuard · Agentic Risk, proven and enforced.</span>
+  <span class="muted">Customer playbook · setup → integration → report</span>
+</footer>
+
+<script>
+  // generic toggle groups: button[data-val] controls [data-h] / [data-p] panels within scope
+  (function(){
+    var attrByGroup={harness:'h',posture:'p'};
+    document.querySelectorAll('.toggle[data-group]').forEach(function(tg){
+      var group=tg.getAttribute('data-group'); var attr=attrByGroup[group];
+      var scope=(group==='harness')?tg.closest('section'):tg.closest('section');
+      var btns=tg.querySelectorAll('button');
+      function set(v){
+        btns.forEach(function(b){b.setAttribute('aria-selected', b.dataset.val===v);});
+        scope.querySelectorAll('['+ 'data-'+attr +']').forEach(function(el){
+          el.hidden = (el.getAttribute('data-'+attr)!==v);
+        });
+        try{localStorage.setItem('ag_'+group, v);}catch(e){}
+      }
+      btns.forEach(function(b){b.addEventListener('click',function(){set(b.dataset.val);});});
+      var saved=null; try{saved=localStorage.getItem('ag_'+group);}catch(e){}
+      if(saved) set(saved);
+    });
+  })();
+  // copy buttons
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var txt=btn.getAttribute('data-cmd')||'';
+      function done(){var o=btn.textContent;btn.textContent='Copied';btn.classList.add('ok');
+        setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1400);}
+      try{navigator.clipboard.writeText(txt).then(done,function(){fallback(txt,done);});}
+      catch(e){fallback(txt,done);}
+    });
+  });
+  function fallback(txt,cb){
+    try{var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);cb();}
+    catch(e){}
+  }
+</script>

@@ -4,16 +4,21 @@ Two sides. The client runs the **workflow**; AsterVault (run by us) holds the **
 the privileged work. No proprietary data context is shipped in the plugin.
 
 ```
-Client agent harness (Claude Code / Codex)
+Client agent harness (Claude Code · Codex · Cursor · OpenCode · DeepSeek)
   + asterguard-skills  ── thin: workflow METHOD + MCP tool calls, NO proprietary data
         │  MCP (OAuth 2.1 / audience-bound JWT, per the MCP Authorization spec)
+        │  + X-ARS-Token (per-org scan credential — meters connected runs)
         ▼
 AsterVault MCP gateway (run by AsterGuard)
   ├─ existing: AuthN · guardrail · policy PDP/PEP · credential broker · tool proxy · append-only audit
   └─ security-analysis surface (the extension):
-       registry.resolve · controls.map · graph.enrich · risk.score · testgen.patterns · scan.plan
+       registry.resolve · controls.map · graph.enrich · risk.score · testgen.patterns · scan.plan · canary.* · memory.*
      (the 578-weakness registry, the control crosswalk, and the scoring models live HERE)
 ```
+
+Harness-agnostic by construction: the skill bodies are Markdown against one schema
+([graph-schema.md](graph-schema.md)) and speak MCP, so the same review runs from Claude Code, Codex,
+Cursor, OpenCode, a DeepSeek harness, or CI — all against the same gateway.
 
 ## What runs where
 
@@ -46,6 +51,20 @@ that enforces at runtime is the one that observes for assessment.
 - **One thing run by us** — a single MCP gateway is the whole backend; skills are thin and open.
 - **Licensing & tenancy for free** — AsterVault already does OAuth2.1/JWT, policy, quotas, audit.
 - **Runtime + assessment unified** — the proxy that guards in production is the recon sensor.
+
+## Entitlement & memory (gateway-side)
+
+- **Metering — the ARS token.** The Bearer JWT proves *who* calls; a per-org **`X-ARS-Token`** proves
+  *which org's entitlement* a scan draws on. Connected scan/run/review calls carry it, each metered and
+  returning an `audit_id`. It is provisioned per organization; the `ars-token` skill attaches and renews
+  it. Offline runs carry no token and draw no quota.
+- **The shared brain's store.** The `knowledge.*` corpus and `memory.*` records persist to a pluggable,
+  gateway-side backend — **SQLite** for a single box, **Postgres** for team-shared, durable, multi-node
+  memory (which also backs audit). The skills are identical either way; only the reach of the shared
+  knowledge changes. Engagement stays local-first regardless.
+
+Both are gateway-side concerns — the thin skills just attach the token and call the tools. Full wiring:
+[MCP_WIRING.md](MCP_WIRING.md).
 
 ## The extension (in the `astervault` repo, not here)
 

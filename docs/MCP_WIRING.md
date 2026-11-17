@@ -69,8 +69,11 @@ at all); the backend above only decides how the structural state it syncs is sha
 
 - **Claude Code** — `.mcp.json` is picked up automatically when the plugin is installed.
 - **Cursor** — copy the block into `.cursor/mcp.json` (or point Cursor's MCP settings at `mcp.json`).
-- **Codex / others** — `scripts/build-codex.sh` carries `mcp.json` into the emitted bundle; point the
-  harness's MCP config at it.
+- **Codex** — `scripts/build-codex.sh` carries `mcp.json` into the emitted bundle; point Codex's MCP
+  config at it.
+- **OpenCode** — register `mcp.json` as an MCP server; load the bundle's `AGENTS.md` + `skills/`.
+- **DeepSeek harness / any other** — the bundle is model-agnostic; point the harness's MCP config at
+  `mcp.json` (or set `ASTERVAULT_MCP_URL`). Offline mode needs no gateway at all.
 
 ## Why it matters (cross-harness, like the memory it serves)
 

@@ -285,7 +285,7 @@ Cursor is recalled from Codex; a policy merged after a Claude Code review is enf
    Cursor ──────┤
    Codex ───────┼──►  AsterGuard Skills  ──►  shared project knowledge
    OpenCode ────┤     AppSec / Agent review     (weakness registry · crosswalk ·
-   Cline ───────┘     (scan → graph → red team     calibrated risk · attack-pattern
+   DeepSeek ────┘     (scan → graph → red team     calibrated risk · attack-pattern
                        → remediate → report)         corpus · proven-break memory)
                               │                              ▲
                               └──────────────────────────────┘
@@ -318,6 +318,30 @@ The skill bodies are platform-agnostic. Build the Codex bundle from the same sou
 scripts/build-codex.sh   # emits ./dist/codex/ (AGENTS.md + skills/) to drop into a Codex project
 ```
 
+### Cursor · OpenCode · DeepSeek · any other harness
+
+The skill bodies are plain Markdown against one schema, so any harness that can follow instructions and
+speak MCP runs them. Use the same bundle (`scripts/build-codex.sh` → `AGENTS.md` + `skills/`), and point
+the harness's MCP config at the repo's `mcp.json` (or set `ASTERVAULT_MCP_URL`):
+
+- **Cursor** — copy the `mcp.json` server block into `.cursor/mcp.json`; drop the skill bodies in as
+  project rules.
+- **OpenCode** — register `mcp.json` as an MCP server; load the bundle's `AGENTS.md`.
+- **DeepSeek harness** — the bundle is model-agnostic; the harness's model follows the same skills and
+  calls the same MCP tools. Offline mode needs no gateway at all.
+
+Every harness reads and writes the **same** shared knowledge through the gateway, so a review from one
+shows up in the next (see [Cross-harness by design](#-cross-harness-by-design)).
+
+### Connecting (ARS token)
+
+Offline mode needs nothing. For **connected mode** — grounded weakness IDs, the independent canary
+verifier, enforcement and shared memory — a run also carries a per-org **ARS token** (`X-ARS-Token`)
+so scans are metered and attributed to your org. **We provision that token per organization — [open an
+issue](https://github.com/CoMatrixlabs/asterguard-skills/issues) or contact CoMatrixlabs and we'll issue
+one;** the `ars-token` skill then attaches and renews it automatically. See
+[docs/MCP_WIRING.md](docs/MCP_WIRING.md).
+
 See [docs/MCP_WIRING.md](docs/MCP_WIRING.md) for the gateway wiring across harnesses, and the
 `packages` block in `.claude-plugin/marketplace.json` for the companion collectors.
 
@@ -330,7 +354,7 @@ marketplace manifest lists them under `packages` so a client gets everything in 
 ## Architecture
 
 ```
-Client agent harness (Claude Code / Codex)
+Client agent harness (Claude Code · Codex · Cursor · OpenCode · DeepSeek)
   + asterguard-skills  ── thin: workflow METHOD + MCP tool calls, NO proprietary data
         │  MCP (OAuth 2.1 / audience-bound JWT, per the MCP Authorization spec)   ← omit in offline mode
         ▼
@@ -345,6 +369,10 @@ Full detail: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · gateway wiring:
 **[docs/MCP_WIRING.md](docs/MCP_WIRING.md)** · offensive use: **[docs/OFFENSIVE_SECURITY.md](docs/OFFENSIVE_SECURITY.md)**
 · audit readiness: **[docs/COMPLIANCE.md](docs/COMPLIANCE.md)** · positioning:
 **[docs/POSITIONING.md](docs/POSITIONING.md)** · schema: **[docs/graph-schema.md](docs/graph-schema.md)**
+
+**Customer walkthrough — setup → integration → report:** [docs/playbook.html](docs/playbook.html)
+(open in a browser) — the end-to-end journey across Claude Code / Codex, the gateway + ARS token, and
+the full capability catalog.
 
 ## Structure
 
