@@ -1,0 +1,23 @@
+name: vet-skill
+description: Vet a third-party skill, plugin, or MCP server before install or publish — scan it, audit its MCP tools, gate the install, and remember the verdict.
+posture: gate
+input: skill            # a skill/plugin/MCP-server source (git/dir/zip/file/url)
+scope: { mode: full }
+packs: { axes: [supply-chain], auto: true }
+steps:
+  - { skill: knowledge-recall }
+  - { skill: engagement, with: { op: open } }
+  - { skill: skill-scan }
+  - { skill: mcp-tool-audit, when: source_is_mcp_server }
+  - { skill: risk-report, with: { formats: [sarif, html] } }
+  - { skill: memory-capture }
+  - { skill: engagement, with: { op: checkpoint } }
+rules:
+  severity_min: low
+  install_gate:              # the gate decides install/publish, not a code diff
+    fail_on: [malware, prompt_injection_in_instructions, data_exfiltration, rug_pull]
+    warn_on: [excessive_agency, least_privilege_violation, dependency_cve_high]
+gate: install               # PASS → safe to install/publish · WARN → review · FAIL → reject
+report:
+  format: [sarif, html]
+  sections: [summary, instruction_risks, code_risks, supply_chain, mcp_tools, verdict]
