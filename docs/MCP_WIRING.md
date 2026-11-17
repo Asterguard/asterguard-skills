@@ -44,6 +44,27 @@ first use. **Offline mode needs no ARS token** — local runs draw no quota. The
 owns this end to end (resolve → attach alongside the Bearer JWT → renew on `401 invalid or missing
 X-ARS-Token`); the raw value never lands in this repo or in `./.asterguard/`.
 
+## The shared brain's store — SQLite or Postgres
+
+The gateway *is* the shared brain: the `knowledge.*` corpus and the `memory.*` records (what
+`knowledge-recall` reads and `memory-capture` writes) persist behind it. That persistence is a
+**pluggable, gateway-side backend** — the skills call the same tools no matter which is wired:
+
+| Backend | When | Set on the gateway |
+| --- | --- | --- |
+| **Postgres** | Team-shared, durable, multi-node — the source of truth, and it also backs the audit log. Pick this to share memory across teammates, harnesses, and boxes. | `ASTERVAULT_DATABASE_URL=postgresql://…/astervault` |
+| **SQLite** | One box, a pilot, or an air-gapped install — durable memory that survives restarts without standing up Postgres. | `ASTERVAULT_MEMORY_DB=/var/astervault/knowledge.db` |
+| *In-memory* | Nothing wired — ephemeral, for tests and throwaway runs. | *(default)* |
+
+Selection order is **Postgres → SQLite → in-memory**: set `ASTERVAULT_DATABASE_URL` and the gateway uses
+Postgres (the same store also backs audit); otherwise set `ASTERVAULT_MEMORY_DB` for a durable single
+file; set neither and memory is process-local. Both durable backends honor the same scope isolation and
+the same three-method contract, so **start on SQLite and move to Postgres when the team grows** — nothing
+in the skills changes.
+
+This is the *shared* store. Engagement stays **local-first** regardless (`./.asterguard/` files, no store
+at all); the backend above only decides how the structural state it syncs is shared and persisted.
+
 ## Per-harness
 
 - **Claude Code** — `.mcp.json` is picked up automatically when the plugin is installed.

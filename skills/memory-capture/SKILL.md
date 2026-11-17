@@ -49,6 +49,9 @@ memory in the AsterVault gateway, so the next session recalls it instead of rele
 - knowledge-recall — reads these records at the next task's start
 - security-engineer — capture is the final step of the pipeline
 - AsterVault `memory.capture` / `memory.promote`
+- **Where it persists (gateway-side):** the records land in the gateway's store — **SQLite** for a
+  single box or pilot, **Postgres** for team-shared, durable, multi-node memory (same `memory.*` calls
+  either way). See `../../docs/MCP_WIRING.md`.
 
 ## References
 

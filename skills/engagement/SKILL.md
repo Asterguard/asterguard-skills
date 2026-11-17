@@ -103,7 +103,8 @@ stateful: **run → capture → evaluate → distill → review+approve → reus
 - **Local store:** `./.asterguard/engagements/<target>/` — harness-independent; any of Claude Code / Codex
   / CI opens the same engagement by target id.
 - **Knowledge store (optional, structural only):** `memory.recall` (open), `memory.capture` (checkpoint),
-  `memory.promote` (promote).
+  `memory.promote` (promote). Its backend is **gateway-side** — **SQLite** for a single box, **Postgres**
+  for team-shared, durable memory; engagement stays local-first regardless (see `../../docs/MCP_WIRING.md`).
 - **Consumed by:** `check-planner`, `pr-gate`, `security-engineer`.
 - **Not** the runtime's session handling — the gateway's credential/grant sessions are a separate concern
   in `asterguard-runtimevault`.

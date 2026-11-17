@@ -47,6 +47,9 @@ task so the agent doesn't re-learn what's already settled.
 - memory-capture — the counterpart that wrote these records
 - security-engineer — recall is the first step of the pipeline, before scanning
 - AsterVault `knowledge.query` / `knowledge.patterns` / `memory.recall`
+- **Backend (gateway-side):** recall reads from whichever store the gateway is wired to — **SQLite**
+  (single box) or **Postgres** (team-shared, durable). The skill is identical either way; see
+  `../../docs/MCP_WIRING.md`.
 
 ## References
 
