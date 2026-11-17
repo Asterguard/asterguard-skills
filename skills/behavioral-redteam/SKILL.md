@@ -7,7 +7,10 @@ description: Orchestrate a multi-turn red-team episode by composing the attacker
 
 This composes the reusable primitives — **attacker → defender → judge**, with **canaries** woven in —
 into one adaptive episode. It owns the loop, the budget, and the self-improvement feedback; the
-primitives do the work. **Authorized engagements only** (the attacker elicits the brief).
+primitives do the work. **Authorized engagements only** (the attacker elicits the brief). Against a
+**live** target this is behavior-changing execution — it requires the privileged **offensive token**
+(`offensive:run`, via `offensive-token`); the gateway blocks the runtime path without it, and runs on
+the **forge engine** when it and the token are available (else the harness drives client-side).
 
 ## When to Activate
 

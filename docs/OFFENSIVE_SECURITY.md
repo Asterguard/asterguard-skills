@@ -81,9 +81,36 @@ become reusable exemplars. Static jailbreak lists *overstate* robustness; the co
 model is the modern, stronger approach. The only real work is **seeding the corpus well**, not shipping a
 monolithic exploit database.
 
-**Real remaining gaps:** attacker-model selection (wiring a less-restricted research model as the
-driver), and exploitation **beyond proof-of-reach** (chaining a canary hit into a full demonstrated
-compromise). Both additive — the loop already produces proven breaks today.
+**Formerly the remaining gaps, now first-class skills:** the two additive gaps — attacker-model
+selection and exploitation beyond proof-of-reach — are now closed, and the whole loop is a named
+offensive posture:
+
+- **`offensive-token`** — the **privileged gate**. Offensive *execution* runs on a separate, higher-trust
+  token (`offensive:run`, `X-ARS-Offensive-Token`), not the scan token; the gateway PDP blocks any
+  behavior-changing attack without it (`403 offensive privilege required`). This draws the line between
+  **plan** (`recon`, `attack-planner`, on the scan token) and **execute** (the campaign, exploit-chain,
+  live canaries, the forge engine — privileged). Offense is off unless explicitly entitled.
+- **`offensive-engineer`** — the authorized-pentest orchestrator (the `pentest` playbook): authorize →
+  entitle (offensive token) → recon → plan → campaign → exploit-chain → prove → report → feed-forward.
+  Rules of engagement are a mandatory, recorded step 0. **Engine mode:** when the offensive token is
+  present and the **forge is served behind the MCP**, the campaign/exploit run on the server-side forge
+  engine (adaptive tree-search, routed attacker backends), gated + audited; else client mode.
+- **`recon`** — the attack-map + path-selection skill (doctrine steps 1–2).
+- **`attack-planner`** — the MCP as a **knowledge base**: given the agent, it decides *what* to test
+  (test kinds + example techniques), which **canary types** to plant (egress / credential-identity /
+  **workload-identity** / injection / **memory** / **context** / document / …), the budget, and the next steps.
+- **`exploit-chain`** — chains a canary-proven foothold into a demonstrated multi-step compromise
+  (escalate → lateral → impact), each step independently proven (closes "beyond proof-of-reach").
+- **`attacker-model`** — selects and **governs** the attacker model: authorized-only, recorded in the
+  run artifacts + the audit, reported with ASR (closes "attacker-model selection").
+- **`pentest-report`** — the compliance-ready deliverable (PoCs + ASR@budget + kill-chain + remediation
+  + regression handoff).
+
+Still deferred (server-side, additive — an astervault follow-up, the same shape as the gateway
+integration): the PDP **enforcement of `offensive:run`** (the privileged gate) + **serving the forge
+behind the MCP** as privileged offensive tools (engine mode) + **minting the offensive token**; seeding
+the `testgen.patterns` corpus well (PyRIT / Garak / Nuclei / promptfoo); and extending `canary.mint` with
+the workload-identity / memory / context types.
 
 ## Dual-use note
 
