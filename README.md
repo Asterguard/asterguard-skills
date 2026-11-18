@@ -70,8 +70,7 @@ paths, and recommend enforcement policies."* The `security-engineer` orchestrato
 
 *recall → scan + build the graphs → resolve the lede weakness → attacker ▸ defender ▸ judge
 (**canary-proven** PII exfil, not a guess) → remediation PR → review-gated enforcement → grounded report
-→ shared memory.* &nbsp;·&nbsp; [▶ MP4](docs/media/full-360-demo.mp4) &nbsp;·&nbsp; re-recordable:
-`vhs examples/demo-recording/full360.tape` ([source](examples/demo-recording/)).
+→ shared memory.* &nbsp;·&nbsp; [▶ MP4](docs/media/full-360-demo.mp4)
 
 Runnable walkthroughs live in [`examples/`](examples/) — the live Claude Code ↔ AsterVault MCP flow is
 [`examples/live-demo/`](examples/live-demo/).
