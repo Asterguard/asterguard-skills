@@ -12,16 +12,20 @@ Both walkthroughs are self-contained HTML "videos" — open them in a browser an
 step through with the arrow keys. This README is the written companion: it walks the *app itself*,
 layer by layer, so you can see exactly where the risk lives and why each finding matters.
 
-### Recorded clips (`media/`)
+### Recorded clips
 
-Pre-rendered MP4s for sharing/posting — the players and reports captured as video:
+Pre-rendered walkthroughs for sharing/posting (also in [`media/`](media/)):
 
-| Clip | Shows |
-|---|---|
-| [`media/security-engineer-walkthrough.mp4`](media/security-engineer-walkthrough.mp4) | the full-360 run, step by step (40s) |
-| [`media/local-scan-walkthrough.mp4`](media/local-scan-walkthrough.mp4) | the four-lane scan, step by step (36s) |
-| [`media/report-security-engineer-detail.mp4`](media/report-security-engineer-detail.mp4) | detail scroll-through of the assessment report (47s) |
-| [`media/report-local-scan-detail.mp4`](media/report-local-scan-detail.mp4) | detail scroll-through of the scan report (22s) |
+**`/security-engineer` — the full-360 run, step by step** (40s)
+
+<video src="https://github.com/Asterguard/asterguard-skills/raw/4e92b63fbe2e32607a9c240610befc3c370a4f50/examples/terraform-agent-platform/media/security-engineer-walkthrough.mp4" controls muted width="840"></video>
+
+**`/local-scan` — the four-lane scan, step by step** (36s)
+
+<video src="https://github.com/Asterguard/asterguard-skills/raw/4e92b63fbe2e32607a9c240610befc3c370a4f50/examples/terraform-agent-platform/media/local-scan-walkthrough.mp4" controls muted width="840"></video>
+
+> Detail scroll-throughs of the two reports are embedded in [§7](#7-the-resulting-reports). If a clip
+> doesn't render in your viewer, the MP4s are in [`media/`](media/).
 
 > **Nothing here is proven by a live test.** The target is static Terraform — there is no running
 > agent to drive — so every attack path below is **theoretical**: reachable as written, not
@@ -225,6 +229,14 @@ The two are meant to be read in order: `local-scan` is the 10-second triage, `se
 assessment you hand to an engineer. Both are produced in **client mode** — generated on your machine by
 the skill running in your coding agent; the AsterVault MCP supplies only grounding (weakness registry,
 control crosswalk, risk floor), never your source or findings.
+
+**Detail view — the assessment report** (47s scroll-through, every section expanded):
+
+<video src="https://github.com/Asterguard/asterguard-skills/raw/4e92b63fbe2e32607a9c240610befc3c370a4f50/examples/terraform-agent-platform/media/report-security-engineer-detail.mp4" controls muted width="840"></video>
+
+**Detail view — the scan report** (22s scroll-through, findings expanded):
+
+<video src="https://github.com/Asterguard/asterguard-skills/raw/4e92b63fbe2e32607a9c240610befc3c370a4f50/examples/terraform-agent-platform/media/report-local-scan-detail.mp4" controls muted width="840"></video>
 
 ---
 
