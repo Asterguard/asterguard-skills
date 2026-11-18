@@ -14,19 +14,19 @@ layer by layer, so you can see exactly where the risk lives and why each finding
 
 ### Recorded clips
 
-Pre-rendered walkthroughs for sharing/posting (also in [`media/`](media/)):
+The walkthroughs play inline below — autoplay GIFs served from `agenticrisklabs.io` (nothing is
+committed to the repo); each links to the full-resolution MP4.
 
-**▶ `/security-engineer` — the full-360 run, step by step** (40s)
+**▶ `/security-engineer` — the full-360 run, step by step** (40s · [full MP4](https://agenticrisklabs.io/videos/terraform-agent-platform/security-engineer-walkthrough.mp4))
 
-[![security-engineer walkthrough](media/security-engineer-walkthrough-poster.png)](https://agenticrisklabs.io/videos/terraform-agent-platform/security-engineer-walkthrough.mp4)
+![security-engineer walkthrough](https://agenticrisklabs.io/videos/terraform-agent-platform/security-engineer-walkthrough.gif)
 
-**▶ `/local-scan` — the four-lane scan, step by step** (36s)
+**▶ `/local-scan` — the four-lane scan, step by step** (36s · [full MP4](https://agenticrisklabs.io/videos/terraform-agent-platform/local-scan-walkthrough.mp4))
 
-[![local-scan walkthrough](media/local-scan-walkthrough-poster.png)](https://agenticrisklabs.io/videos/terraform-agent-platform/local-scan-walkthrough.mp4)
+![local-scan walkthrough](https://agenticrisklabs.io/videos/terraform-agent-platform/local-scan-walkthrough.gif)
 
-> The thumbnails link to the hosted MP4s — click to play. GitHub doesn't inline-play video, so the
-> clips are served from `agenticrisklabs.io`; detail scroll-throughs of the two reports are in
-> [§7](#7-the-resulting-reports). The interactive HTML players are in this folder
+> Detail scroll-throughs of the two reports are in [§7](#7-the-resulting-reports), and the interactive
+> HTML players are in this folder
 > ([`security-engineer-walkthrough.html`](security-engineer-walkthrough.html) ·
 > [`local-scan-walkthrough.html`](local-scan-walkthrough.html)).
 
