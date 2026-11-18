@@ -21,7 +21,7 @@ AsterVault MCP call. Run it in Claude Code today, Cursor or Codex tomorrow — s
 ```bash
 /plugin marketplace add Asterguard/asterguard-skills
 /plugin install asterguard-security@asterguard-marketplace
-export ASTERVAULT_MCP_URL="https://<your-astervault-host>/mcp"   # .mcp.json wires the skills to the gateway
+export ASTERVAULT_MCP_URL="https://astervault.agenticrisklabs.io/mcp"   # .mcp.json wires the skills to the gateway
 ```
 
 Then the engineer just talks to their agent: *"assess and red-team the support-agent, and remediate."*

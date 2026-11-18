@@ -73,12 +73,12 @@ paths, and recommend enforcement policies."* The `security-engineer` orchestrato
 → shared memory.* &nbsp;·&nbsp; [▶ MP4](https://agenticrisklabs.io/videos/full-360-demo.mp4?v=2)
 
 > **About this clip** — it's a *narrated walkthrough*: a scripted, deterministic playback of the
-> full-360 flow, grounded in the real tool calls and outputs in
-> [`examples/live-demo/`](examples/live-demo/) — not a live screen recording. To run the real thing
-> yourself over a live MCP connection, use [`examples/live-demo/`](examples/live-demo/).
+> full-360 flow — not a live screen recording. To run it yourself, install the skills and point your
+> harness at the gateway (see [Run it](#run-it-with-or-without-astervault) and
+> [docs/MCP_WIRING.md](docs/MCP_WIRING.md)), or run fully offline with `ASTERVAULT_MCP_URL` unset.
 
-Runnable walkthroughs live in [`examples/`](examples/) — the live Claude Code ↔ AsterVault MCP flow is
-[`examples/live-demo/`](examples/live-demo/).
+Runnable walkthroughs live in [`examples/`](examples/). To connect the skills to the gateway over a
+live MCP connection, see [docs/MCP_WIRING.md](docs/MCP_WIRING.md).
 
 ---
 
@@ -461,6 +461,6 @@ asterguard-skills/
 ├── .claude-plugin/marketplace.json   # Claude Code plugin + companion-package manifest
 ├── docs/graph-schema.md              # SSOT graph schema (all skills build to this)
 ├── skills/<capability>/SKILL.md      # one capability each (+ scripts/, references/)
-├── examples/                         # worked walkthroughs (scan-to-redteam, live-demo, …)
+├── examples/                         # worked walkthroughs (terraform-agent-platform, scan-to-redteam, …)
 └── scripts/build-codex.sh            # emit the Codex target from the same skill source
 ```

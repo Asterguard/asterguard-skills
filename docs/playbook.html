@@ -280,7 +280,7 @@ cp mcp.json .cursor/mcp.json<button class="copy" data-cmd="scripts/build-codex.s
         </div>
         <div class="card-body">
           <div class="cmd"><span class="cm"># your AsterVault gateway (leave unset to run fully offline — see below)</span>
-export ASTERVAULT_MCP_URL=<span class="st">"https://&lt;your-host&gt;/mcp"</span><button class="copy" data-cmd='export ASTERVAULT_MCP_URL="https://<your-host>/mcp"'>Copy</button></div>
+export ASTERVAULT_MCP_URL=<span class="st">"https://astervault.agenticrisklabs.io/mcp"</span><button class="copy" data-cmd='export ASTERVAULT_MCP_URL="https://astervault.agenticrisklabs.io/mcp"'>Copy</button></div>
           <div class="note">The gateway is the shared brain — the 578-weakness registry, the control crosswalk and the scoring knowledge live there. The same gateway serves Claude Code, Codex and CI, so knowledge and memory compound across tools.</div>
           <div class="lanes" style="margin-top:11px">
             <div class="k">Memory store</div><div>The gateway's shared memory is a pluggable backend — <b>SQLite</b> for a single box or pilot (<code>ASTERVAULT_MEMORY_DB</code>, durable across restarts, nothing extra to run), or <b>Postgres</b> for team-shared, multi-node memory that also backs the audit log (<code>ASTERVAULT_DATABASE_URL</code>). Same skills either way — <b>start on SQLite, move to Postgres as the team grows.</b></div>
