@@ -16,16 +16,16 @@ layer by layer, so you can see exactly where the risk lives and why each finding
 
 Pre-rendered walkthroughs for sharing/posting (also in [`media/`](media/)):
 
-**`/security-engineer` — the full-360 run, step by step** (40s)
+**`/security-engineer` — the full-360 run, step by step** (40s · [full MP4](media/security-engineer-walkthrough.mp4))
 
-<video src="https://github.com/Asterguard/asterguard-skills/raw/4e92b63fbe2e32607a9c240610befc3c370a4f50/examples/terraform-agent-platform/media/security-engineer-walkthrough.mp4" controls muted width="840"></video>
+[![security-engineer walkthrough](media/security-engineer-walkthrough.gif)](media/security-engineer-walkthrough.mp4)
 
-**`/local-scan` — the four-lane scan, step by step** (36s)
+**`/local-scan` — the four-lane scan, step by step** (36s · [full MP4](media/local-scan-walkthrough.mp4))
 
-<video src="https://github.com/Asterguard/asterguard-skills/raw/4e92b63fbe2e32607a9c240610befc3c370a4f50/examples/terraform-agent-platform/media/local-scan-walkthrough.mp4" controls muted width="840"></video>
+[![local-scan walkthrough](media/local-scan-walkthrough.gif)](media/local-scan-walkthrough.mp4)
 
-> Detail scroll-throughs of the two reports are embedded in [§7](#7-the-resulting-reports). If a clip
-> doesn't render in your viewer, the MP4s are in [`media/`](media/).
+> The walkthroughs above are autoplay GIFs — click either to open the full-resolution MP4. Detail
+> scroll-throughs of the two reports are in [§7](#7-the-resulting-reports).
 
 > **Nothing here is proven by a live test.** The target is static Terraform — there is no running
 > agent to drive — so every attack path below is **theoretical**: reachable as written, not
@@ -230,13 +230,13 @@ assessment you hand to an engineer. Both are produced in **client mode** — gen
 the skill running in your coding agent; the AsterVault MCP supplies only grounding (weakness registry,
 control crosswalk, risk floor), never your source or findings.
 
-**Detail view — the assessment report** (47s scroll-through, every section expanded):
+**Detail view — the assessment report** (47s scroll-through, every section expanded) — click to play:
 
-<video src="https://github.com/Asterguard/asterguard-skills/raw/4e92b63fbe2e32607a9c240610befc3c370a4f50/examples/terraform-agent-platform/media/report-security-engineer-detail.mp4" controls muted width="840"></video>
+[![assessment report — detail scroll-through](media/report-security-engineer-poster.png)](media/report-security-engineer-detail.mp4)
 
-**Detail view — the scan report** (22s scroll-through, findings expanded):
+**Detail view — the scan report** (22s scroll-through, findings expanded) — click to play:
 
-<video src="https://github.com/Asterguard/asterguard-skills/raw/4e92b63fbe2e32607a9c240610befc3c370a4f50/examples/terraform-agent-platform/media/report-local-scan-detail.mp4" controls muted width="840"></video>
+[![scan report — detail scroll-through](media/report-local-scan-poster.png)](media/report-local-scan-detail.mp4)
 
 ---
 
