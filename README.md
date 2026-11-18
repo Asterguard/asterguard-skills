@@ -461,6 +461,6 @@ asterguard-skills/
 ├── .claude-plugin/marketplace.json   # Claude Code plugin + companion-package manifest
 ├── docs/graph-schema.md              # SSOT graph schema (all skills build to this)
 ├── skills/<capability>/SKILL.md      # one capability each (+ scripts/, references/)
-├── examples/                         # worked walkthroughs (terraform-agent-platform, scan-to-redteam, …)
+├── examples/                         # worked walkthroughs (terraform-agent-platform, support-agent-appsec, scan-to-redteam, …)
 └── scripts/build-codex.sh            # emit the Codex target from the same skill source
 ```
