@@ -66,11 +66,11 @@ A security engineer asks their agent: *"Review `support-agent` for AppSec — sc
 paths, and recommend enforcement policies."* The `security-engineer` orchestrator runs the whole
 **full-360** pipeline and closes the loop:
 
-![full-360 skills walkthrough — recall → scan + graph → resolve the lede weakness → attacker ▸ defender ▸ judge (canary-proven PII exfil) → remediation PR → review-gated enforcement → grounded report → shared memory](https://agenticrisklabs.io/videos/full-360-demo.gif)
+![full-360 skills walkthrough — recall → scan + graph → resolve the lede weakness → attacker ▸ defender ▸ judge (canary-proven PII exfil) → remediation PR → review-gated enforcement → grounded report → shared memory](https://agenticrisklabs.io/videos/full-360-demo.gif?v=2)
 
 *recall → scan + build the graphs → resolve the lede weakness → attacker ▸ defender ▸ judge
 (**canary-proven** PII exfil, not a guess) → remediation PR → review-gated enforcement → grounded report
-→ shared memory.* &nbsp;·&nbsp; [▶ MP4](https://agenticrisklabs.io/videos/full-360-demo.mp4)
+→ shared memory.* &nbsp;·&nbsp; [▶ MP4](https://agenticrisklabs.io/videos/full-360-demo.mp4?v=2)
 
 > **About this clip** — it's a *narrated walkthrough*: a scripted, deterministic playback of the
 > full-360 flow, grounded in the real tool calls and outputs in
