@@ -16,16 +16,19 @@ layer by layer, so you can see exactly where the risk lives and why each finding
 
 Pre-rendered walkthroughs for sharing/posting (also in [`media/`](media/)):
 
-**`/security-engineer` — the full-360 run, step by step** (40s · [full MP4](media/security-engineer-walkthrough.mp4))
+**▶ `/security-engineer` — the full-360 run, step by step** (40s)
 
-[![security-engineer walkthrough](media/security-engineer-walkthrough.gif)](media/security-engineer-walkthrough.mp4)
+[![security-engineer walkthrough](media/security-engineer-walkthrough-poster.png)](https://agenticrisklabs.io/videos/terraform-agent-platform/security-engineer-walkthrough.mp4)
 
-**`/local-scan` — the four-lane scan, step by step** (36s · [full MP4](media/local-scan-walkthrough.mp4))
+**▶ `/local-scan` — the four-lane scan, step by step** (36s)
 
-[![local-scan walkthrough](media/local-scan-walkthrough.gif)](media/local-scan-walkthrough.mp4)
+[![local-scan walkthrough](media/local-scan-walkthrough-poster.png)](https://agenticrisklabs.io/videos/terraform-agent-platform/local-scan-walkthrough.mp4)
 
-> The walkthroughs above are autoplay GIFs — click either to open the full-resolution MP4. Detail
-> scroll-throughs of the two reports are in [§7](#7-the-resulting-reports).
+> The thumbnails link to the hosted MP4s — click to play. GitHub doesn't inline-play video, so the
+> clips are served from `agenticrisklabs.io`; detail scroll-throughs of the two reports are in
+> [§7](#7-the-resulting-reports). The interactive HTML players are in this folder
+> ([`security-engineer-walkthrough.html`](security-engineer-walkthrough.html) ·
+> [`local-scan-walkthrough.html`](local-scan-walkthrough.html)).
 
 > **Nothing here is proven by a live test.** The target is static Terraform — there is no running
 > agent to drive — so every attack path below is **theoretical**: reachable as written, not
@@ -232,11 +235,11 @@ control crosswalk, risk floor), never your source or findings.
 
 **Detail view — the assessment report** (47s scroll-through, every section expanded) — click to play:
 
-[![assessment report — detail scroll-through](media/report-security-engineer-poster.png)](media/report-security-engineer-detail.mp4)
+[![assessment report — detail scroll-through](media/report-security-engineer-poster.png)](https://agenticrisklabs.io/videos/terraform-agent-platform/report-security-engineer-detail.mp4)
 
 **Detail view — the scan report** (22s scroll-through, findings expanded) — click to play:
 
-[![scan report — detail scroll-through](media/report-local-scan-poster.png)](media/report-local-scan-detail.mp4)
+[![scan report — detail scroll-through](media/report-local-scan-poster.png)](https://agenticrisklabs.io/videos/terraform-agent-platform/report-local-scan-detail.mp4)
 
 ---
 
