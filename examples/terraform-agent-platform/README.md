@@ -3,32 +3,14 @@
 A full, step-by-step analysis of **`CoMatrixlabs/terraform-agent-platform-demo`** @ `cbae078` —
 a deliberately vulnerable infrastructure-as-code fixture — run through two AsterGuard skills:
 
-| Skill | What it does here | Walkthrough | Report |
+| Skill | What it does here | Report | Watch |
 |---|---|---|---|
-| [`/local-scan`](../../skills/local-scan) | fast, client-side, four-lane scanner pass | [`local-scan-walkthrough.html`](local-scan-walkthrough.html) | [`report-local-scan.html`](report-local-scan.html) |
-| [`/security-engineer`](../../skills/security-engineer) | full-360 assessment → weaknesses, controls, risk, attack paths, fixes | [`security-engineer-walkthrough.html`](security-engineer-walkthrough.html) | [`report-security-engineer.html`](report-security-engineer.html) |
+| [`/local-scan`](../../skills/local-scan) | fast, client-side, four-lane scanner pass | [`report-local-scan.md`](report-local-scan.md) | [▶ 36s run](https://agenticrisklabs.io/videos/terraform-agent-platform/local-scan-walkthrough.mp4) |
+| [`/security-engineer`](../../skills/security-engineer) | full-360 assessment → weaknesses, controls, risk, attack paths, fixes | [`report-security-engineer.md`](report-security-engineer.md) | [▶ 40s run](https://agenticrisklabs.io/videos/terraform-agent-platform/security-engineer-walkthrough.mp4) |
 
-Both walkthroughs are self-contained HTML "videos" — open them in a browser and press **Play**, or
-step through with the arrow keys. This README is the written companion: it walks the *app itself*,
-layer by layer, so you can see exactly where the risk lives and why each finding matters.
-
-### Recorded clips
-
-The walkthroughs play inline below — autoplay GIFs served from `agenticrisklabs.io` (nothing is
-committed to the repo); each links to the full-resolution MP4.
-
-**▶ `/security-engineer` — the full-360 run, step by step** (40s · [full MP4](https://agenticrisklabs.io/videos/terraform-agent-platform/security-engineer-walkthrough.mp4))
-
-![security-engineer walkthrough](https://agenticrisklabs.io/videos/terraform-agent-platform/security-engineer-walkthrough.gif)
-
-**▶ `/local-scan` — the four-lane scan, step by step** (36s · [full MP4](https://agenticrisklabs.io/videos/terraform-agent-platform/local-scan-walkthrough.mp4))
-
-![local-scan walkthrough](https://agenticrisklabs.io/videos/terraform-agent-platform/local-scan-walkthrough.gif)
-
-> Detail scroll-throughs of the two reports are in [§7](#7-the-resulting-reports), and the interactive
-> HTML players are in this folder
-> ([`security-engineer-walkthrough.html`](security-engineer-walkthrough.html) ·
-> [`local-scan-walkthrough.html`](local-scan-walkthrough.html)).
+This README walks the *app itself*, layer by layer. The two **reports** are the full markdown
+deliverables (rendered on GitHub); the **Watch** links are short screen-recordings of each run
+(hosted — click to play in your browser).
 
 > **Nothing here is proven by a live test.** The target is static Terraform — there is no running
 > agent to drive — so every attack path below is **theoretical**: reachable as written, not
@@ -218,28 +200,24 @@ Each is scoped to the least-privilege allow-set the graph shows the agent actual
 
 ## 7. The resulting reports
 
-Each skill ends in a deliverable — both are in this folder, standalone HTML, open them in a browser:
+Each skill ends in a markdown deliverable — both in this folder, rendered on GitHub:
 
-- **[`report-local-scan.html`](report-local-scan.html)** — the four-lane scan summary: the lane table,
-  the 53 checkov failures grouped by resource (expandable), and the method/commit/tooling notes.
-  Says *where* the risk is and stops.
-- **[`report-security-engineer.html`](report-security-engineer.html)** — the full assessment:
-  verdict (**BLOCK**, ARS floor 9.0), the 5 attack paths, the kill-chain diagram, findings by layer
-  (IaC + the 10 identity gaps), the weakness→control map, the 6 ranked fixes, and the coverage notes.
-  Says *what it means and how to fix it*.
+- **[`report-local-scan.md`](report-local-scan.md)** — the four-lane scan summary: the lane table, the
+  53 checkov failures grouped by resource, and the method/commit/tooling notes. Says *where* the risk
+  is and stops.
+- **[`report-security-engineer.md`](report-security-engineer.md)** — the full assessment: verdict
+  (**BLOCK**, ARS floor 9.0), the 5 attack paths, the kill-chain diagram, findings by layer (IaC + the
+  10 identity gaps), the weakness→control map, the 6 ranked fixes, and the coverage notes. Says *what it
+  means and how to fix it*.
 
-The two are meant to be read in order: `local-scan` is the 10-second triage, `security-engineer` is the
-assessment you hand to an engineer. Both are produced in **client mode** — generated on your machine by
-the skill running in your coding agent; the AsterVault MCP supplies only grounding (weakness registry,
-control crosswalk, risk floor), never your source or findings.
+Read them in order: `local-scan` is the 10-second triage, `security-engineer` is the assessment you hand
+to an engineer. Both are produced in **client mode** — generated on your machine by the skill running in
+your coding agent; the AsterVault MCP supplies only grounding (weakness registry, control crosswalk,
+risk floor), never your source or findings.
 
-**Detail view — the assessment report** (47s scroll-through, every section expanded) — click to play:
-
-[![assessment report — detail scroll-through](media/report-security-engineer-poster.png)](https://agenticrisklabs.io/videos/terraform-agent-platform/report-security-engineer-detail.mp4)
-
-**Detail view — the scan report** (22s scroll-through, findings expanded) — click to play:
-
-[![scan report — detail scroll-through](media/report-local-scan-poster.png)](https://agenticrisklabs.io/videos/terraform-agent-platform/report-local-scan-detail.mp4)
+Prefer to watch? The step-by-step runs are linked at the top —
+[▶ `/security-engineer` (40s)](https://agenticrisklabs.io/videos/terraform-agent-platform/security-engineer-walkthrough.mp4) ·
+[▶ `/local-scan` (36s)](https://agenticrisklabs.io/videos/terraform-agent-platform/local-scan-walkthrough.mp4).
 
 ---
 
