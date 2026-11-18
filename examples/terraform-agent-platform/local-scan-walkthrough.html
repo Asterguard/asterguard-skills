@@ -1,0 +1,278 @@
+<title>Terraform Local Scan Walkthrough</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f5f7f7;--panel:#ffffff;--sunk:#eef2f2;--line:#d6dfdf;--fg:#14201f;--dim:#5a6b69;
+  --accent:#1f6f78;--accent2:#2a8a95;
+  --crit:#b4232c;--critBg:#fbe9ea;--high:#a35a00;--highBg:#fdf1e1;--med:#66701a;--medBg:#f2f4e0;--low:#2f6b4f;--lowBg:#e5f2ec;--ok:#2f6b4f;
+  --termBg:#1b1f2b;--termFg:#e6e8ef;--termDim:#8b93a7;--termGreen:#8fe39a;--termYel:#f2d479;--termRed:#ff8a8f;--termCy:#79d8e0;--termMg:#d79be6;
+  --body:'IBM Plex Sans',system-ui,-apple-system,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1414;--panel:#131d1d;--sunk:#0f1818;--line:#243433;--fg:#e3eceb;--dim:#8fa3a0;
+  --accent:#5fc3cc;--accent2:#7ad3db;
+  --crit:#ff7b80;--critBg:#3a1517;--high:#f0ad55;--highBg:#33230d;--med:#c4d36b;--medBg:#262b10;--low:#6fd3a4;--lowBg:#10291e;--ok:#6fd3a4;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1414;--panel:#131d1d;--sunk:#0f1818;--line:#243433;--fg:#e3eceb;--dim:#8fa3a0;
+  --accent:#5fc3cc;--accent2:#7ad3db;
+  --crit:#ff7b80;--critBg:#3a1517;--high:#f0ad55;--highBg:#33230d;--med:#c4d36b;--medBg:#262b10;--low:#6fd3a4;--lowBg:#10291e;--ok:#6fd3a4;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--body)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px;display:grid;gap:18px}
+h1{font-size:clamp(21px,3.6vw,27px);font-weight:700;margin:0;line-height:1.15;text-wrap:balance}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
+.sub{color:var(--dim);font-size:13.5px;font-family:var(--mono)}
+header{display:grid;gap:9px}
+.hdrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{font:600 11.5px/1 var(--mono);padding:6px 9px;border-radius:4px;white-space:nowrap}
+.s-critical{background:var(--critBg);color:var(--crit)}.s-high{background:var(--highBg);color:var(--high)}
+.s-medium{background:var(--medBg);color:var(--med)}.s-low{background:var(--lowBg);color:var(--low)}
+.s-ok{background:var(--lowBg);color:var(--ok)}
+.s-info{background:var(--sunk);color:var(--dim);border:1px solid var(--line)}
+.rail{display:grid;gap:6px}
+.rseg{height:6px;border-radius:3px;background:var(--line);overflow:hidden;cursor:pointer;position:relative}
+.rseg i{position:absolute;inset:0;width:0;background:var(--accent);border-radius:3px}
+.rseg.done i{width:100%}
+.steps-nav{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:600 11.5px/1 var(--mono);padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--dim);cursor:pointer}
+.chip.active{color:var(--bg);background:var(--accent);border-color:var(--accent)}
+.chip b{font-weight:700;opacity:.7;margin-right:5px}
+.stage{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;align-items:stretch}
+@media(max-width:760px){.stage{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0;overflow:hidden}
+.term{background:var(--termBg);color:var(--termFg);font:12.5px/1.65 var(--mono);display:flex;flex-direction:column;min-height:300px}
+.term-bar{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid #2a2f3e;background:#171b26}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.term-title{margin-left:6px;color:var(--termDim);font-size:11.5px}
+.term-body{padding:12px 14px;display:grid;gap:3px;align-content:start;overflow-x:auto}
+.ln{white-space:pre-wrap;overflow-wrap:anywhere;opacity:0;transform:translateY(3px);animation:fin .28s ease forwards}
+@keyframes fin{to{opacity:1;transform:none}}
+.ln.cmd{color:var(--termCy)}
+.ln.head{color:var(--termMg);font-weight:600;margin-top:7px}
+.ln.say{color:var(--termDim)}
+.ln .ok{color:var(--termGreen)}.ln .yel{color:var(--termYel)}.ln .red{color:var(--termRed)}.ln .cy{color:var(--termCy)}.ln .dim{color:var(--termDim)}
+.ln .arr{color:var(--termDim)}
+.lane{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline}
+.cursor{display:inline-block;width:8px;height:14px;background:var(--termGreen);vertical-align:-2px;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+.explain{padding:16px 18px;display:grid;gap:12px;align-content:start}
+.explain .step-k{font:600 11px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.explain h2{font-size:18px;margin:0;line-height:1.2;font-weight:600;text-wrap:balance}
+.explain .lead{font-size:14.5px;margin:0}
+.block{display:grid;gap:4px}
+.block .lab{font:600 10.5px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--dim)}
+.block p{margin:0;font-size:13.5px;color:var(--fg)}
+.whybox{border-left:3px solid var(--accent);background:var(--sunk);padding:9px 12px;border-radius:0 6px 6px 0}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font:500 11px/1 var(--mono);padding:4px 7px;border-radius:4px;background:var(--sunk);border:1px solid var(--line);color:var(--dim)}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.btn{font:600 13px/1 var(--body);padding:9px 13px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{border-color:var(--accent)}
+.btn.play{background:var(--accent);color:var(--bg);border-color:var(--accent);min-width:104px;justify-content:center}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.spacer{flex:1}
+.count{font:600 12.5px/1 var(--mono);color:var(--dim)}
+.speed{display:inline-flex;gap:3px;align-items:center}
+.speed button{font:600 11.5px/1 var(--mono);padding:5px 7px;border-radius:5px;border:1px solid var(--line);background:var(--panel);color:var(--dim);cursor:pointer}
+.speed button.on{color:var(--bg);background:var(--accent2);border-color:var(--accent2)}
+footer{color:var(--dim);font-size:12px;border-top:1px solid var(--line);padding-top:12px;font-family:var(--mono)}
+@media (prefers-reduced-motion:reduce){.ln{animation:none;opacity:1;transform:none}.cursor{animation:none}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">AsterGuard · skill walkthrough · <code>/local-scan</code></span>
+  <h1>Local multi-lane scan of a Terraform agent platform — step by step</h1>
+  <div class="hdrow">
+    <span class="sub">CoMatrixlabs/terraform-agent-platform-demo @ cbae078</span>
+    <span class="pill s-critical">1 lane fired</span>
+    <span class="pill s-ok">nothing uploaded</span>
+  </div>
+  <p class="sub" style="color:var(--dim)">The fast, client-side scanner pass: four lanes over the repo, all local, zero data egress. Press play, or step through yourself.</p>
+</header>
+
+<div class="rail" id="rail"></div>
+<div class="steps-nav" id="nav"></div>
+
+<div class="stage">
+  <div class="card term">
+    <div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title" id="termTitle">claude code · asterguard-security</span></div>
+    <div class="term-body" id="term"></div>
+  </div>
+  <div class="card explain" id="explain"></div>
+</div>
+
+<div class="controls">
+  <button class="btn" id="prev" aria-label="Previous step">‹ Prev</button>
+  <button class="btn play" id="play" aria-label="Play or pause">▶ Play</button>
+  <button class="btn" id="next" aria-label="Next step">Next ›</button>
+  <span class="count" id="count">1 / 6</span>
+  <span class="spacer"></span>
+  <span class="speed" aria-label="Playback speed">
+    <button data-s="1.6">0.6×</button><button data-s="1" class="on">1×</button><button data-s="0.6">1.6×</button>
+  </span>
+</div>
+
+<footer>Grounded in the real run: refresh clone @ cbae078 → brew install syft 1.57.2 · grype 0.122.0 · trufflehog 3.99.9 (checkov 3.4.5 in venv) → 4 lanes (SCA · IaC · secrets · AI-BOM) → only the IaC lane fired. Nothing uploaded.</footer>
+</div>
+
+<script>
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const C=t=>({k:'cmd',t}), S=t=>({k:'say',t}), O=t=>({k:'out',t}),
+      T=(a,b)=>({k:'tool',a,b}),
+      L=(lane,tool,res)=>({k:'lane',lane,tool,res});
+
+const STEPS=[
+{key:"00", title:"What you're watching",
+ term:[
+   C("/local-scan git@github.com:CoMatrixlabs/terraform-agent-platform-demo.git"),
+   S("plugin asterguard-security · everything runs on your machine"),
+   {k:'out',t:'<span class="cy">AsterGuard</span> ▸ local-scan — four lanes, client-side'},
+   O('target: terraform-agent-platform-demo @ cbae078'),
+ ],
+ kstep:"The ask", h:"A fast, local first look",
+ lead:"<code>local-scan</code> is the lightweight counterpart to the full assessment: run the open-source scanners over a repo <b>on your own machine</b>, in parallel lanes, and report what each one found.",
+ why:"It answers \"what's obviously wrong here?\" in seconds, with no server round-trip and nothing leaving the laptop. It's the pass you run on every commit before deciding whether a deeper review is worth it.",
+ tags:["client-side","4 lanes","zero egress"]},
+
+{key:"01", title:"Refresh &amp; install tools",
+ term:[
+   C("git fetch && git status"),
+   T('commit','<span class="ok">cbae078</span> <span class="dim">— unchanged since the earlier assessment</span>'),
+   C("brew install syft grype trufflehog"),
+   T('syft','1.57.2'), T('grype','0.122.0'), T('trufflehog','3.99.9'),
+   T('checkov','3.4.5 <span class="dim">— already in the scratchpad venv</span>'),
+   S("Running all four lanes now."),
+ ],
+ kstep:"Step 1", h:"Pin the commit, make sure the tools are present",
+ lead:"The scan records the exact commit — <b>cbae078</b>, unchanged — so the result is reproducible. Three scanners are installed via Homebrew; checkov was already in the virtualenv from the earlier run.",
+ why:"Naming the commit makes a scan a fact you can re-check, not a vibe. Each lane is just a well-known OSS tool — syft/grype for dependencies, checkov for IaC, trufflehog for secrets — so there's nothing proprietary to trust about the raw collection step.",
+ tags:["commit cbae078","syft · grype · trufflehog","checkov in venv"]},
+
+{key:"02", title:"Lane 1 — dependencies",
+ term:[
+   {k:'head',t:'Lane 1 · dependencies (SCA)'},
+   T('syft <span class="dim">(SBOM)</span>','<span class="yel">0 packages</span>'),
+   T('grype <span class="dim">(CVE match)</span>','<span class="yel">0 CVEs</span>'),
+   S("No package manifests or lockfiles in the repo — nothing to resolve."),
+ ],
+ kstep:"Step 2", h:"Software composition — and why it's empty",
+ lead:"syft builds a software bill of materials, grype matches it against known CVEs. Here both come back empty: <b>0 packages, 0 CVEs</b>.",
+ why:"That's not a miss — it's the correct answer. This repo is pure Terraform with no <code>package.json</code>, <code>requirements.txt</code> or lockfile, so there's no dependency surface to score. An empty lane that explains itself is a signal, not silence.",
+ tags:["0 packages","0 CVEs","no manifests"]},
+
+{key:"03", title:"Lane 2 — infrastructure",
+ term:[
+   {k:'head',t:'Lane 2 · infrastructure-as-code'},
+   T('checkov <span class="dim">(terraform)</span>','<span class="red">53 failed</span> · <span class="ok">47 passed</span>'),
+   O('across <span class="cy">18 Terraform resources</span>'),
+   S("Public S3 ACL, publicly-accessible RDS, wildcard IAM, unencrypted stores, open security groups…"),
+ ],
+ kstep:"Step 3", h:"The one lane that fired",
+ lead:"checkov evaluates the Terraform against hundreds of policy checks. It returns <b>53 failed / 47 passed</b> across 18 resources — public buckets, a publicly-accessible database, wildcard IAM policies, missing encryption, wide-open security groups.",
+ why:"This is the real risk surface of the app, and it's entirely in the infrastructure layer. These 53 failures are the raw material the full <code>security-engineer</code> pass turns into named weaknesses, mapped controls and attack paths.",
+ tags:["53 failed · 47 passed","18 resources","the risk is in the IaC"]},
+
+{key:"04", title:"Lanes 3 &amp; 4 — secrets &amp; AI assets",
+ term:[
+   {k:'head',t:'Lane 3 · secrets'},
+   T('trufflehog','<span class="ok">0 verified secrets</span>'),
+   {k:'head',t:'Lane 4 · AI assets (AI-BOM)'},
+   T('ai-bom','<span class="ok">0 models / datasets</span> <span class="dim">(no app code)</span>'),
+   S("Both lanes clean — in this repo the secret (RDS password) lives in Terraform, caught by the IaC lane."),
+ ],
+ kstep:"Step 4", h:"The quiet lanes — and a caveat",
+ lead:"trufflehog scans for committed credentials and verifies them; the AI-BOM lane inventories models, datasets and agent frameworks. Both come back <b>clean</b> here.",
+ why:"Worth noting: this fixture <i>does</i> have a hardcoded RDS password — but it lives in a Terraform variable, so it surfaces in the IaC lane (and in semgrep during the full pass), not as a git-history secret. local-scan reports lanes honestly; the full assessment is what cross-correlates them.",
+ tags:["trufflehog: 0","AI-BOM: 0","secret caught in IaC lane"]},
+
+{key:"05", title:"Result",
+ term:[
+   {k:'head',t:'summary'},
+   L('Dependencies (SCA)','syft + grype','<span class="yel">0 pkgs · 0 CVEs</span>'),
+   L('Infrastructure','checkov','<span class="red">53 failed · 47 passed</span>'),
+   L('Secrets','trufflehog','<span class="ok">0</span>'),
+   L('AI assets','ai-bom','<span class="ok">0</span>'),
+   O('<span class="dim">nothing was uploaded — results stay local</span>'),
+ ],
+ kstep:"Step 5", h:"One lane fired — and it's enough to act on",
+ lead:"Of four lanes, only infrastructure found anything. The headline: <b>53 IaC misconfigurations</b>, no dependency or secret exposure, nothing uploaded anywhere.",
+ why:"local-scan's job is done — it told you in seconds that this app's risk is all in the Terraform, and it did it without sending a byte off the machine. The natural next step is the full <code>security-engineer</code> pass, which takes these 53 findings and builds the weakness map, attack paths and fix plan.",
+ tags:["1 of 4 lanes fired","results stay local","→ run security-engineer next"]},
+];
+
+const term=document.getElementById('term'), explain=document.getElementById('explain'),
+      rail=document.getElementById('rail'), nav=document.getElementById('nav'),
+      countEl=document.getElementById('count'), termTitle=document.getElementById('termTitle');
+let i=0, playing=false, timer=null, segTimer=null, speed=1;
+const BASE=5200;
+
+rail.style.gridTemplateColumns=`repeat(${STEPS.length},1fr)`;
+rail.innerHTML=STEPS.map((s,n)=>`<div class="rseg" data-n="${n}"><i></i></div>`).join('');
+nav.innerHTML=STEPS.map((s,n)=>`<button class="chip" data-n="${n}"><b>${s.key}</b>${esc(s.title).replace(/&amp;/g,'&')}</button>`).join('');
+const segs=[...rail.children], chips=[...nav.children];
+
+function termHTML(lines){
+  return lines.map((l,n)=>{
+    const d=`style="animation-delay:${n*140}ms"`;
+    if(l.k==='cmd')  return `<div class="ln cmd" ${d}><span class="dim">❯</span> ${l.t}</div>`;
+    if(l.k==='head') return `<div class="ln head" ${d}>⬡ ${l.t}</div>`;
+    if(l.k==='say')  return `<div class="ln say" ${d}>${l.t}</div>`;
+    if(l.k==='out')  return `<div class="ln" ${d}>${l.t}</div>`;
+    if(l.k==='tool') return `<div class="ln" ${d}><span class="ok">✓</span> ${l.a} <span class="arr">→</span> ${l.b}</div>`;
+    if(l.k==='lane') return `<div class="ln lane" ${d}><span>${l.lane}</span><span class="dim">${l.tool}</span><span>${l.res}</span></div>`;
+    return `<div class="ln" ${d}>${l.t||''}</div>`;
+  }).join('')+`<div class="ln" style="animation-delay:${lines.length*140}ms"><span class="cursor"></span></div>`;
+}
+
+function paint(n){
+  i=n; const s=STEPS[n];
+  termTitle.textContent = n===0 ? 'claude code · asterguard-security' : `claude code · step ${s.key} — ${s.title.replace(/&amp;/g,'&')}`;
+  term.innerHTML=termHTML(s.term);
+  explain.innerHTML=`
+    <span class="step-k">${esc(s.kstep||('Step '+s.key))}</span>
+    <h2>${s.h}</h2>
+    <p class="lead">${s.lead}</p>
+    <div class="whybox block"><span class="lab">Why it matters</span><p>${s.why}</p></div>
+    <div class="tags">${(s.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`;
+  segs.forEach((g,k)=>{g.classList.toggle('done',k<n);g.classList.toggle('active',k===n);});
+  chips.forEach((c,k)=>c.classList.toggle('active',k===n));
+  countEl.textContent=`${n+1} / ${STEPS.length}`;
+  try{history.replaceState(null,'','#'+s.key);}catch(e){}
+}
+function clearTimers(){clearTimeout(timer);cancelAnimationFrame(segTimer);}
+function runSeg(){
+  const dur=BASE*speed, start=performance.now(), seg=segs[i].querySelector('i');
+  function tick(now){
+    const p=Math.min(1,(now-start)/dur);
+    seg.style.width=(p*100)+'%';
+    if(p<1&&playing){segTimer=requestAnimationFrame(tick);}
+    else if(playing){ if(i<STEPS.length-1){paint(i+1);runSeg();} else {stop();} }
+  }
+  segTimer=requestAnimationFrame(tick);
+}
+function play(){ if(i>=STEPS.length-1) paint(0); playing=true; document.getElementById('play').textContent='❚❚ Pause'; runSeg(); }
+function stop(){ playing=false; clearTimers(); document.getElementById('play').textContent='▶ Play'; }
+function go(n){ stop(); paint(Math.max(0,Math.min(STEPS.length-1,n))); }
+document.getElementById('play').onclick=()=>playing?stop():play();
+document.getElementById('next').onclick=()=>go(i+1);
+document.getElementById('prev').onclick=()=>go(i-1);
+segs.forEach(g=>g.onclick=()=>go(+g.dataset.n));
+chips.forEach(c=>c.onclick=()=>go(+c.dataset.n));
+document.querySelectorAll('.speed button').forEach(b=>b.onclick=()=>{
+  speed=+b.dataset.s; document.querySelectorAll('.speed button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  if(playing){clearTimers();runSeg();}
+});
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'){go(i+1);} else if(e.key==='ArrowLeft'){go(i-1);}
+  else if(e.key===' '){e.preventDefault();playing?stop():play();}
+});
+const startk=(location.hash||'').replace('#','');
+const si=STEPS.findIndex(s=>s.key===startk);
+paint(si>=0?si:0);
+</script>
