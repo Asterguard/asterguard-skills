@@ -214,7 +214,7 @@ const BASE=5200;
 
 rail.style.gridTemplateColumns=`repeat(${STEPS.length},1fr)`;
 rail.innerHTML=STEPS.map((s,n)=>`<div class="rseg" data-n="${n}"><i></i></div>`).join('');
-nav.innerHTML=STEPS.map((s,n)=>`<button class="chip" data-n="${n}"><b>${s.key}</b>${esc(s.title).replace('&amp;','&')}</button>`).join('');
+nav.innerHTML=STEPS.map((s,n)=>`<button class="chip" data-n="${n}"><b>${s.key}</b>${esc(s.title).replace(/&amp;/g,'&')}</button>`).join('');
 const segs=[...rail.children], chips=[...nav.children];
 
 function termHTML(lines){
@@ -232,7 +232,7 @@ function termHTML(lines){
 
 function paint(n){
   i=n; const s=STEPS[n];
-  termTitle.textContent = n===0 ? 'claude code · asterguard-security' : `claude code · step ${s.key} — ${s.title.replace('&amp;','&')}`;
+  termTitle.textContent = n===0 ? 'claude code · asterguard-security' : `claude code · step ${s.key} — ${s.title.replace(/&amp;/g,'&')}`;
   term.innerHTML=termHTML(s.term);
   explain.innerHTML=`
     <span class="step-k">${esc(s.kstep||('Step '+s.key))}</span>

@@ -12,6 +12,17 @@ Both walkthroughs are self-contained HTML "videos" — open them in a browser an
 step through with the arrow keys. This README is the written companion: it walks the *app itself*,
 layer by layer, so you can see exactly where the risk lives and why each finding matters.
 
+### Recorded clips (`media/`)
+
+Pre-rendered MP4s for sharing/posting — the players and reports captured as video:
+
+| Clip | Shows |
+|---|---|
+| [`media/security-engineer-walkthrough.mp4`](media/security-engineer-walkthrough.mp4) | the full-360 run, step by step (40s) |
+| [`media/local-scan-walkthrough.mp4`](media/local-scan-walkthrough.mp4) | the four-lane scan, step by step (36s) |
+| [`media/report-security-engineer-detail.mp4`](media/report-security-engineer-detail.mp4) | detail scroll-through of the assessment report (47s) |
+| [`media/report-local-scan-detail.mp4`](media/report-local-scan-detail.mp4) | detail scroll-through of the scan report (22s) |
+
 > **Nothing here is proven by a live test.** The target is static Terraform — there is no running
 > agent to drive — so every attack path below is **theoretical**: reachable as written, not
 > canary-confirmed. The same pipeline marks a finding *proven* only when a canary or a live red-team
