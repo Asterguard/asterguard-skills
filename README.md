@@ -64,13 +64,18 @@ The *method* is yours to run with nothing from us; the *shared brain* is one end
 
 A security engineer asks their agent: *"Review `support-agent` for AppSec — scan it, red-team the risky
 paths, and recommend enforcement policies."* The `security-engineer` orchestrator runs the whole
-**full-360** pipeline over the live gateway and closes the loop:
+**full-360** pipeline and closes the loop:
 
-![full-360 skills walkthrough — recall → scan + graph → resolve the lede weakness → attacker ▸ defender ▸ judge (canary-proven PII exfil) → remediation PR → review-gated enforcement → grounded report → shared memory](docs/media/full-360-demo.gif)
+![full-360 skills walkthrough — recall → scan + graph → resolve the lede weakness → attacker ▸ defender ▸ judge (canary-proven PII exfil) → remediation PR → review-gated enforcement → grounded report → shared memory](https://agenticrisklabs.io/videos/full-360-demo.gif)
 
 *recall → scan + build the graphs → resolve the lede weakness → attacker ▸ defender ▸ judge
 (**canary-proven** PII exfil, not a guess) → remediation PR → review-gated enforcement → grounded report
-→ shared memory.* &nbsp;·&nbsp; [▶ MP4](docs/media/full-360-demo.mp4)
+→ shared memory.* &nbsp;·&nbsp; [▶ MP4](https://agenticrisklabs.io/videos/full-360-demo.mp4)
+
+> **About this clip** — it's a *narrated walkthrough*: a scripted, deterministic playback of the
+> full-360 flow, grounded in the real tool calls and outputs in
+> [`examples/live-demo/`](examples/live-demo/) — not a live screen recording. To run the real thing
+> yourself over a live MCP connection, use [`examples/live-demo/`](examples/live-demo/).
 
 Runnable walkthroughs live in [`examples/`](examples/) — the live Claude Code ↔ AsterVault MCP flow is
 [`examples/live-demo/`](examples/live-demo/).
