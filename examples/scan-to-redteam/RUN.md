@@ -9,9 +9,9 @@ through the proxy).
 ## Run
 
 ```bash
-# 1. stand up the local gateway (see ../live-demo/setup-dev-gateway.sh), then:
-export ASTERVAULT_MCP_URL="http://localhost:8080/mcp"
-export ASTERVAULT_DEV_JWT="$(cat ../live-demo/.astervault-dev/dev_jwt.txt)"
+# connect to the gateway (see ../../docs/MCP_WIRING.md), then:
+export ASTERVAULT_MCP_URL="https://astervault.agenticrisklabs.io/mcp"   # or your own gateway
+export ASTERVAULT_DEV_JWT="<bearer token for the gateway>"             # from the OAuth flow
 export REMEDIATION_PATH="$HOME/Nexcraft/asterguard-remediation"   # or pip install the package
 python3 driver.py
 ```

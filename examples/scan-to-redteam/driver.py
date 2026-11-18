@@ -7,9 +7,9 @@ The ATTACKER is real: the selected `attacker_model` generates the crescendo turn
 key is configured. The DEFENDER is a labelled stub standing in for the real
 system-under-test (a real run drives the SUT through the proxy).
 
-Setup (see ../live-demo/setup-dev-gateway.sh):
-  export ASTERVAULT_MCP_URL="http://localhost:8080/mcp"
-  export ASTERVAULT_DEV_JWT="$(cat ../live-demo/.astervault-dev/dev_jwt.txt)"
+Setup (connect to the gateway — see ../../docs/MCP_WIRING.md):
+  export ASTERVAULT_MCP_URL="https://astervault.agenticrisklabs.io/mcp"   # or your own gateway
+  export ASTERVAULT_DEV_JWT="<bearer token for the gateway>"              # from the OAuth flow
   # select the attacker model (optional — defaults to a scripted crescendo):
   export ASTERGUARD_ATTACKER_PROVIDER=openai   # openai | deepseek | nvidia | <compatible>
   export ASTERGUARD_ATTACKER_MODEL=gpt-4o-mini
@@ -19,10 +19,11 @@ Requires the asterguard-remediation package importable (REMEDIATION_PATH or inst
 """
 import asyncio, base64, json, os, sys, time, urllib.request
 
-URL = os.environ.get("ASTERVAULT_MCP_URL", "http://localhost:8080/mcp")
-TOK = os.environ.get("ASTERVAULT_DEV_JWT") or open(
-    os.environ.get("ASTERVAULT_DEV_JWT_FILE",
-                   os.path.join(os.path.dirname(__file__), "..", "live-demo", ".astervault-dev", "dev_jwt.txt"))).read().strip()
+URL = os.environ.get("ASTERVAULT_MCP_URL", "https://astervault.agenticrisklabs.io/mcp")
+_tok_file = os.environ.get("ASTERVAULT_DEV_JWT_FILE")
+TOK = (os.environ.get("ASTERVAULT_DEV_JWT")
+       or (open(_tok_file).read().strip() if _tok_file else "")
+       or sys.exit("set ASTERVAULT_DEV_JWT (a bearer token for the gateway) — see ../../docs/MCP_WIRING.md"))
 sys.path.insert(0, os.environ.get("REMEDIATION_PATH", os.path.expanduser("~/Nexcraft/asterguard-remediation")))
 import asterguard_remediation as AR
 from mcp.client.streamable_http import streamablehttp_client

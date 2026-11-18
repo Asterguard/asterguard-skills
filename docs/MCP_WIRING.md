@@ -12,15 +12,15 @@ setup, and the same gateway across Claude Code, Cursor, Codex, and other harness
 Both declare one Streamable-HTTP server:
 
 ```json
-{ "mcpServers": { "astervault": { "type": "http", "url": "${ASTERVAULT_MCP_URL:-https://astervault.local/mcp}" } } }
+{ "mcpServers": { "astervault": { "type": "http", "url": "${ASTERVAULT_MCP_URL:-https://astervault.agenticrisklabs.io/mcp}" } } }
 ```
 
 ## Configure
 
-Point it at your gateway (defaults to `https://astervault.local/mcp`):
+Point it at your gateway (defaults to `https://astervault.agenticrisklabs.io/mcp`):
 
 ```bash
-export ASTERVAULT_MCP_URL="https://<your-astervault-host>/mcp"
+export ASTERVAULT_MCP_URL="https://astervault.agenticrisklabs.io/mcp"
 ```
 
 AsterVault is an OAuth 2.1 Resource Server (MCP Authorization spec, RFC 9728/8707); the harness runs
