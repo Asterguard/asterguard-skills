@@ -6,6 +6,10 @@ stubs stand in for what a real engagement supplies: the **attacker turns** (a re
 the selected `attacker_model`) and the **vulnerable defender** (a real run drives the system-under-test
 through the proxy).
 
+> **Prefer to run the arc as skills in your harness?** Install them first —
+> [examples/SETUP.md](../SETUP.md) (Claude Code `/plugin` + Cursor/Codex), then follow
+> [`PLAYBOOK.md`](PLAYBOOK.md). The `driver.py` path below is the standalone live-gateway demo.
+
 ## Run
 
 ```bash

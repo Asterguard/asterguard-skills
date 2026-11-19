@@ -16,6 +16,22 @@ recall ─► scan ─► build the attack graph ─► pick targets ─► RED 
   └──────────────────────── the corpus grows: next scan→red-team starts ahead ───────────────────────────────────┘
 ```
 
+## Setup — install the skills
+
+**Claude Code:**
+
+```text
+/plugin marketplace add Asterguard/asterguard-skills
+/plugin install asterguard-security@asterguard-marketplace
+```
+
+**Cursor / Codex / other harnesses**, plus the scanners and offline-vs-connected mode, are in the shared
+**[examples/SETUP.md](../SETUP.md)**. (In Cursor the skills aren't slash commands — invoke a skill by
+asking the agent to run it by name.) To run the arc directly against a live gateway instead of as skills,
+see [`RUN.md`](RUN.md) (the `driver.py` demo).
+
+---
+
 ## Step by step (the prompt → the skills → the MCP)
 
 **1. Recall + scope** — *"Scan `sales-copilot` and red-team its risky paths."*

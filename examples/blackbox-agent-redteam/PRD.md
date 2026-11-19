@@ -9,6 +9,19 @@ the skills compose and where the client/server boundary sits.
 Given a live agent endpoint, produce a risk report — attack surface, findings, ARS — without reading
 code and without shipping any AsterGuard knowledge to the client.
 
+## Setup — install the skills
+
+**Claude Code:**
+
+```text
+/plugin marketplace add Asterguard/asterguard-skills
+/plugin install asterguard-security@asterguard-marketplace
+```
+
+**Cursor / Codex / other harnesses**, plus the scanners and offline-vs-connected mode, are in the shared
+**[examples/SETUP.md](../SETUP.md)**. This example profiles a *live* agent, so it uses connected mode (the
+AsterVault proxy + MCP); set `ASTERVAULT_MCP_URL` per that doc.
+
 ## Pipeline
 
 ```

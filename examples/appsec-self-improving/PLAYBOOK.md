@@ -26,6 +26,10 @@ export ASTERVAULT_MCP_URL="https://astervault.agenticrisklabs.io/mcp"   # .mcp.j
 
 Then the engineer just talks to their agent: *"assess and red-team the support-agent, and remediate."*
 
+Running in **Cursor / Codex** instead, or want the **offline** (no-gateway) setup and the scanner install?
+That's the shared **[examples/SETUP.md](../SETUP.md)** — the loop above needs connected mode (the
+`memory.*` / enforcement calls), so keep `ASTERVAULT_MCP_URL` set here.
+
 ---
 
 ## Run 1 — cold start (`support-agent`, a customer-support LLM agent)

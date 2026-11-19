@@ -49,6 +49,21 @@ Internet ──▶ Agent API :443 ──▶ SupportAgent (pods, ns=agents)
 
 ---
 
+## Setup — install the skills
+
+**Claude Code:**
+
+```text
+/plugin marketplace add Asterguard/asterguard-skills
+/plugin install asterguard-security@asterguard-marketplace
+```
+
+**Cursor / Codex / other harnesses**, plus the scanners and offline-vs-connected mode, are in the shared
+**[examples/SETUP.md](../SETUP.md)**. (In Cursor the skills aren't slash commands — a step shown as
+`/local-scan .` is run by asking the agent to run that skill by name.)
+
+---
+
 ## 1. Reproduce it
 
 ```bash

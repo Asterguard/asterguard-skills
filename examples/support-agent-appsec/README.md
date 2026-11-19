@@ -50,6 +50,9 @@ reviewer waves through and a CVE scanner never flags.
 
 ### Step 1 — install the skills in your harness
 
+> Shared across every example — the condensed version here, the full matrix in
+> **[examples/SETUP.md](../SETUP.md)**.
+
 **Claude Code (plugin).** Run these two commands in Claude Code — they add the AsterGuard marketplace and
 install the skill pack:
 
