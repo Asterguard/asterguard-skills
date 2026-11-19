@@ -48,21 +48,45 @@ reviewer waves through and a CVE scanner never flags.
 
 ## 1. Setup — run it yourself
 
-**Prereqs.** Any coding-agent harness (Claude Code, Codex, Cursor, …) with this skill pack on its path, plus
-the open-source scanners. `local-scan` auto-installs any that are missing; to pre-install on macOS:
+### Step 1 — install the skills in your harness
+
+**Claude Code (plugin).** Run these two commands in Claude Code — they add the AsterGuard marketplace and
+install the skill pack:
+
+```text
+/plugin marketplace add Asterguard/asterguard-skills
+/plugin install asterguard-security@asterguard-marketplace
+```
+
+That registers every skill as a **slash command** (`/local-scan`, `/sca-graph`, `/agent-profiling`, …) and
+ships `.mcp.json`. For **offline mode**, leave `ASTERVAULT_MCP_URL` unset — the skills detect the missing
+gateway and run locally. (Full matrix in the [repo Install section](../../README.md#install).)
+
+**Cursor (and Codex / OpenCode / any MCP harness).** The skill bodies are plain Markdown, so build the
+bundle once and load it as project rules:
+
+```bash
+git clone git@github.com:Asterguard/asterguard-skills.git
+cd asterguard-skills
+scripts/build-codex.sh        # emits ./dist/codex/ — AGENTS.md + skills/
+```
+
+Then, in your project: copy the server block from this repo's [`mcp.json`](../../mcp.json) into
+`.cursor/mcp.json`, and drop the bundle's `skills/` bodies in as Cursor **project rules** (and/or load its
+`AGENTS.md`). In Cursor the skills are **not** slash commands — you invoke one by asking the agent by name,
+e.g. *"run the local-scan skill on `.`"* (Claude Code slash-command syntax is shown in Acts 1–2 below; in
+Cursor/Codex phrase the same skill as a request.)
+
+### Step 2 — scanners (optional; `local-scan` auto-installs any missing)
 
 ```bash
 brew install syft grype trufflehog semgrep          # SBOM · CVE · secrets · SAST
 pipx install checkov                                 # IaC (the PR adds infra/storage.tf)
 ```
 
-**Get the skills + the subject app:**
+### Step 3 — get the subject app, pinned at the PR head
 
 ```bash
-# the skill pack (this repo) — point your harness at ./skills
-git clone git@github.com:Asterguard/asterguard-skills.git
-
-# the vulnerable subject, pinned at the PR head
 git clone git@github.com:Asterguard/support-agent-demo.git
 cd support-agent-demo
 git checkout feat/billing-assistant                  # PR #1, head 95d6ae5
