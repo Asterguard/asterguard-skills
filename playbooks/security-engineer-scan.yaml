@@ -1,0 +1,93 @@
+name: security-engineer-scan
+description: >
+  A security engineer's one-command offensive scan of a GitHub repo — clone → plan
+  (recon + attack-planner) → run per-test behavioral red-team with canary tokens →
+  report. The entrypoint is `/security-engineer scan {github_url}`. Authorized
+  engagements only. Setup (MCP + Postgres) is a one-time prerequisite below.
+posture: offensive
+input: github_url               # a GitHub repository URL, cloned locally for static recon
+scope: { mode: full }
+packs: { axes: [framework, provider, runtime, language], auto: true }
+
+# ---------------------------------------------------------------------------
+# One-time setup the engineer does before the first scan (see the companion
+# runbook security-engineer-scan.md for the exact commands).
+# ---------------------------------------------------------------------------
+prerequisites:
+  mcp:
+    server: astervault
+    config: .mcp.json                                  # ASTERVAULT_MCP_URL (+ Authorization bearer)
+    doc: docs/MCP_WIRING.md
+    note: >
+      Planning runs connected-or-offline. The execute tier needs an offensive-entitled
+      bearer so the gateway will mint offensive:run and broker the canary tools.
+  postgres:
+    compose: deploy/context-memory/docker-compose.yml  # memory.* / context.* / working_memory stores
+    env: deploy/context-memory/.env.example            # POSTGRES_* (+ ASTERVAULT_DATABASE_URL)
+    note: >
+      Offline mode needs no Postgres — ./.asterguard/ files suffice for one engineer.
+      Postgres is the team tier: shared, durable, auditable engagement history.
+
+steps:
+  - { skill: knowledge-recall }                        # prior findings/fixes/waivers for this app
+  - { skill: engagement, with: { op: open } }          # record the RoE authorization as event #1
+  - { skill: offensive-token }                         # acquire offensive:run — gates the execute tier
+
+  # --- plan tier (scan token; no offensive token required) ------------------
+  - { skill: recon, with: { source: github } }         # clone the url → the offensive attack map + chosen paths
+  - { skill: local-scan }                              # SCA / AI-BOM / secrets on the cloned repo
+  - { skill: attack-planner }                          # per flagged weakness: which behavioral test + which canary type
+
+  # --- execute tier (offensive token required; the gateway blocks without it)
+  - { skill: attacker-model }                          # select + govern the attacker model (human-gated)
+  - { skill: canary-testing, with: { op: mint } }      # fresh canary per planned test (secret/credential/workload-identity/memory/...)
+  - { skill: behavioral-redteam, with: { per_test: true, budget: "ASR@budget" } }  # each test: attacker ▸ defender ▸ judge
+  - { skill: canary-testing, with: { op: verify } }    # canary.scan/verify = out-of-band proof per test
+  - { skill: exploit-chain }                           # chain a proven foothold → demonstrated compromise (human-gated)
+
+  # --- reports & outcomes tier (the terminal deliverable; pluggable) --------
+  - { skill: pentest-report }                          # the engagement report (HTML + MD)
+  - { skill: risk-report }                             # risk-scored outcomes folded onto the attack surface
+  - { skill: remediation, with: { via: mcp } }         # GATEWAY-BACKED: controls.map(weakness) + rules.fetch →
+                                                       # least-privilege policy-as-code, enforced at the PDP /
+                                                       # egress guardrail; then re-run the proven tests → HELD
+  - { skill: memory-capture }                          # proven breaks + decisions → reusable corpus / archived reviews
+  - { skill: engagement, with: { op: checkpoint } }
+  # The terminal reports/outcomes skill plugs in here (see `outcomes:` below).
+
+rules:
+  authorized_only: true
+  require_recorded_authorization: true                 # refuses without a recorded RoE
+  offensive_token_required: true                       # execute tier needs offensive:run; planning does not
+  privileged_tier: [attacker-model, behavioral-redteam, exploit-chain]
+  independent_verification: true                       # a finding is "proven" ONLY on a canary surfacing out-of-band
+  one_test_at_a_time: true                             # mint → plant → drive → scan → verify, per planned test
+  budget: "ASR@10"
+  human_gate: [attacker-model, exploit-chain]
+
+# The terminal reports-&-outcomes phase. `skill` is the pluggable generator that runs after
+# the engagement completes: it consumes ./.asterguard/runs/*.json + the graph + remediations and
+# emits the deliverables below. Defaults to pentest-report/risk-report; swap for an org skill.
+outcomes:
+  skill: report-outcomes                               # pluggable terminal generator (default: pentest-report + risk-report)
+  consumes: [./.asterguard/runs/*.json, ./.asterguard/graph.json, ./.asterguard/remediation.json]
+  emits:
+    - report                                           # HTML + MD engagement report
+    - outcomes_summary                                 # per-test verdicts, ASR@budget, proven kill-chain
+    - canary_evidence                                  # audited canary.verify hits (connected: audit_ids)
+    - regression_suite                                 # the proven breaks as a re-runnable corpus
+    - archived_review                                  # decision + report record → team memory / Artifacts panel
+
+report:
+  format: [html, md]
+  live_console: tools/live-harness                     # watch each per-test run stream live; the Artifacts panel aggregates
+  sections:
+    - exec_summary
+    - scope_authorization
+    - plan                                             # the attack-planner output: tests × canary types
+    - per_test_findings                                # each behavioral test, verdict, ASR@budget
+    - canary_evidence                                  # the audited canary.verify hits (connected: audit_ids)
+    - kill_chain
+    - asr
+    - remediation
+    - regression_handoff

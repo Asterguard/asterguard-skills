@@ -5,3 +5,18 @@ __pycache__/
 *.pyc
 .astervault-dev/
 examples/scan-to-redteam/redteam-run.json
+
+# Live harness / secrets — never commit bearers, tokens, or env files
+*.jwt
+*.env
+.env
+**/bearer*.txt
+**/*_bearer*
+tools/live-harness/.env
+
+# live-harness local engagement store (never commit)
+*.db
+engagements.db
+
+# fleet scan output
+fleet-report.json
