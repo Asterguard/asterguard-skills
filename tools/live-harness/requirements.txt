@@ -1,0 +1,8 @@
+# Live harness server deps. The gateway, target, and SCA (OSV) clients use only the Python
+# stdlib (urllib); certifi supplies a CA bundle for TLS on venvs without a system trust store.
+fastapi>=0.110.0
+uvicorn>=0.29.0
+certifi>=2024.0.0
+# SAST engine — optional. With semgrep installed, SAST runs the bundled offline ruleset
+# (semgrep-rules.yaml); without it, sast.py falls back to grounded regex rules.
+semgrep>=1.100.0

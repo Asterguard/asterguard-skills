@@ -1,0 +1,69 @@
+# Local semgrep ruleset for AI-agent application code — runs fully offline (no registry/login).
+# sast.py prefers semgrep with these rules; if semgrep is absent it falls back to grounded regex
+# rules with the same finding shape. In the product, the gateway serves framework-profiled packs
+# (`rules.fetch`) that run the same way.
+rules:
+  - id: agent-sqli-string-concat
+    languages: [python]
+    severity: ERROR
+    message: SQL built with string concatenation / interpolation — injection risk (CWE-89)
+    metadata: {cwe: "CWE-89", category: security}
+    patterns:
+      - pattern-either:
+          - pattern: $C.execute("..." + ...)
+          - pattern: $C.execute(... + "...")
+          - pattern: $C.execute(f"...")
+          - pattern: $C.execute("..." % ...)
+
+  - id: agent-dynamic-exec
+    languages: [python]
+    severity: ERROR
+    message: Dynamic code execution via eval/exec (CWE-95)
+    metadata: {cwe: "CWE-95", category: security}
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+
+  - id: agent-subprocess-shell
+    languages: [python]
+    severity: ERROR
+    message: Command injection risk — subprocess with shell=True (CWE-78)
+    metadata: {cwe: "CWE-78", category: security}
+    pattern: subprocess.$F(..., shell=True, ...)
+
+  - id: agent-tls-verify-disabled
+    languages: [python]
+    severity: WARNING
+    message: TLS certificate verification disabled (CWE-295)
+    metadata: {cwe: "CWE-295", category: security}
+    pattern: $X(..., verify=False, ...)
+
+  - id: agent-pii-masking-off
+    languages: [python]
+    severity: ERROR
+    message: PII masking disabled on tool results (CWE-359)
+    metadata: {cwe: "CWE-359", category: security}
+    pattern-regex: 'mask_pii\s*[:=][^=].*False'
+
+  - id: agent-tool-approval-off
+    languages: [python]
+    severity: WARNING
+    message: Human approval gate on effectful tools disabled (CWE-862)
+    metadata: {cwe: "CWE-862", category: security}
+    pattern-regex: 'require_tool_approval\s*[:=][^=].*False'
+
+  - id: agent-unauth-sensitive-route
+    languages: [python]
+    severity: ERROR
+    message: Sensitive route — confirm authentication / authorization (CWE-306)
+    metadata: {cwe: "CWE-306", category: security}
+    pattern-regex: '@\w+\.(?:get|post|route)\(\s*["''][^"'']*(?:admin|export|debug|dump|internal)'
+
+  - id: agent-unbounded-egress
+    languages: [python]
+    severity: WARNING
+    message: Outbound POST/PUT — confirm egress allowlist + no PII leak (CWE-200)
+    metadata: {cwe: "CWE-200", category: security}
+    pattern-either:
+      - pattern: requests.post(...)
+      - pattern: requests.put(...)

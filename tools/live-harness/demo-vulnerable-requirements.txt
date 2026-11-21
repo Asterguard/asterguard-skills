@@ -1,0 +1,10 @@
+# Deliberately-vulnerable dependency pins for the support-agent-demo billing assistant.
+# These are the versions the vulnerable branch (feat/billing-assistant) declared; the live
+# harness queries the OSV advisory DB for THIS manifest's pins so the SCA panel shows real CVE findings for
+# the component layer (complementing the runtime behavioral findings from the gateway).
+# A security engineer points TARGET_REQUIREMENTS at their own app's manifest instead.
+requests==2.19.1
+urllib3==1.24.1
+PyYAML==5.1
+cryptography==2.3
+Jinja2==2.10

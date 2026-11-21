@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AsterGuard — Live Offensive Harness</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0a0d14;color:#c9d4e3;font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.wrap{max-width:1240px;margin:0 auto;padding:22px 18px 70px}
+h1{font-size:19px;margin:0 0 2px}.sub{color:#7f8da3;font-size:12.5px;margin-bottom:16px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;background:#0e131d;border:1px solid #1d2535;border-radius:10px;padding:12px 14px;margin-bottom:16px}
+.bar label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:#8a98ae}
+.bar input,.bar select{background:#0a0e16;border:1px solid #273247;color:#dce5f0;border-radius:6px;padding:7px 9px;font-size:13px}
+.bar input#obj{min-width:360px;flex:1}
+button{background:#1c3b61;border:1px solid #2f5e95;color:#dbe9fb;font-weight:700;border-radius:7px;padding:9px 16px;cursor:pointer;font-size:13px}
+button:disabled{opacity:.5;cursor:default}
+.conn{margin-left:auto;font-size:11px;color:#6f7d93;text-align:right}
+.grid{display:grid;grid-template-columns:1.35fr .95fr;gap:16px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.bar input#obj{min-width:0}}
+.panel{background:#0e131d;border:1px solid #1d2535;border-radius:10px;padding:14px 15px;margin-bottom:16px}
+.panel h3{margin:0 0 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8a98ae}
+.turn{border:1px solid #223047;border-radius:9px;padding:10px 12px;margin-bottom:11px;background:#0b111b}
+.turn .th{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.tnum{font-weight:800;font-size:11px;color:#9fb0c6;background:#131c2b;border:1px solid #243149;border-radius:5px;padding:2px 7px}
+.strat{font-size:10.5px;color:#e4c762;background:#2a2410;border:1px solid #6b5a1e;border-radius:999px;padding:1px 8px}
+.tv{margin-left:auto;font-size:10.5px;font-weight:800;border-radius:5px;padding:2px 8px}
+.tv.broke{background:#3a1416;color:#ff6b6d;border:1px solid #ff4d4f}
+.tv.held{background:#10243a;color:#6db0ff;border:1px solid #4b8fd6}
+.tv.pending{background:#1a1f2c;color:#8a98ae;border:1px solid #2c3647}
+.tgo{color:#8a98ae;font-size:12px;margin-top:5px;white-space:pre-wrap;word-break:break-word}
+.tgbtn{padding:8px 13px;font-size:12.5px}
+.bub{border-radius:7px;padding:7px 10px;margin:5px 0;font-size:13px;white-space:pre-wrap;word-break:break-word}
+.bub b{display:block;font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;color:#7f8da3}
+.bub.reason{background:#121018;border:1px dashed #413553;color:#bcaed4;font-size:12px;font-style:italic}
+.bub.atk{background:#15101a;border:1px solid #3a2740}
+.bub.def{background:#0d1622;border:1px solid #223047}
+.bub.wire{background:#140d0f;border:1px dashed #5a2a2d;font-size:12px}
+.muted{color:#6f7d93}
+.canary{background:#3a1416;color:#ff8f90;padding:0 3px;border-radius:3px;font-weight:700}
+.kv{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #161d29;padding:4px 0;font-size:12.5px}
+.kv span{color:#8191a7}.kv b{color:#dbe6f3;font-weight:600;text-align:right}
+.pill{font-size:10.5px;font-weight:800;border-radius:5px;padding:2px 8px;text-transform:uppercase}
+.verdict.broke{background:#3a1416;color:#ff6b6d;border:1px solid #ff4d4f}
+.verdict.held{background:#10243a;color:#6db0ff;border:1px solid #4b8fd6}
+.chip{display:inline-block;font-size:11px;border-radius:5px;padding:2px 7px;margin:2px 3px 2px 0;background:#151c28;border:1px solid #273247;color:#b9c6d8}
+.chip.cve{background:#241316;border-color:#5a2a2d;color:#ff9fa0}
+svg .nl{font:700 10px ui-monospace,monospace;fill:#cdd8e6}svg .ns{font:9px ui-monospace,monospace;fill:#8696ad}
+svg .el{font:9px ui-monospace,monospace;fill:#7f8da3}
+.trail code{display:block;font-size:11px;color:#8a98ae;border-bottom:1px solid #161d29;padding:3px 0}
+.banner{background:#241316;border:1px solid #5a2a2d;color:#ff9fa0;border-radius:8px;padding:8px 11px;margin-bottom:12px;font-size:12.5px;display:none}
+.empty{color:#55617a;font-size:12.5px;font-style:italic}
+/* floating Artifacts panel */
+.artifacts{position:fixed;right:18px;bottom:18px;width:338px;max-height:80vh;overflow:auto;background:#0e131df5;backdrop-filter:blur(7px);border:1px solid #273247;border-radius:14px;box-shadow:0 12px 44px #000a;z-index:60}
+.artifacts.collapsed{width:auto}
+.artifacts.collapsed .albody{display:none}
+.alhead{display:flex;align-items:center;gap:8px;padding:11px 14px;position:sticky;top:0;background:#0e131d;border-bottom:1px solid #1d2535;border-radius:14px 14px 0 0}
+.alhead h3{margin:0;font-size:14.5px;color:#eef3fa;font-weight:800}
+.alhead .x{margin-left:auto;background:#151c28;border:1px solid #273247;color:#9fb0c6;border-radius:7px;padding:1px 10px;font-weight:800;cursor:pointer;font-size:15px;line-height:1.3}
+.albody{padding:10px 12px}
+.alrow{border:1px solid #1d2535;border-radius:11px;padding:11px 13px;margin-bottom:9px;cursor:pointer;background:#0b111b}
+.alrow:hover{border-color:#2f4a6e}
+.art{display:flex;align-items:center;gap:9px}
+.art .nm{font-weight:700;color:#e4ecf6}
+.art .meta{margin-left:auto;color:#8a98ae;font-size:12px;display:flex;gap:6px;align-items:center}
+.art .chev{color:#56637a}
+.sevpill{font-size:10.5px;font-weight:800;border-radius:999px;padding:2px 9px}
+.sevpill.crit{background:#3a1416;color:#ff8a8c;border:1px solid #6e2b2e}
+.sevpill.high{background:#2a2410;color:#e4c762;border:1px solid #6b5a1e}
+.aldetail{display:none;margin-top:9px;border-top:1px solid #161d29;padding-top:8px;max-height:230px;overflow:auto}
+.alrow.open .aldetail{display:block}
+.alrow.open .chev{transform:rotate(90deg)}
+.aldetail .it{font-size:12px;color:#aebacb;padding:3px 0;border-bottom:1px solid #121926;display:flex;gap:7px}
+.aldetail .tag{color:#6f7d93;font-size:10px;min-width:62px;text-transform:uppercase;letter-spacing:.04em}
+.aldetail .tag.broke{color:#ff6b6d}.aldetail .tag.held{color:#6db0ff}
+.aldetail .it.muted{color:#6f7d93;font-style:italic}
+@media(max-width:620px){.artifacts{left:10px;right:10px;width:auto;bottom:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AsterGuard — Live Offensive Harness</h1>
+  <div class="sub">Multi-turn engagement, streamed as it runs. The gateway is the independent judge; verdicts come only from a planted canary surfacing on an out-of-band channel.</div>
+
+  <div class="bar">
+    <label>Objective<input id="obj"/></label>
+    <label>Canary<select id="ctype"><option>secret</option><option>credential</option><option>memory</option><option>document</option></select></label>
+    <label>Budget<input id="budget" type="number" min="1" max="10" style="width:64px"/></label>
+    <button id="run">▶ Run engagement</button>
+    <div class="conn" id="conn"></div>
+  </div>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="grid">
+    <div>
+      <div class="panel">
+        <h3>Attack stream <span id="status" class="muted" style="text-transform:none;letter-spacing:0;font-weight:400"></span></h3>
+        <div id="stream"><div class="empty">Press “Run engagement” to begin a live multi-turn run.</div></div>
+      </div>
+      <div class="panel">
+        <h3>Test generation · SAST / DAST</h3>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="tgbtn" id="gensast">▶ Generate &amp; run SAST</button>
+          <button class="tgbtn" id="gendast">▶ Generate &amp; run DAST</button>
+        </div>
+        <div id="tgstream"><div class="empty">Generate target-specific tests from the scan and watch each one run.</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="panel"><h3>Data flow · trifecta</h3><svg id="flow" viewBox="0 0 520 260" width="100%"></svg>
+        <div class="muted" id="flowlegend" style="font-size:11px;margin-top:4px"></div></div>
+      <div class="panel"><h3>Weakness · ARS</h3><div id="weak"><div class="empty">Populated from gateway findings when a canary fires.</div></div></div>
+      <div class="panel"><h3>SCA · dependencies</h3><div id="sca"><div class="empty">Scanning…</div></div></div>
+      <div class="panel"><h3>SAST · static <span class="muted" style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11px">free</span></h3><div id="sast"><div class="empty">Scanning the repo…</div></div></div>
+      <div class="panel"><h3>DAST · dynamic <span class="muted" style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11px">free</span></h3><div id="dast"><div class="empty">Probing endpoints…</div></div></div>
+      <div class="panel"><h3>Summary</h3><div id="summary"><div class="empty">—</div></div></div>
+      <div class="panel"><h3>Gateway audit trail</h3><div class="trail" id="trail"><div class="empty">audit_id per brokered call appears here.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="artifacts" id="artifacts">
+  <div class="alhead"><span>🗂️</span><h3>Artifacts</h3><span class="x" id="altoggle">–</span></div>
+  <div class="albody" id="albody"><div class="empty">loading…</div></div>
+</div>
+
+<script>
+const CANARY=/((?:sk|mem|ctx|doc)-canary-[A-Za-z0-9]+-[0-9a-f]+|AKIACANARY\w+|spiffe:\/\/canary\.local\/\S+)/g;
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const hl=s=>esc(s).replace(CANARY,m=>`<span class="canary">${m}</span>`);
+const $=id=>document.getElementById(id);
+let audits=[], legsProven=new Set();
+
+async function boot(){
+  const c=await (await fetch("/config")).json();
+  $("obj").value=c.defaults.objective; $("ctype").value=c.defaults.canary_type; $("budget").value=c.defaults.budget;
+  $("conn").innerHTML=`gateway <code>${esc(c.gateway)}</code><br>target <code>${esc(c.target)}</code>`;
+  drawFlow(c.dataflow);
+  loadSCA();
+  loadSAST();
+  loadDAST();
+  loadArtifacts();
+}
+function drawFlow(df){
+  const cols={source:62,agent:208,tool:348,sink:458}, ys={}, pos={};
+  df.nodes.forEach(n=>{const k=n.kind;ys[k]=(ys[k]||0)+1;pos[n.id]={x:cols[k]||208,y:46+(ys[k]-1)*74,kind:k};});
+  const edges=df.edges.map(ed=>{
+    const a=pos[ed.from],b=pos[ed.to],leg=ed.leg?` data-leg="${ed.leg}"`:"";
+    return `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#49506a" stroke-width="1.5" marker-end="url(#ah)"${leg}/>`+
+           `<text class="el" x="${(a.x+b.x)/2}" y="${(a.y+b.y)/2-4}" text-anchor="middle">${esc(ed.label||"")}</text>`;
+  }).join("");
+  const nodes=df.nodes.map(nd=>{
+    const p=pos[nd.id],red=nd.kind==="source"||nd.kind==="sink",fill=red?"#1d1013":"#0f1b2b",stroke=red?"#7a3236":"#2f4a6e";
+    return `<g transform="translate(${p.x},${p.y})"><rect x="-54" y="-20" width="108" height="40" rx="7" fill="${fill}" stroke="${stroke}" stroke-width="1.3"/>`+
+           `<text class="nl" text-anchor="middle" y="-2">${esc(nd.label)}</text><text class="ns" text-anchor="middle" y="11">${esc(nd.sub||"")}</text></g>`;
+  }).join("");
+  $("flow").innerHTML=`<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#49506a"/></marker></defs>${edges}${nodes}`;
+  $("flowlegend").innerHTML="legs light red as the run proves them (untrusted input · private data · egress)";
+}
+function proveLeg(leg){ if(!leg||legsProven.has(leg))return; legsProven.add(leg);
+  document.querySelectorAll(`#flow line[data-leg="${leg}"]`).forEach(l=>{l.setAttribute("stroke","#ff4d4f");l.setAttribute("stroke-width","2.4");});
+}
+async function loadSCA(){
+  try{const s=await (await fetch("/sca")).json();
+    if(!s.ok){$("sca").innerHTML=`<div class="muted">${esc(s.reason||"SCA unavailable")}</div>`;return;}
+    const sc=s.scanner||"scanner";
+    if(!s.findings.length){$("sca").innerHTML=`<div class="muted">${sc}: no advisories for ${s.package_count} packages.</div>`;return;}
+    $("sca").innerHTML=`<div class="muted" style="margin-bottom:6px">${sc} · ${s.findings.length} advisories across ${s.package_count} pinned packages</div>`+
+      s.findings.map(f=>`<div style="margin-bottom:7px"><span class="chip cve">${esc(f.id)}</span> <code>${esc(f.package)}==${esc(f.version)}</code>`+
+        (f.fix_versions&&f.fix_versions.length?` <span class="muted">→ fix ${esc(f.fix_versions.join(", "))}</span>`:"")+
+        `<div class="muted" style="font-size:11.5px">${esc(f.description||"")}</div></div>`).join("");
+  }catch(e){$("sca").innerHTML=`<div class="muted">SCA error: ${esc(e)}</div>`;}
+}
+async function loadSAST(){
+  try{const s=await (await fetch("/sast")).json();
+    if(!s.ok){$("sast").innerHTML=`<div class="muted">${esc(s.reason||"SAST unavailable")}</div>`;return;}
+    if(!s.findings.length){$("sast").innerHTML=`<div class="muted">${esc(s.scanner)}: no issues in ${s.files_scanned} files.</div>`;return;}
+    $("sast").innerHTML=`<div class="muted" style="margin-bottom:6px">${esc(s.scanner)} · ${s.findings.length} issues across ${s.files_scanned} files</div>`+
+      s.findings.slice(0,40).map(f=>`<div style="margin-bottom:7px"><span class="chip ${f.severity==='critical'||f.severity==='high'?'cve':''}">${esc(f.cwe)}</span> <code>${esc(f.file)}:${esc(f.line)}</code> <span class="muted">${esc(f.severity)}</span><div class="muted" style="font-size:11.5px">${esc(f.message)}</div></div>`).join("");
+  }catch(e){$("sast").innerHTML=`<div class="muted">SAST error</div>`;}
+}
+async function loadDAST(){
+  try{const d=await (await fetch("/dast")).json();
+    if(!d.findings.length){$("dast").innerHTML=`<div class="muted">${d.probes} probes · no dynamic issues at <code>${esc(d.base)}</code>${d.reachable?"":" (target unreachable)"}.</div>`;return;}
+    $("dast").innerHTML=`<div class="muted" style="margin-bottom:6px">${d.findings.length} findings from ${d.probes} probes · ${esc(d.base)}</div>`+
+      d.findings.map(f=>`<div style="margin-bottom:7px"><span class="chip cve">${esc(f.cwe)}</span> <code>${esc(f.path)}</code> <span class="muted">${esc(f.severity)}</span><div class="muted" style="font-size:11.5px">${esc(f.message)}</div><code class="muted" style="font-size:11px">${esc(f.evidence)}</code></div>`).join("");
+  }catch(e){$("dast").innerHTML=`<div class="muted">DAST error</div>`;}
+}
+function addTrail(label,id){ if(!id)return; if($("trail").querySelector(".empty"))$("trail").innerHTML="";
+  audits.push(id); const c=document.createElement("code"); c.textContent=`${label}  ${id}`; $("trail").appendChild(c);}
+
+const TURN={};
+function turnCard(t){ if(TURN[t])return TURN[t];
+  if($("stream").querySelector(".empty"))$("stream").innerHTML="";
+  const d=document.createElement("div"); d.className="turn";
+  d.innerHTML=`<div class="th"><span class="tnum">TURN ${t}</span><span class="strat" data-strat></span><span class="tv pending" data-tv>running</span></div><div data-body></div>`;
+  $("stream").appendChild(d); TURN[t]=d; return d;
+}
+function handle(ev){
+  if(ev.type==="engagement_start"){$("status").textContent=`· ${ev.objective} · episode ${ev.episode_id}`;}
+  else if(ev.type==="offensive_token"){addTrail("offensive.token",ev.audit_id);}
+  else if(ev.type==="canary_planted"){proveLeg("private-data");addTrail("canary.plant",ev.audit_id);
+    $("status").insertAdjacentHTML("beforeend",` · <span class="canary">${esc(ev.token_id)}</span> (${esc(ev.canary_type)}) @ ${esc(ev.location)}`);}
+  else if(ev.type==="attacker_mode"){$("status").insertAdjacentHTML("beforeend",` · attacker: ${esc(ev.mode)}${ev.model?" ("+esc(ev.model)+")":""}`);}
+  else if(ev.type==="attacker_move"){const c=turnCard(ev.turn);proveLeg("untrusted-input");
+    if(ev.strategy)c.querySelector("[data-strat]").textContent=ev.strategy;
+    let h="";
+    if(ev.reasoning)h+=`<div class="bub reason"><b>attacker reasoning ▸ ${esc(ev.attacker_model||"")}</b>${hl(ev.reasoning)}</div>`;
+    h+=`<div class="bub atk"><b>attacker prompt</b>${hl(ev.prompt)}</div>`;
+    c.querySelector("[data-body]").innerHTML=h;
+    addTrail("attacker_drive",ev.audit_id);}
+  else if(ev.type==="defender_response"){const c=turnCard(ev.turn);
+    let h=`<div class="bub def"><b>defender</b>${hl(ev.response)}</div>`;
+    if(ev.tool_calls&&ev.tool_calls.length)h+=`<div class="muted" style="font-size:11px">tool_calls: ${esc(JSON.stringify(ev.tool_calls))}</div>`;
+    if(ev.egress)h+=`<div class="bub wire"><b>egress ▸ partner POST</b>${hl(ev.egress)}</div>`;
+    c.querySelector("[data-body]").insertAdjacentHTML("beforeend",h);}
+  else if(ev.type==="turn_verdict"){const c=turnCard(ev.turn);const b=c.querySelector("[data-tv]");
+    b.className="tv "+ev.verdict; b.textContent=ev.verdict.toUpperCase()+(ev.hit_count?` · ${ev.hit_count} on ${ev.channel}`:"");
+    if(ev.verdict==="broke")proveLeg("egress");}
+  else if(ev.type==="verify"){addTrail("canary.verify",ev.audit_id);}
+  else if(ev.type==="weakness"){const w=ev.weakness||{},a=ev.ars||{};
+    $("weak").innerHTML = (w.weakness_id||a.ars)?
+      `<div class="kv"><span>ARS</span><b><span class="pill verdict ${a.band==='low'?'held':'broke'}">${esc(a.ars)} ${esc(a.band||"")}</span></b></div>`+
+      `<div class="kv"><span>source</span><b>${esc(a.source||"")}</b></div>`+
+      (w.weakness_id?`<div class="kv"><span>weakness</span><b>${esc(w.weakness_id)}</b></div><div class="muted" style="margin:4px 0">${esc(w.name||"")}</div>`+
+      `<div>${(w.owasp_llm_refs||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("")}${(w.cwe_refs||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div>`:"")
+      : `<div class="muted">No finding — nothing realized (held).</div>`;
+    if(a.audit_id)addTrail("risk.score",a.audit_id);}
+  else if(ev.type==="summary"){const a=ev.asr||{};
+    $("summary").innerHTML=`<div class="kv"><span>verdict</span><b><span class="pill verdict ${ev.verdict}">${esc(ev.verdict).toUpperCase()}</span></b></div>`+
+      `<div class="kv"><span>ASR@${esc(a.budget)}</span><b>${esc(a.value)}${a.first_break_turn?` · first break T${esc(a.first_break_turn)}`:""}</b></div>`+
+      `<div class="kv"><span>gateway calls</span><b>${audits.length} audited</b></div>`;}
+  else if(ev.type==="error"){const b=$("banner");b.style.display="block";b.textContent="Run error: "+ev.message;}
+  else if(ev.type==="done"){$("status").insertAdjacentHTML("beforeend"," · <b style='color:#6db0ff'>complete</b>");$("run").disabled=false;loadArtifacts();}
+}
+$("run").onclick=async()=>{
+  $("run").disabled=true; $("banner").style.display="none";
+  $("stream").innerHTML=""; $("weak").innerHTML='<div class="empty">…</div>'; $("summary").innerHTML="";
+  audits=[]; legsProven.clear(); for(const k in TURN)delete TURN[k];
+  document.querySelectorAll("#flow line[data-leg]").forEach(l=>{l.setAttribute("stroke","#49506a");l.setAttribute("stroke-width","1.5");});
+  const cfg={objective:$("obj").value,canary_type:$("ctype").value,budget:+$("budget").value};
+  const {run_id}=await (await fetch("/run",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(cfg)})).json();
+  const es=new EventSource(`/stream/${run_id}`);
+  es.onmessage=e=>{const ev=JSON.parse(e.data);handle(ev);if(ev.type==="done"||ev.type==="error"){es.close();if(ev.type==="error")$("run").disabled=false;}};
+  es.onerror=()=>{es.close();$("run").disabled=false;};
+};
+
+function artRow(icon,name,count,badges,detail){
+  return `<div class="alrow"><div class="art"><span>${icon}</span><span class="nm">${esc(name)}</span>`+
+    `<span class="meta">${badges||""}${count!=null?`<span>${esc(count)}</span>`:""}<span class="chev">›</span></span></div>`+
+    `<div class="aldetail">${detail||'<div class="it muted">—</div>'}</div></div>`;
+}
+async function loadArtifacts(){
+  let a; try{a=await (await fetch("/artifacts")).json();}catch(e){$("albody").innerHTML='<div class="empty">artifacts unavailable</div>';return;}
+  const rows=[];
+  rows.push(artRow("🧠","AI-BOM",`${a.ai_bom.count} items`,"",
+    a.ai_bom.items.map(i=>`<div class="it"><span class="tag">${esc(i.type)}</span>${esc(i.name)}</div>`).join("")));
+  rows.push(artRow("⬢","Supply chain",`${a.supply_chain.count} pkgs`,"",
+    `<div class="it muted">${esc(a.supply_chain.note)}</div>`+a.supply_chain.packages.slice(0,80).map(p=>`<div class="it">${esc(p)}</div>`).join("")));
+  const g=a.security_graph;
+  rows.push(artRow("◇","Security graph",`${g.components} comp · ${g.weaknesses} weak`,"",
+    ((g.runtime_weaknesses||[]).map(w=>`<div class="it"><span class="tag">runtime</span>${esc(w)}</div>`).join(""))+
+    ((g.cwes||[]).map(c=>`<div class="it"><span class="tag">cwe</span>${esc(c)}</div>`).join(""))||'<div class="it muted">no weaknesses yet</div>'));
+  const f=a.findings;
+  const badges=`${f.crit?`<span class="sevpill crit">${f.crit} crit</span>`:""}${f.high?`<span class="sevpill high">${f.high} high</span>`:""}`;
+  rows.push(artRow("◆","Findings",`${f.total}`,badges,
+    `<div class="it"><span class="tag">sca</span>${f.sca} component CVEs</div>`+
+    `<div class="it"><span class="tag">sast</span>${f.sast||0} static</div>`+
+    `<div class="it"><span class="tag">dast</span>${f.dast||0} dynamic</div>`+
+    `<div class="it"><span class="tag">runtime</span>${f.behavioral} behavioral</div>`+
+    Object.entries(f.by_severity).filter(([k,v])=>v).map(([k,v])=>`<div class="it"><span class="tag">${esc(k)}</span>${v}</div>`).join("")));
+  const r=a.archived_reviews;
+  rows.push(artRow("🗄️","Archived reviews",`${r.count}`,"",
+    r.items.length?r.items.map(e=>`<div class="it"><span class="tag ${esc(e.verdict||"")}">${esc((e.verdict||"").toUpperCase())}</span>${esc(e.objective||e.id)}</div>`).join(""):'<div class="it muted">no runs yet — run an engagement</div>'));
+  $("albody").innerHTML=rows.join("");
+  document.querySelectorAll("#albody .alrow").forEach(x=>x.onclick=()=>x.classList.toggle("open"));
+}
+$("altoggle").onclick=()=>{const a=$("artifacts");a.classList.toggle("collapsed");$("altoggle").textContent=a.classList.contains("collapsed")?"+":"–";};
+
+function tgRun(kind){
+  const btns=[$("gensast"),$("gendast")]; btns.forEach(b=>b.disabled=true);
+  $("tgstream").innerHTML=""; const cards={};
+  fetch(`/testgen/${kind}/run`,{method:"POST"}).then(r=>r.json()).then(({run_id})=>{
+    const es=new EventSource(`/stream/${run_id}`);
+    es.onmessage=e=>{const ev=JSON.parse(e.data);
+      if(ev.type==="generated"){$("tgstream").insertAdjacentHTML("beforeend",`<div class="muted" style="margin-bottom:10px">Generated <b>${ev.count}</b> ${esc(ev.kind.toUpperCase())} tests from ${esc(ev.source)} — running each…</div>`);}
+      else if(ev.type==="test_generated"){const d=document.createElement("div");d.className="turn";
+        d.innerHTML=`<div class="th"><span class="tnum">${esc(ev.id)}</span><span class="strat">${esc(ev.cwe||"")}</span> <code style="font-size:11px">${esc(ev.target)}</code><span class="tv pending" data-v>running</span></div><div class="tgo">${esc(ev.objective)}</div>`;
+        $("tgstream").appendChild(d);cards[ev.id]=d;}
+      else if(ev.type==="test_result"){const d=cards[ev.id];if(d){const b=d.querySelector("[data-v]");b.className="tv "+(ev.verdict==="fail"?"broke":"held");b.textContent=esc((ev.state||"").toUpperCase());if(ev.evidence)d.insertAdjacentHTML("beforeend",`<div class="tgo" style="color:#6f7d93">${esc(ev.evidence)}</div>`);}}
+      else if(ev.type==="testgen_summary"){$("tgstream").insertAdjacentHTML("beforeend",`<div class="note" style="margin-top:10px"><b>${ev.total} ${esc(ev.kind.toUpperCase())} tests</b> — ${ev.weaknesses} weakness present, ${ev.clear} clear. This is the target-specific regression suite.</div>`);}
+      else if(ev.type==="done"||ev.type==="error"){es.close();btns.forEach(b=>b.disabled=false);if(ev.type==="error")$("tgstream").insertAdjacentHTML("beforeend",`<div class="note" style="border-left-color:#ff4d4f;color:#ff8a8c">${esc(ev.message)}</div>`);loadArtifacts();}
+    };
+    es.onerror=()=>{es.close();btns.forEach(b=>b.disabled=false);};
+  });
+}
+$("gensast").onclick=()=>tgRun("sast");
+$("gendast").onclick=()=>tgRun("dast");
+
+boot();
+</script>
+</body>
+</html>
