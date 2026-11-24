@@ -53,5 +53,5 @@ Offline fallback (no gateway reachable) — a local provider base-URL shim recor
 
 ## References
 
-- [Proxy script](./scripts/proxy.py)
+- [Proxy (recon via the gateway; optional local shim)](./scripts/README.md)
 - [Graph schema (SSOT)](../../docs/graph-schema.md)
