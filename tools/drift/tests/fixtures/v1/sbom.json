@@ -1,0 +1,6 @@
+{
+  "packages": [
+    {"name": "requests", "version": "2.31.0", "cves": []},
+    {"name": "flask", "version": "3.0.0", "cves": [{"id": "CVE-2023-0001", "severity": "low", "kev": false, "epss": 0.02}]}
+  ]
+}

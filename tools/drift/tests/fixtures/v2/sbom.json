@@ -1,0 +1,7 @@
+{
+  "packages": [
+    {"name": "requests", "version": "2.31.0", "cves": [{"id": "CVE-2024-1234", "severity": "high", "kev": true, "epss": 0.61}]},
+    {"name": "flask", "version": "3.0.0", "cves": [{"id": "CVE-2023-0001", "severity": "low", "kev": false, "epss": 0.02}]},
+    {"name": "leftpad", "version": "1.0.0", "cves": []}
+  ]
+}

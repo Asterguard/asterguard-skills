@@ -1,0 +1,9 @@
+{
+  "ars": 8.1,
+  "reach": [{"store": "customers", "classes": ["pii", "financial"], "via": ["agent"], "columns": ["email", "card_last4"]}],
+  "tools_violated": ["export_record"],
+  "sinks": ["external:hooks.example.com"],
+  "paths": [
+    {"kind": "exfiltration", "hops": 3, "sink": "external:hooks.example.com", "classes": ["pii"], "missing_control": "egress-allowlist"}
+  ]
+}

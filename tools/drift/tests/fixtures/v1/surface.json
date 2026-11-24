@@ -1,0 +1,7 @@
+{
+  "ars": 5.2,
+  "reach": [{"store": "customers", "classes": ["pii"], "via": ["agent"], "columns": ["email"]}],
+  "tools_violated": [],
+  "sinks": [],
+  "paths": []
+}
