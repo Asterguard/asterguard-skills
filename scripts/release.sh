@@ -29,7 +29,7 @@ VERSION="${RAW#v}"
 echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$' \
   || die "version must look like X.Y.Z (got '$RAW')"
 TAG="v${VERSION}"
-TODAY="$(date +%Y-%m-%d)"
+TODAY="$(date -u +%Y-%m-%d)"   # UTC — matches GitHub tag/release timestamps and keeps the changelog monotonic
 
 echo "==> releasing ${TAG}  (dry-run=${DRY_RUN})"
 
