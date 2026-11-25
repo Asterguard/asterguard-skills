@@ -387,6 +387,51 @@ Cursor is recalled from Codex; a policy merged after a Claude Code review is enf
 - **Knowledge compounds across tools** — your Cursor red-team makes the next Codex review start ahead.
 - **One source of truth** — findings, controls, and proven breaks live in one place, not per-harness silos.
 
+## 🧠 The shared context layer — how security teams compound
+
+Security work usually evaporates: a break proven in one engineer's session, a control the security team
+approved, a test that caught a regression — each learned once, then lost, and re-discovered by the next
+person. AsterGuard turns that work into **shared context** every review reads before it starts and writes
+back when it ends — so **the whole team gets better with every review**.
+
+```
+     Engineer A              Engineer B
+     (Claude Code)           (Codex)
+          │                      │
+          ▼                      ▼
+   ┌──────────────────────────────────┐
+   │           AsterGuard             │
+   │          shared context          │
+   │   Findings · Policies · Tests ·  │
+   │    Evidence · Decisions · Memory │
+   └──────────────────────────────────┘
+          ▲                      ▲
+          │                      │
+     Engineer C             Security team
+     (Cursor)               (assess · approve · promote)
+
+   every review reads it + writes back — the security team curates
+```
+
+**What it does for the team**
+
+- **No work is done twice** — a break one engineer proves, or a fix the team validates, is recalled by
+  the next engineer on the next app: no hand-off meeting, no re-discovery.
+- **Knowledge stays when people leave** — the org's security decisions, approved patterns and proven
+  breaks live in the shared context, not in one person's head or a closed chat session.
+- **One consistent bar** — everyone inherits the same approved patterns and prior rulings, so two
+  engineers reviewing similar agents reach the same decision.
+- **The security team sets the standard once** — an approved control propagates to every future review;
+  promotion is **human-gated**, so the team stays in control of what becomes org truth.
+- **Works with the tools they already use** — read and written the same from Claude Code, Codex or
+  Cursor, so a Cursor red-team makes the next Codex review start ahead — no per-harness silo.
+
+**The result:** the security work an organization does once stops being work it repeats — every review
+improves the next, across engineers, sessions, harnesses, and teams. (Local-first: offline the context
+lives in `./.asterguard/`; connected, the AsterVault MCP makes it shared, durable and team-wide — see
+[Self-improving by design](#-self-improving-by-design) and [Cross-harness by
+design](#-cross-harness-by-design).)
+
 ## Install
 
 ### Claude Code (plugin)

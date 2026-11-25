@@ -156,6 +156,69 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;color:var(--fain
   </section>
 
   <section>
+    <span class="eyebrow">Shared context</span>
+    <h2>Every review improves the next one</h2>
+    <p class="lede" style="margin-top:10px">Security work usually evaporates — a break proven in one
+      session, a control the team approved, a test that caught a regression, each learned once and
+      re-discovered by the next person. AsterGuard turns it into shared context every review reads before
+      it starts and writes back when it ends, so the whole team gets better with each review.</p>
+    <div style="margin:22px 0 4px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);padding:18px 18px 10px">
+      <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Engineers on Claude Code, Codex and Cursor and the security team all read from and write to one shared AsterGuard context." style="width:100%;height:auto;display:block">
+        <defs>
+          <marker id="scl-ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--faint)"/>
+          </marker>
+        </defs>
+        <g stroke="var(--faint)" stroke-width="1.4" marker-end="url(#scl-ar)" marker-start="url(#scl-ar)" fill="none">
+          <line x1="340" y1="150" x2="156" y2="64"/>
+          <line x1="340" y1="150" x2="524" y2="64"/>
+          <line x1="340" y1="150" x2="156" y2="236"/>
+          <line x1="340" y1="150" x2="524" y2="236"/>
+        </g>
+        <rect x="252" y="104" width="176" height="92" rx="13" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.7"/>
+        <text x="340" y="130" text-anchor="middle" font-family="Chivo,sans-serif" font-weight="700" font-size="16" fill="var(--accent)">AsterGuard</text>
+        <text x="340" y="148" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11.5" fill="var(--muted)">shared context</text>
+        <text x="340" y="169" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="var(--faint)">Findings · Policies · Tests</text>
+        <text x="340" y="182" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="var(--faint)">Evidence · Decisions · Memory</text>
+        <g font-family="IBM Plex Sans,sans-serif">
+          <rect x="44" y="36" width="200" height="56" rx="11" fill="var(--panel)" stroke="var(--line)" stroke-width="1.3"/>
+          <text x="62" y="62" font-family="Chivo,sans-serif" font-weight="700" font-size="13.5" fill="var(--fg)">Engineer A</text>
+          <text x="62" y="79" font-size="11" fill="var(--faint)">Claude Code</text>
+          <rect x="436" y="36" width="200" height="56" rx="11" fill="var(--panel)" stroke="var(--line)" stroke-width="1.3"/>
+          <text x="454" y="62" font-family="Chivo,sans-serif" font-weight="700" font-size="13.5" fill="var(--fg)">Engineer B</text>
+          <text x="454" y="79" font-size="11" fill="var(--faint)">Codex</text>
+          <rect x="44" y="208" width="200" height="56" rx="11" fill="var(--panel)" stroke="var(--line)" stroke-width="1.3"/>
+          <text x="62" y="234" font-family="Chivo,sans-serif" font-weight="700" font-size="13.5" fill="var(--fg)">Engineer C</text>
+          <text x="62" y="251" font-size="11" fill="var(--faint)">Cursor</text>
+          <rect x="436" y="208" width="200" height="56" rx="11" fill="var(--panel)" stroke="var(--line)" stroke-width="1.3"/>
+          <text x="454" y="234" font-family="Chivo,sans-serif" font-weight="700" font-size="13.5" fill="var(--fg)">Security team</text>
+          <text x="454" y="251" font-size="11" fill="var(--faint)">assess · approve · promote</text>
+        </g>
+      </svg>
+      <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:4px">every review reads it + writes back — the security team curates</p>
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(282px,1fr))">
+      <div class="card">
+        <h3>What it does for the team</h3>
+        <ul class="clean">
+          <li><b>No work done twice</b> — a break one engineer proves, or a fix the team validates, is recalled by the next engineer on the next app.</li>
+          <li><b>Knowledge stays when people leave</b> — decisions, approved patterns and proven breaks live in the shared context, not one person's head.</li>
+          <li><b>One consistent bar</b> — everyone inherits the same approved patterns and prior rulings, so similar agents meet the same decision.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>The security team stays in control</h3>
+        <ul class="clean">
+          <li><b>Set the standard once</b> — an approved control propagates to every future review; promotion is <b>human-gated</b>.</li>
+          <li><b>Any harness</b> — read and written the same from Claude Code, Codex or Cursor, so a Cursor red-team makes the next Codex review start ahead.</li>
+          <li><b>Local-first</b> — offline the context lives in <code>./.asterguard/</code>; connected, the gateway makes it shared, durable and team-wide.</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:16px;font-weight:600"><a href="team-use-cases.html">↗&nbsp; How teams get better — the use cases</a></p>
+  </section>
+
+  <section>
     <span class="eyebrow">Tiers</span>
     <h2>Free analysis, subscription red-team</h2>
     <p class="lede" style="margin-top:10px">Every tier authenticates with the same gateway token. SAST,
