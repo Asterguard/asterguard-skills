@@ -1,9 +1,9 @@
 name: ci
 
-# The release safety net: every PR and every push to master runs the contract
-# validator + the deterministic tool tests + an offline smoke of the pipeline.
-# All hermetic — no model, no gateway, no secrets. The live E2E (gateway + target)
-# is a separate, manually-dispatched workflow.
+# The release safety net. Every PR and every push to master runs the hermetic smoke gate
+# (scripts/smoke.py): the contract validator + the deterministic tool tests + an offline
+# pipeline smoke. All hermetic — no model, no gateway, no secrets. The live E2E (gateway +
+# real target) is the separate, manually-dispatched live-e2e.yml.
 
 on:
   pull_request:
@@ -28,22 +28,8 @@ jobs:
       - name: Install PyYAML (playbook/persona + signals checks)
         run: python -m pip install --quiet pyyaml
 
-      - name: Contract validation (skills, playbooks, personas, SSOT, links)
-        run: python scripts/validate.py
+      - name: Smoke — validator + tool tests + offline pipeline
+        run: python scripts/smoke.py -v
 
-      - name: Tool unit tests
-        run: |
-          if [ -d tools/drift/tests ]; then
-            python -m unittest discover -s tools/drift/tests -v
-          else
-            echo "no tool tests on this ref — skipping"
-          fi
-
-      - name: Offline smoke — drift composer on the v1 -> v2 fixture
-        run: |
-          if [ -f tools/drift/drift.py ]; then
-            python tools/drift/drift.py tools/drift/tests/fixtures/v1 tools/drift/tests/fixtures/v2 > /dev/null
-            echo "drift smoke OK"
-          else
-            echo "drift toolkit not on this ref — skipping"
-          fi
+      - name: External link check (non-blocking — reports broken links in the log)
+        run: python scripts/validate.py || true

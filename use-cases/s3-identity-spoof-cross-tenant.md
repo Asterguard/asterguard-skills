@@ -56,4 +56,4 @@ claimed identity as authorization." Regression test from the differential.
 
 ## Video
 
-`media/s3.mp4` — _(to record: baseline refusal → set_caller spoof → canary fires → kill-chain + report)_
+[▶ https://agenticrisklabs.io/videos/s3.mp4](https://agenticrisklabs.io/videos/s3.mp4) — _(to record: baseline refusal → set_caller spoof → canary fires → kill-chain + report)_

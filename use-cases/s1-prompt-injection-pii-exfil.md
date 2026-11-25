@@ -58,4 +58,4 @@ turns become a regression test.
 
 ## Video
 
-`media/s1.mp4` — _(to record: recon map → plan → the planted doc landing → canary hit → kill-chain + report)_
+[▶ https://agenticrisklabs.io/videos/s1.mp4](https://agenticrisklabs.io/videos/s1.mp4) — _(to record: recon map → plan → the planted doc landing → canary hit → kill-chain + report)_

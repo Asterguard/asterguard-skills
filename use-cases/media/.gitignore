@@ -1,0 +1,10 @@
+# Use-case videos are hosted externally (agenticrisklabs.io/videos/), not committed —
+# keeping binaries out of history. Captures stay local; text (tapes, this README) is tracked.
+.local/
+*.mp4
+*.mov
+*.gif
+*.webm
+*.png
+*.jpg
+*.jpeg

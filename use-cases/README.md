@@ -27,10 +27,10 @@ kill-chain + report.**
 
 | # | Use-case | Target | Attack class | Canary types | Video |
 |---|---|---|---|---|---|
-| [S1](s1-prompt-injection-pii-exfil.md) | Indirect prompt-injection → PII exfil | `support-agent-demo` | injection · exfil | document · injection · egress | `media/s1.mp4` |
-| [S2](s2-over-privilege-money-movement.md) | Over-privilege + cross-tenant → money movement | `payment-agent-demo` (bad branch) | excessive-agency · authz | secret · workload-identity · egress | `media/s2.mp4` |
-| [S3](s3-identity-spoof-cross-tenant.md) | Caller spoofing → cross-tenant PII | `hr-agent-demo` | authz · identity | credential · workload-identity | `media/s3.mp4` |
-| [S4](s4-memory-poisoning-context-bleed.md) | Memory poisoning + context bleed | `agentic-workflow-demo` | memory-poisoning · context-bleed | memory · context | `media/s4.mp4` |
+| [S1](s1-prompt-injection-pii-exfil.md) | Indirect prompt-injection → PII exfil | `support-agent-demo` | injection · exfil | document · injection · egress | [▶ MP4](https://agenticrisklabs.io/videos/s1.mp4) |
+| [S2](s2-over-privilege-money-movement.md) | Over-privilege + cross-tenant → money movement | `payment-agent-demo` (bad branch) | excessive-agency · authz | secret · workload-identity · egress | [▶ MP4](https://agenticrisklabs.io/videos/s2.mp4) |
+| [S3](s3-identity-spoof-cross-tenant.md) | Caller spoofing → cross-tenant PII | `hr-agent-demo` | authz · identity | credential · workload-identity | [▶ MP4](https://agenticrisklabs.io/videos/s3.mp4) |
+| [S4](s4-memory-poisoning-context-bleed.md) | Memory poisoning + context bleed | `agentic-workflow-demo` | memory-poisoning · context-bleed | memory · context | [▶ MP4](https://agenticrisklabs.io/videos/s4.mp4) |
 
 ## Prerequisites
 
@@ -54,6 +54,14 @@ scenario doc for the exact brief, the expected proven break, and the video beats
 
 ## Adding the video
 
-After a run, record the Claude Code session (VHS or screen capture), save it as `media/s<N>.mp4` (+ a
-poster), and fill the scenario doc's **Video** section + the **Result** (the real ASR + the canary hit).
-That turns the plan into a proof. (These videos can also feed the site's film grid and the social posts.)
+After a run, record the Claude Code session with the helper — it prints the scenario's beats and
+keeps the capture local:
+
+```bash
+scripts/record-usecase.sh s1     # (s2, s3, s4)
+```
+
+Then **upload the cut to the video host** as `videos/s<N>.mp4` (the docs already link
+`https://agenticrisklabs.io/videos/s<N>.mp4`) and fill the scenario doc's **Result** with the real
+ASR + the canary hit. Videos are hosted, **not committed** — no binary churn in history; see
+[`media/README.md`](media/README.md). (These videos also feed the site's film grid and the social posts.)
