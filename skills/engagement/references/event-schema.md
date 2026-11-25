@@ -62,6 +62,7 @@ Kinds and their `data`:
 | `policy_recommended` | `{ bundle_ref, targets: [weakness_id] }` |
 | `policy_applied` | `{ bundle_ref, approved: true, where: "runtimevault" }` |
 | `gate_verdict` | `{ verdict: "PASS|FAIL|WARN", blockers: [weakness_id], delta }` |
+| `drift_measured` | `{ from_run, to_run, band: "hardening|stable|minor-regression|regression|critical-regression", direction, magnitude, by_facet: {facet: {direction, magnitude, signals}}, regressions: [signal], drift_index? }` |
 | `note` | `{ text }` |
 
 Only structural fields (`kind`, ids, `weakness_id`, `control_id`, `severity`, `data` scalars, graph
