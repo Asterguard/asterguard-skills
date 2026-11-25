@@ -8,6 +8,8 @@ versions may include breaking changes to skill contracts; those are called out u
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-25
+
 ### Added
 - **Release process.** A hermetic pre-push smoke gate (`scripts/smoke.py`) that bundles the
   contract validator, the tool unit tests, and an offline pipeline smoke into one command —
@@ -43,5 +45,6 @@ First tagged release — the skills pack as an installable, contract-checked uni
 - The skills pack: 100+ composable security skills, playbooks, and personas; the live
   offensive harness (`tools/live-harness/`); worked examples and use-case scenarios.
 
-[Unreleased]: https://github.com/Asterguard/asterguard-skills/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Asterguard/asterguard-skills/compare/v0.2.0...HEAD
 [0.1.0]: https://github.com/Asterguard/asterguard-skills/releases/tag/v0.1.0
+[0.2.0]: https://github.com/Asterguard/asterguard-skills/releases/tag/v0.2.0
