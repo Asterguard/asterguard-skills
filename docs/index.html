@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AsterGuard Docs</title>
+<meta name="description" content="AsterGuard documentation — the operator guide for running the security pipeline, and how security teams get better with shared context.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --panel-2:#f0f2f6; --fg:#161b23; --muted:#5c6673; --faint:#8a93a1;
+  --line:#e3e7ee; --accent:#a6780a; --accent-soft:#f6eccf; --ok:#2d7d54; --held:#2763a6; --held-soft:#dde9f6;
+  --radius:12px; --radius-sm:8px;
+  --f-disp:"Chivo",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a0d13; --panel:#121823; --panel-2:#0f141d; --fg:#e7ecf3; --muted:#9099a7; --faint:#69727f;
+  --line:#222a38; --accent:#e4c762; --accent-soft:#2a2410; --held:#6db0ff; --held-soft:#0f2033;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0a0d13; --panel:#121823; --panel-2:#0f141d; --fg:#e7ecf3; --muted:#9099a7; --faint:#69727f;
+  --line:#222a38; --accent:#e4c762; --accent-soft:#2a2410; --held:#6db0ff; --held-soft:#0f2033;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.6;-webkit-font-smoothing:antialiased;font-size:16px}
+.wrap{max-width:940px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+section{padding-block:34px}
+h1,h2,h3{font-family:var(--f-disp);line-height:1.12;text-wrap:balance;margin:0}
+h1{font-weight:900;font-size:clamp(2rem,6vw,3rem);letter-spacing:-.02em}
+h3{font-weight:700;font-size:1.12rem}
+p{margin:0}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.eyebrow{font-family:var(--f-mono);font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.lede{color:var(--muted);font-size:1.12rem;max-width:60ch}
+code{font-family:var(--f-mono);font-size:.88em;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* help-docs top nav */
+.docnav{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between;padding:11px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+.docnav .brand{font-family:var(--f-disp);font-weight:700;font-size:.9rem;letter-spacing:-.01em;color:var(--fg)}
+.docnav .brand:hover{text-decoration:none}
+.docnav .links{display:flex;flex-wrap:wrap;gap:8px 16px;font-family:var(--f-mono);font-size:.78rem}
+.docnav .links a{color:var(--muted)}
+.docnav .links a[aria-current]{color:var(--accent);font-weight:600}
+
+.hero{padding-block:52px 10px}
+.hero .eyebrow{display:block;margin-bottom:14px}
+.hero h1{margin-bottom:16px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:8px}
+a.doc{display:flex;flex-direction:column;gap:7px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;color:inherit;text-decoration:none;transition:border-color .15s}
+a.doc:hover{border-color:var(--accent);text-decoration:none}
+a.doc .tag{font-family:var(--f-mono);font-size:.66rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+a.doc h3{display:flex;align-items:center;gap:8px}
+a.doc p{color:var(--muted);font-size:.95rem}
+a.doc .go{font-family:var(--f-mono);font-size:.8rem;color:var(--accent);margin-top:2px}
+
+footer{border-top:1px solid var(--line);padding-block:26px 48px;color:var(--faint);font-size:.84rem;margin-top:14px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <nav class="docnav">
+    <a class="brand" href="index.html">AsterGuard docs</a>
+    <div class="links">
+      <a href="how-to-guide.html">Operator guide</a>
+      <a href="team-use-cases.html">For teams</a>
+      <a href="https://github.com/Asterguard/asterguard-skills">GitHub ↗</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="eyebrow">AsterGuard · documentation</span>
+    <h1>AsterGuard docs</h1>
+    <p class="lede">Run the security pipeline, and show your team the value of a shared security context
+      — the operator guide and the team outcomes, in one place.</p>
+  </header>
+
+  <section>
+    <div class="grid">
+      <a class="doc" href="how-to-guide.html">
+        <span class="tag">Operator guide</span>
+        <h3>Prove what breaks, with a canary</h3>
+        <p>Point AsterGuard at an agent: it plans the attack, runs a multi-turn red-team with planted
+          canaries, calls a finding only when a canary actually leaves, and turns the proof into a fix.
+          Setup, the canary loop, and the exact Claude Code / Cursor chat commands.</p>
+        <span class="go">Read the guide →</span>
+      </a>
+      <a class="doc" href="team-use-cases.html">
+        <span class="tag">For security leaders</span>
+        <h3>How teams get better</h3>
+        <p>Every review reads one shared context and writes its outcome back, so the security work an
+          organization does once stops being work it repeats. The use cases, a worked example of what
+          gets saved, how it's shared, and the tier breakdown.</p>
+        <span class="go">See the team value →</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    AsterGuard · authorized engagements only · built local-first, gateway-backed when connected. &nbsp;·&nbsp;
+    <a href="https://github.com/Asterguard/asterguard-skills">View on GitHub</a>
+  </footer>
+
+</div>
+
+</body>
+</html>

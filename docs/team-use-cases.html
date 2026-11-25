@@ -60,6 +60,14 @@ code,kbd{font-family:var(--f-mono)}
 .badge{font-family:var(--f-mono);font-size:.74rem;padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--panel)}
 .badge b{color:var(--fg);font-weight:600}
 
+/* help-docs top nav */
+.docnav{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between;padding:11px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+.docnav .brand{font-family:var(--f-disp);font-weight:700;font-size:.9rem;letter-spacing:-.01em;color:var(--fg)}
+.docnav .brand:hover{text-decoration:none}
+.docnav .links{display:flex;flex-wrap:wrap;gap:8px 16px;font-family:var(--f-mono);font-size:.78rem}
+.docnav .links a{color:var(--muted)}
+.docnav .links a[aria-current]{color:var(--accent);font-weight:600}
+
 /* cards */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:14px;margin-top:22px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
@@ -110,6 +118,15 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;color:var(--fain
 <body>
 
 <div class="wrap">
+
+  <nav class="docnav">
+    <a class="brand" href="index.html">AsterGuard docs</a>
+    <div class="links">
+      <a href="how-to-guide.html">Operator guide</a>
+      <a href="team-use-cases.html" aria-current="page">For teams</a>
+      <a href="https://github.com/Asterguard/asterguard-skills">GitHub ↗</a>
+    </div>
+  </nav>
 
   <header class="hero">
     <span class="eyebrow">AsterGuard · for security leaders</span>
