@@ -60,4 +60,4 @@ chain; this is exactly what the `pentest-pr-gate` would block on the bad branch'
 
 ## Video
 
-`media/s2.mp4` — _(to record: recon → plan → the decomposition turns → canary on the transfer/export → kill-chain + the Ship-vs-Block delta)_
+[▶ https://agenticrisklabs.io/videos/s2.mp4](https://agenticrisklabs.io/videos/s2.mp4) — _(to record: recon → plan → the decomposition turns → canary on the transfer/export → kill-chain + the Ship-vs-Block delta)_

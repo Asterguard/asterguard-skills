@@ -62,4 +62,4 @@ instructions." Regression tests for both the delayed-fire and the bleed.
 
 ## Video
 
-`media/s4.mp4` — _(to record: plant in session 1 → fresh session 2 fires it → the cross-context bleed → two canary hits → kill-chain + report)_
+[▶ https://agenticrisklabs.io/videos/s4.mp4](https://agenticrisklabs.io/videos/s4.mp4) — _(to record: plant in session 1 → fresh session 2 fires it → the cross-context bleed → two canary hits → kill-chain + report)_

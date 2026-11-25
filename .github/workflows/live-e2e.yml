@@ -1,0 +1,77 @@
+name: live-e2e
+
+# The gated, real end-to-end test: a connected engagement against a live AsterVault gateway
+# and a live target agent (scripts/live_e2e.py). It is NEVER part of ordinary CI — it needs
+# secrets and a reachable gateway + target, so it only runs when dispatched by hand and only
+# when the gateway bearer secret is present. Without the secret the job short-circuits to a
+# clean skip (it never fails a run for missing credentials, and forks can't invoke it).
+#
+# Configure these repository secrets to enable it:
+#   ASTERVAULT_BEARER   gateway bearer JWT carrying the offensive entitlement  (required)
+#   ASTERVAULT_MCP_URL  gateway MCP endpoint            (optional; gateway.py has a default)
+#   TARGET_INVOKE_URL   the target agent's /invoke URL  (required)
+#   TARGET_PROFILE      path to a target profile JSON   (optional)
+
+on:
+  workflow_dispatch:
+    inputs:
+      objective:
+        description: "Attack objective (optional; overrides E2E_OBJECTIVE default)"
+        required: false
+        type: string
+      canary_type:
+        description: "Canary type"
+        required: false
+        default: "egress"
+        type: string
+      budget:
+        description: "Max attacker turns"
+        required: false
+        default: "3"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  live-e2e:
+    name: connected engagement (gateway + target)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Gate — require the gateway bearer secret, else skip cleanly
+        id: gate
+        env:
+          HAVE_BEARER: ${{ secrets.ASTERVAULT_BEARER != '' }}
+        run: |
+          if [ "$HAVE_BEARER" = "true" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::ASTERVAULT_BEARER secret not set — skipping the live E2E."
+          fi
+
+      - name: Install harness requirements
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          python -m pip install --quiet certifi
+          if [ -f tools/live-harness/requirements.txt ]; then
+            python -m pip install --quiet -r tools/live-harness/requirements.txt || true
+          fi
+
+      - name: Live end-to-end engagement
+        if: steps.gate.outputs.run == 'true'
+        env:
+          ASTERVAULT_BEARER: ${{ secrets.ASTERVAULT_BEARER }}
+          ASTERVAULT_MCP_URL: ${{ secrets.ASTERVAULT_MCP_URL }}
+          TARGET_INVOKE_URL: ${{ secrets.TARGET_INVOKE_URL }}
+          TARGET_PROFILE: ${{ secrets.TARGET_PROFILE }}
+          E2E_OBJECTIVE: ${{ inputs.objective }}
+          E2E_CANARY_TYPE: ${{ inputs.canary_type }}
+          E2E_BUDGET: ${{ inputs.budget }}
+        run: python scripts/live_e2e.py --skip-if-unconfigured -v
