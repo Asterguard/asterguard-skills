@@ -470,8 +470,42 @@ the full capability catalog.
 ```
 asterguard-skills/
 ├── .claude-plugin/marketplace.json   # Claude Code plugin + companion-package manifest
+├── .github/workflows/                # ci.yml (hermetic smoke on every PR) · live-e2e.yml (gated, manual)
 ├── docs/graph-schema.md              # SSOT graph schema (all skills build to this)
 ├── skills/<capability>/SKILL.md      # one capability each (+ scripts/, references/)
-├── examples/                         # worked walkthroughs (terraform-agent-platform, support-agent-appsec, scan-to-redteam, …)
-└── scripts/build-codex.sh            # emit the Codex target from the same skill source
+├── examples/ · use-cases/            # worked walkthroughs · proven offensive scenarios (videos hosted, not committed)
+├── tools/drift · tools/live-harness  # the drift primitive · the live offensive harness
+├── CHANGELOG.md                      # Keep a Changelog — what shipped per version
+└── scripts/                          # smoke.py (pre-push gate) · release.sh (release cutter) · validate.py · build-codex.sh
 ```
+
+## Development & releasing
+
+**Before you push**, run the hermetic smoke gate — no model, no gateway, no network:
+
+```bash
+python scripts/smoke.py
+```
+
+It bundles the contract validator (`scripts/validate.py` — skill frontmatter, link integrity,
+playbook/persona references, `mcp.json`, `signals.yaml` SSOT), the tool unit tests, and an offline
+drift-pipeline smoke. **CI runs this same command** on every PR and every push to `master`
+([`.github/workflows/ci.yml`](.github/workflows/ci.yml)), so a green `master` is never a surprise.
+
+The **live end-to-end** test ([`scripts/live_e2e.py`](scripts/live_e2e.py)) drives a real connected
+engagement against a gateway + target and asserts the audited, judged pipeline worked. It needs
+secrets and a reachable gateway, so it's **manual and gated** — the
+[`live-e2e.yml`](.github/workflows/live-e2e.yml) workflow is `workflow_dispatch`-only and skips
+cleanly when the `ASTERVAULT_BEARER` secret is absent.
+
+**Cutting a release** is one guarded command — it refuses a dirty/off-`master`/stale tree, a failing
+smoke, an existing tag, or an empty changelog; rolls [`CHANGELOG.md`](CHANGELOG.md), tags, pushes, and
+publishes. Dry-run first:
+
+```bash
+scripts/release.sh X.Y.Z --dry-run   # show the plan, touch nothing
+scripts/release.sh X.Y.Z             # cut it
+```
+
+The [`release-checklist`](skills/release-checklist/SKILL.md) skill is the human walk-through of the
+same gate. See [`EXTENDING.md`](EXTENDING.md) for adding skills, playbooks, and tools.
