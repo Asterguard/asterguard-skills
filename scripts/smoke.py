@@ -58,21 +58,30 @@ def gate_validate(verbose: bool) -> None:
 
 
 # --------------------------------------------------------------------------- #
-# gate 2 — tool unit tests
+# gate 2 — tool unit tests (every tools/<tool>/tests directory)
 # --------------------------------------------------------------------------- #
 def gate_unit_tests(verbose: bool) -> None:
-    tests_dir = os.path.join(DRIFT, "tests")
-    if not os.path.isdir(tests_dir):
-        record("drift unit tests", "SKIP", "tools/drift/tests not present")
+    tools_root = os.path.join(ROOT, "tools")
+    tests_dirs = sorted(
+        os.path.join(tools_root, d, "tests")
+        for d in (os.listdir(tools_root) if os.path.isdir(tools_root) else [])
+        if os.path.isdir(os.path.join(tools_root, d, "tests"))
+    )
+    if not tests_dirs:
+        record("tool unit tests", "SKIP", "no tools/*/tests present")
         return
-    proc = subprocess.run(
-        [sys.executable, "-m", "unittest", "discover", "-s", tests_dir, "-v" if verbose else "-q"],
-        cwd=ROOT, capture_output=True, text=True)
-    if verbose or proc.returncode != 0:
-        sys.stderr.write(proc.stderr)
-    # unittest prints its summary to stderr
-    last = (proc.stderr.strip().splitlines() or ["no output"])[-1]
-    record("drift unit tests", "PASS" if proc.returncode == 0 else "FAIL", last)
+    for tests_dir in tests_dirs:
+        tool = os.path.basename(os.path.dirname(tests_dir))
+        proc = subprocess.run(
+            [sys.executable, "-m", "unittest", "discover", "-s", tests_dir,
+             "-p", "test_*.py", "-v" if verbose else "-q"],
+            cwd=ROOT, capture_output=True, text=True)
+        if verbose or proc.returncode != 0:
+            sys.stderr.write(proc.stderr)
+        # unittest prints its "Ran N tests ... OK/FAILED" summary to stderr
+        lines = proc.stderr.strip().splitlines()
+        ran = next((l for l in lines if l.startswith("Ran ")), (lines or ["no output"])[-1])
+        record(f"{tool} unit tests", "PASS" if proc.returncode == 0 else "FAIL", ran)
 
 
 # --------------------------------------------------------------------------- #

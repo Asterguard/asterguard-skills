@@ -97,3 +97,15 @@ Set the objective, canary type, and turn budget, press **Run engagement**, and w
 The bearer and any model keys live in the environment or the target's own process — this tool
 writes nothing with a secret to disk. See `../../skills/behavioral-redteam` and
 `../../skills/canary-testing` for the methodology this operationalizes.
+
+## Tests
+
+Hermetic unit tests live in [`tests/`](tests/) — no gateway, target, or network. They cover the
+engagement loop (via injected fakes), the store, the target adapter, target-profile resolution, the
+artifacts aggregators, the attacker's output parsing, and the SAST/SCA/DAST engines (DAST against a
+throwaway localhost server). Run them directly, or via the pack's smoke gate:
+
+```bash
+python -m unittest discover -s tools/live-harness/tests -v
+python scripts/smoke.py          # also runs them (discovers every tools/*/tests)
+```

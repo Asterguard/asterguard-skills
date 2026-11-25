@@ -8,6 +8,18 @@ versions may include breaking changes to skill contracts; those are called out u
 
 ## [Unreleased]
 
+### Added
+- **Live-harness test suite** (`tools/live-harness/tests/`) — 43 hermetic tests (no gateway, no
+  target, no network): the engagement loop via injected fakes (break-on-canary-hit, held, ASR,
+  audit-id collection, persistence), the engagement store round-trip, the target adapter's egress
+  parsing + sqlite canary plant, target-profile resolution, the artifacts aggregators, the model
+  attacker's output parsing, the grounded SAST ruleset, SCA manifest parsing, and the DAST probe
+  engine against a throwaway localhost server.
+
+### Changed
+- `scripts/smoke.py` gate 2 now discovers **every** `tools/<tool>/tests` directory (drift +
+  live-harness today), so new tool suites run in CI with no workflow change.
+
 ## [0.2.0] - 2026-11-25
 
 ### Added
