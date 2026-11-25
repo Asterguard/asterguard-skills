@@ -80,6 +80,17 @@ paths, and recommend enforcement policies."* The `security-engineer` orchestrato
 Runnable walkthroughs live in [`examples/`](examples/). To connect the skills to the gateway over a
 live MCP connection, see [docs/MCP_WIRING.md](docs/MCP_WIRING.md).
 
+### 🎞 The films
+
+Four short films, one per part of the problem — watch on [agenticrisklabs.io](https://agenticrisklabs.io/#watch):
+
+| Film | For | What it shows |
+|---|---|---|
+| [**The Skills**](https://agenticrisklabs.io/videos/asterguard-skills.mp4) | engineers shipping agents | the full review running inside Claude Code: scan → attack-surface graph → attacker ▸ defender ▸ judge with a canary-proven leak → the fix as policy → shared memory |
+| [**The Invisible Risk**](https://agenticrisklabs.io/videos/asterguard-ciso-risk.mp4) | security leaders | one sales agent from a planted note to a live attack, then which agents share the exposure and what to fix first |
+| [**The Attack Surface**](https://agenticrisklabs.io/videos/asterguard-attack-surface.mp4) | security architects | identity, cloud, code and data tools joined into one record per agent, then across the fleet |
+| [**The Proof**](https://agenticrisklabs.io/videos/asterguard-behavioral.mp4) | AppSec engineers & red teams | a planted note becoming a live attack, with the evidence, the root cause and the fix as policy |
+
 ---
 
 ## 🧭 What the agent does — the review flow
