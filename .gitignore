@@ -20,3 +20,7 @@ engagements.db
 
 # fleet scan output
 fleet-report.json
+
+# Site pages + rendered media live in the asterguard-site repo, not here
+docs/media/
+scripts/demo/
