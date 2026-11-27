@@ -506,9 +506,9 @@ Full detail: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · gateway wiring:
 · audit readiness: **[docs/COMPLIANCE.md](docs/COMPLIANCE.md)** · positioning:
 **[docs/POSITIONING.md](docs/POSITIONING.md)** · schema: **[docs/graph-schema.md](docs/graph-schema.md)**
 
-**Customer walkthrough — setup → integration → report:** [docs/playbook.html](docs/playbook.html)
-(open in a browser) — the end-to-end journey across Claude Code / Codex, the gateway + ARS token, and
-the full capability catalog.
+**Customer walkthrough — setup → integration → report:**
+[agenticrisklabs.io/help/asterguard](https://www.agenticrisklabs.io/help/asterguard/) — the end-to-end
+journey across Claude Code / Codex, the gateway + ARS token, and the full capability catalog.
 
 ## Structure
 
